@@ -10,6 +10,8 @@ The registered runtime is `static-content` for planning. No application framewor
 
 Work can proceed with Markdown, JSON, and standalone HTML. Teammates can read the proposed spec with no production credentials or dependency install. Git stores the proposed product source; Lark remains company authority and the intended operational data destination.
 
+Use `/Users/jerryzhang/Workspace-Draft/system/bin/dev COMMAND` to select the managed CLI toolchain while preserving the current run directory. This session's inherited PATH selects older tools. See `CLI-ACCESS.md` for the verified access boundaries and authentication diagnostics.
+
 ## GitHub handoff
 
 Jerry supplied the existing team repository [Augustexe/mirrormii-survey](https://github.com/Augustexe/mirrormii-survey). Do not create a replacement repository. The local scaffold includes proposed pull request and planning issue templates; reconcile them with team conventions after remote inspection. Existing collaborators, permissions, visibility, workflows, branches, and source contents are unverified. This session has not changed them.
@@ -20,7 +22,7 @@ The native `gh api user --jq .login` connectivity check failed on 2026-09-14. Do
 
 Use the existing protected company-context service through the central workspace, or native authorized Lark read tooling. Load only Product Truths, Sayable Claims, Brand Facts, relevant ICP/campaign context, and applicable Wiki documents. Inspect source status, revision/time, and scope before synthesis. Do not export raw packets into this repo or shared manifests.
 
-Checked 2026-09-14: protected context service unavailable; native CLI could not initialize keychain access in this execution context; existing browser tab access was denied by Browser Use security policy. No fresh company contents were verified. Stop that browser route until access is explicitly restored; do not work around the denial.
+The CLI audit on 2026-09-14 corrected the earlier service diagnosis: workspace-control and AGNT have running processes and listening ports, but this Codex execution session's loopback connections fail with EPERM. HTTP health remains unverified here. The process has `CODEX_SANDBOX=seatbelt` and `CODEX_SANDBOX_NETWORK_DISABLED=1`; external DNS and local port binding also fail. Native Lark auth status fails before resolving identity because its Keychain lookup cannot initialize, including through the managed dev route. This does not prove missing credentials or expired authorization. No fresh company contents were verified. The audit used no browser access, as requested by Jerry; prior denied browser routes were not retried.
 
 `context/source-map.json` contains routing references, not live company truth. Future agents must refresh them before treating content or schema as verified.
 

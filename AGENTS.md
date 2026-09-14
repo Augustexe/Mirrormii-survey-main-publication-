@@ -8,6 +8,7 @@ This is the canonical source for project `mirrormii-genie-survey`. The user auth
 - Read `docs/DECISIONS.md`, then the sections of `docs/PRODUCT-SPEC.md` relevant to the task.
 - Keep execution pinned to this project. General MirrorMii keywords add company context; they do not move source edits to another project.
 - In the central workspace, allocate a unique run with `python3 /Users/jerryzhang/Workspace-Draft/system/bin/workspace.py new-run mirrormii-genie-survey codex "Task"`. Use its scratch/output/logs and finalize output for a receipt. Source edits are permitted when the task intends them; `--cwd project` is only for those edits.
+- Execute CLIs through `/Users/jerryzhang/Workspace-Draft/system/bin/dev COMMAND` from the allocated cwd to select the managed toolchain. `dev --project mirrormii-genie-survey COMMAND` changes cwd to source and is for intended source work. Read `docs/CLI-ACCESS.md` before diagnosing setup/auth failures: distinguish PATH, native login presence, verified remote access, and sandbox restrictions.
 
 ## Authority
 
