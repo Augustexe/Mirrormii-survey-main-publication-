@@ -13,6 +13,7 @@ Updated 2026-09-14. Owner: Jerry. Evidence: the founder's brief in the current c
 | D-005 | Lark Base is the intended home for survey answers, users, and account business records |
 | D-006 | Company truth comes from canonical Lark; imagery from canon assets and founder direction |
 | D-007 | Prepare an environment people can collaborate on through GitHub |
+| D-008 | Use the existing team repository `https://github.com/Augustexe/mirrormii-survey.git` (resolves Q-003; supplied by Jerry on 2026-09-14) |
 
 ## Open now
 
@@ -20,7 +21,6 @@ Updated 2026-09-14. Owner: Jerry. Evidence: the founder's brief in the current c
 | --- | --- | --- |
 | Q-001 | What is the result: personality archetype, lifestyle snapshot, or playful character identity? | Determines questions and the sharing promise |
 | Q-002 | First business purpose: reach, qualified leads, or quiz revenue? | Determines funnel and affiliate event |
-| Q-003 | Which GitHub owner/org? Working name `mirrormii-genie-survey`; private proposed | Needed to create the remote in the right place |
 
 ## Upcoming conversation
 

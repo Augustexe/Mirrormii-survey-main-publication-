@@ -33,11 +33,15 @@
     "status": "not-selected-or-provisioned"
   },
   "github": {
-    "owner": null,
-    "repository_name": "mirrormii-genie-survey",
-    "proposed_visibility": "private",
-    "url": null,
-    "status": "local-only-owner-and-connectivity-pending"
+    "owner": "Augustexe",
+    "repository_name": "mirrormii-survey",
+    "url": "https://github.com/Augustexe/mirrormii-survey",
+    "git_url": "https://github.com/Augustexe/mirrormii-survey.git",
+    "origin_configured": true,
+    "local_branch": "planning/genie-survey",
+    "visibility": "unverified-existing-repository",
+    "remote_contents_verified": false,
+    "status": "existing-team-repository-designated; fetch-and-integration-blocked"
   },
   "rules": {
     "project_pinned": true,
@@ -50,6 +54,6 @@
     "company context service fetch failed",
     "native Lark keychain unavailable in execution context",
     "browser access to Lark denied; stop this access route",
-    "GitHub API connectivity failed"
+    "GitHub DNS/API connectivity failed; browser access denied; no remote read or push"
   ]
 }

@@ -2,7 +2,7 @@
 
 A new marketing product in discovery: Genie guides a playful questionnaire about personality, habits, and everyday wellbeing, leading to a result people want to share.
 
-**Stage: planning. Product decisions are open.** “mirrormii-genie-survey” is a working repository name. MirrorMe in the founder's spoken brief is routed to MirrorMii; final character spelling and visual identity await canon verification.
+**Stage: planning. Product decisions are open.** `mirrormii-genie-survey` is the internal workspace project ID; the team repository is `Augustexe/mirrormii-survey`. MirrorMe in the founder's spoken brief is routed to MirrorMii; final character spelling and visual identity await canon verification.
 
 Start with [the product spec](docs/PRODUCT-SPEC.md), [the decision register](docs/DECISIONS.md), and [the environment guide](docs/ENVIRONMENT.md). [The data design](docs/DATA-DESIGN.md) describes proposed Lark integration boundaries. [Research](docs/RESEARCH.md) separates outside examples from company truth.
 
@@ -15,4 +15,4 @@ This repository contains planning source and collaborator instructions. It has n
 3. Distinguish founder requirements, verified company facts, proposals, and unknowns.
 4. Review the behavior and evidence before merging. Never put survey responses or credentials in Git.
 
-GitHub owner is pending. The intended starting visibility is private, pending the founder's reply. Remote creation and push have not happened.
+The founder selected the existing [Augustexe/mirrormii-survey](https://github.com/Augustexe/mirrormii-survey) team repository. Local `origin` points there. Drafts are preserved on `planning/genie-survey`; remote contents, default branch, visibility, and access remain unverified because remote inspection was blocked. No push has happened. Read the team repository and its instructions before integrating this local planning baseline.
