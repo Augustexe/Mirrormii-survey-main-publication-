@@ -1,0 +1,55 @@
+{
+  "schema": "mirrormii-survey-source-map/v1",
+  "project_id": "mirrormii-genie-survey",
+  "checked_at": "2026-09-14",
+  "company_content_status": "blocked-unverified",
+  "founder_brief": {
+    "authority": "survey project intent",
+    "date": "2026-09-14",
+    "source": "current conversation"
+  },
+  "company_base": {
+    "name": "MirrorMii OS",
+    "url": "https://kdz2ecuce1a.sg.larksuite.com/base/XteAbcw1iagLDHsFmSNlTLpagQe",
+    "base_id": "XteAbcw1iagLDHsFmSNlTLpagQe",
+    "authority": "company canon",
+    "verification": "routing recovered from current workspace source; no live content read"
+  },
+  "company_wiki": {
+    "name": "MirrorMii Marketing OS",
+    "space_id": "7681497738504113914",
+    "authority": "canonical company document corpus",
+    "verification": "routing contract only; no live content read"
+  },
+  "canon_media": {
+    "path": "/Users/jerryzhang/Workspace-Draft/assets/Genomii AI.library",
+    "path_exists": true,
+    "selected_items": [],
+    "selection": "Eagle metadata, folder membership, descriptions, rights; founder direction pending"
+  },
+  "survey_data_destination": {
+    "base_id": null,
+    "table_ids": [],
+    "status": "not-selected-or-provisioned"
+  },
+  "github": {
+    "owner": null,
+    "repository_name": "mirrormii-genie-survey",
+    "proposed_visibility": "private",
+    "url": null,
+    "status": "local-only-owner-and-connectivity-pending"
+  },
+  "rules": {
+    "project_pinned": true,
+    "refresh_company_context_before_claims": true,
+    "legacy_fallback": false,
+    "persist_raw_company_packets": false,
+    "credentials": "native authentication only"
+  },
+  "blockers": [
+    "company context service fetch failed",
+    "native Lark keychain unavailable in execution context",
+    "browser access to Lark denied; stop this access route",
+    "GitHub API connectivity failed"
+  ]
+}
