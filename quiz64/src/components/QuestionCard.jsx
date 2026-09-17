@@ -8,7 +8,7 @@ export function QuestionCard({ q, state, draft, setDraft, note, setNote, onConti
   const committed = state.answers?.[q.id];
   const committedNote = state.notes?.[q.id] || '';
   const hasUnsaved = draft !== (committed || null) || (note || '') !== committedNote;
-  useEffect(() => { heading.current?.focus({ preventScroll: true }); }, [q.id]);
+  useEffect(() => { heading.current?.focus({ preventScroll: true }); window.scrollTo({ top: 0, behavior: 'instant' }); }, [q.id]);
   const actual = q.role === 'actual';
   const choose = (id) => { if (!readOnly && !(q.test && committed)) setDraft(id); };
   return <article className={`question-card ${readOnly ? 'question-card--readonly' : ''}`}>
