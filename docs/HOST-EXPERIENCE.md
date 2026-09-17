@@ -12,6 +12,14 @@ Confirmed first-return value: **understand yourself better, and gradually find s
 
 Confirmed audience: **North America, all genders; English first.** Earlier age ranges, women, dating, career changes and bodily routines were illustrative examples. Do not turn them into demographic gates, required life goals or prevalence claims. Exact age eligibility and geographic localization beyond this broad market are not settled here.
 
+## Latest implementation direction · 2026-09-17
+
+Jerry's correction: **questions and retention come first**. The survey must not turn into clinical questionnaire copy while its evidence model improves. Use the approved Chinese voice's principles to write natural English: a recognizable moment, a small absurd turn, and clear choices. Do not translate its slang literally. North American English and all-gender scenarios remain the brief.
+
+The live English layer in `quiz64/src/english-copy.js` rewrites all 76 candidates, including route replacements. IDs, source windows, signal mappings, route slots, and scoring are unchanged. The white theme with purple accents is explicit, including on devices in dark mode. Existing canonical Genii art and the generated glass reference remain in use. Results use semantic icons and aligned usual/recent tracks; True/False still records feedback without changing the original result.
+
+See `quiz64/docs/ENGLISH-VOICE.md` for authoring guardrails. This is the implemented direction for review, not a claim of approved final English wording or measured retention lift.
+
 ## What “a host who gets you” means
 
 - Notice specific everyday tensions and invite the person to describe them in their own terms.

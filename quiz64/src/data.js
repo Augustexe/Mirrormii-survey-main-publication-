@@ -1,3 +1,4 @@
+import { applyEnglishCopy } from "./english-copy.js";
 import { HOST_REACTIONS } from "./host-reactions.js";
 
 export const VERSION = "genii-root.v2";
@@ -26,14 +27,15 @@ export const CHAPTERS = [
   {
     id: 1,
     title: "The opening lore",
-    subtitle: "A small beginning with suspiciously large consequences.",
+    subtitle:
+      "A trip, a group bill, and a few choices that say more than a bio.",
     kicker: "THE OPENING LORE",
   },
   {
     id: 2,
     title: "Small choices",
     subtitle:
-      "Daily rhythms, tiny bargains, and one person who says “quick question”.",
+      "Your time, your money, and the people asking for a tiny bit of both.",
     kicker: "SMALL CHOICES",
   },
   {
@@ -50,20 +52,20 @@ export const CHAPTERS = [
   },
   {
     id: 5,
-    title: "The feeling department",
-    subtitle: "Seven little weather systems, observed in the wild.",
-    kicker: "THE FEELING DEPARTMENT",
+    title: "Inside voice, outside face",
+    subtitle: "What you felt, what you showed, and what helped it pass.",
+    kicker: "INSIDE VOICE, OUTSIDE FACE",
   },
   {
     id: 6,
-    title: "Body in the day",
-    subtitle: "Capacity, care, and the calendar’s many opinions.",
-    kicker: "BODY IN THE DAY",
+    title: "A body with opinions",
+    subtitle: "Drink breaks, dinner plans, and a body that would like a word.",
+    kicker: "A BODY WITH OPINIONS",
   },
   {
     id: 7,
     title: "Rhythms and recovery",
-    subtitle: "Sleep, energy, and the occasional side quest at bedtime.",
+    subtitle: "Your usual rhythm, your actual week, and the gap between them.",
     kicker: "RHYTHMS AND RECOVERY",
   },
   {
@@ -3315,6 +3317,8 @@ for (const slot of ROUTE_SLOTS)
     const question = QUESTIONS.find((item) => item.id === questionId);
     if (question) question.meta = { ...question.meta, slot: slot.id };
   }
+applyEnglishCopy(QUESTIONS);
+
 export const QUESTIONS_BY_ID = Object.fromEntries(
   QUESTIONS.map((question) => [question.id, question]),
 );

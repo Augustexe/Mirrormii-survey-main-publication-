@@ -4,10 +4,10 @@ import {
   ChevronDown,
   Download,
   RotateCcw,
-  ShieldCheck,
   ThumbsDown,
   ThumbsUp,
 } from "lucide-react";
+import { PortraitIcon } from "./PortraitIcon.jsx";
 import * as Survey from "../survey.js";
 import * as Engine from "../engine.js";
 
@@ -125,14 +125,14 @@ export function EvidenceSummary({
       <section className="completion-hero">
         <div className="completion-copy">
           <span className="eyebrow">
-            <ShieldCheck size={14} /> Conversation complete
+            <Check size={14} /> Your first portrait
           </span>
           <h1 ref={heading} tabIndex="-1">
             {hasEvidence ? (
               <>
-                That was
+                A little more
                 <br />
-                <em>very you.</em>
+                <em>you, in focus.</em>
               </>
             ) : (
               <>
@@ -143,10 +143,9 @@ export function EvidenceSummary({
             )}
           </h1>
           <p className="completion-lede">
-            Understand yourself better, and gradually find small habits that
-            work for you.{" "}
-            {portrait.summary ||
-              "This first reading leaves room for the next conversation."}
+            {hasEvidence
+              ? "The habits, feelings, and little plot twists that showed up in your answers. Take a look. Tell me what fits."
+              : "Some things need another conversation. Here's what you shared, with room for everything we haven't met yet."}
           </p>
           <div className="completion-actions">
             <button
@@ -175,17 +174,31 @@ export function EvidenceSummary({
             height="582"
             alt="Genii looking attentive"
           />
-          <span>“I have notes.”</span>
+          <span>“You brought the lore. I brought notes.”</span>
         </div>
       </section>
       {domains.length > 0 && (
+        <nav className="portrait-nav" aria-label="Explore your routines">
+          {domains.map((domain) => (
+            <a key={domain.id} href={`#rhythm-${domain.id}`}>
+              <PortraitIcon kind={domain.id} small />
+              <span>{domain.label || domain.id}</span>
+            </a>
+          ))}
+        </nav>
+      )}
+      {domains.length > 0 && (
         <section className="domain-section">
           <div className="section-intro">
-            <span className="eyebrow">Routines and recent state</span>
+            <span className="eyebrow">The everyday you</span>
             <h2>Your everyday rhythm.</h2>
             <p>
-              Usual patterns and recent state stay separate so one hard week
-              does not rewrite the month.
+              Your usual month, next to your actual week. Because one chaotic
+              Tuesday doesn't get to define you.
+            </p>
+            <p className="rhythm-explainer">
+              These bars describe routines, not a health score. Evidence
+              coverage is shown separately.
             </p>
             <div className="domain-legend">
               <span>
@@ -213,10 +226,14 @@ export function EvidenceSummary({
       <section className="portrait-section">
         <div className="section-intro">
           <span className="eyebrow">Your provisional portrait</span>
-          <h2>{portrait.title || "A starting point, with room to change"}</h2>
+          <h2>
+            A few things that
+            <br />
+            kept showing up.
+          </h2>
           <p>
-            These are descriptive signals from this conversation. They are not a
-            health score or a permanent type.
+            Do these sound like you? True or False records your take on each
+            interpretation. Your original reading stays here.
           </p>
         </div>
         <div className="claim-list">
@@ -244,16 +261,20 @@ export function EvidenceSummary({
       {emotions.length > 0 && (
         <section className="emotion-section">
           <div className="section-intro">
-            <h2>Feelings have layers</h2>
+            <span className="eyebrow">Inside voice, outside face</span>
+            <h2>More than “I'm fine.”</h2>
             <p>
-              Genii keeps feeling, outward response, and recovery distinct when
-              you gave a literal example.
+              What you felt, what you did, and how you recovered can tell
+              different stories. Here are the pieces you shared.
             </p>
           </div>
           <div className="emotion-list">
             {emotions.map((emotion) => (
               <article className="emotion-item" key={emotion.family}>
-                <h3>{emotion.label || emotion.family}</h3>
+                <h3>
+                  <PortraitIcon kind={emotion.family} small />
+                  {emotion.label || emotion.family}
+                </h3>
                 <div>
                   <EmotionLayer title="Feeling" rows={emotion.feeling} />
                   <EmotionLayer title="Response" rows={emotion.response} />
@@ -390,12 +411,11 @@ function Claim({ claim, state, portraitId, onReviewClaim }) {
           <span className="eyebrow">{dimensionLabel(claim.dimension)}</span>
           <h3>{claim.text}</h3>
           <p>
-            Evidence coverage: {claim.confidence || "observed"}
-            {claim.target ? ` · ${targetLabel(claim.target)}` : ""}
+            {claim.target ? targetLabel(claim.target) : "Across your answers"}
           </p>
         </div>
         <span className="claim-confidence">
-          {claim.confidence || "Observed"}
+          Evidence: {claim.confidence || "observed"}
         </span>
       </div>
       <div className="claim-actions">
@@ -503,17 +523,16 @@ function EvidenceGroup({ group, state }) {
 
 function Domain({ domain, state, observations = [] }) {
   return (
-    <article className="domain-item">
+    <article className="domain-item" id={`rhythm-${domain.id}`} tabIndex="-1">
       <div className="domain-head">
+        <PortraitIcon kind={domain.id} />
         <div>
           <h3>{domain.label || domain.id}</h3>
           {domain.description && domain.description !== domain.label && (
             <p>{domain.description}</p>
           )}
         </div>
-        <span>
-          Evidence coverage: {domain.confidence || "based on available answers"}
-        </span>
+        {domain.confidence && <span>Evidence: {domain.confidence}</span>}
       </div>
       <div className="axis-list">
         {(domain.axes || []).map((axis) => {
@@ -534,28 +553,29 @@ function Domain({ domain, state, observations = [] }) {
             <div className="axis" key={axis.id}>
               <div className="axis-label">
                 <b>{axis.label || axis.id}</b>
-                <span>
-                  Usual: {axis.usual?.label || "not recorded"} <i /> Recent:{" "}
-                  {axis.recent?.label || "not recorded"} · Evidence coverage:{" "}
-                  {axis.confidence || "not recorded"}
+                <span className="axis-confidence">
+                  Evidence: {axis.confidence || "not recorded"}
                 </span>
               </div>
-              {(usual || recent) && (
-                <div className="axis-line">
-                  {usual && <span style={{ "--axis": usual }} />}
-                  {recent && (
-                    <span
-                      className="axis-marker--recent"
-                      style={{ "--axis": recent }}
-                    />
-                  )}
-                </div>
+              <div className="axis-readings">
+                <RoutineReading
+                  period="Usual"
+                  record={axis.usual}
+                  position={usual}
+                />
+                <RoutineReading
+                  period="Recent"
+                  record={axis.recent}
+                  position={recent}
+                />
+              </div>
+              <div className="axis-endpoints">
+                <span>{axis.low || "No lower endpoint"}</span>
+                <span>{axis.high || "No upper endpoint"}</span>
+              </div>
+              {axis.unit && axis.unit !== "ordinal" && (
+                <small>{axis.unit}</small>
               )}
-              <small>
-                {axis.low || "No lower endpoint"} to{" "}
-                {axis.high || "No upper endpoint"}{" "}
-                {axis.unit === "ordinal" ? "" : axis.unit || ""}
-              </small>
               {axisRows.length > 0 && (
                 <details className="axis-receipts">
                   <summary>See source scenes</summary>
@@ -585,6 +605,26 @@ function Domain({ domain, state, observations = [] }) {
         })}
       </div>
     </article>
+  );
+}
+
+function RoutineReading({ period, record, position }) {
+  return (
+    <div className={`routine-reading routine-reading--${period.toLowerCase()}`}>
+      <span className="routine-period">{period}</span>
+      <strong>{record?.label || "Not recorded"}</strong>
+      <div
+        className={`routine-track${position === null ? " routine-track--empty" : ""}`}
+        aria-hidden="true"
+      >
+        {[0, 33.333, 66.667, 100].map((tick) => (
+          <i key={tick} style={{ left: `${tick}%` }} />
+        ))}
+        {position !== null && (
+          <span className="routine-marker" style={{ left: position }} />
+        )}
+      </div>
+    </div>
   );
 }
 

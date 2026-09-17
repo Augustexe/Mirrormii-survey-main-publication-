@@ -1,940 +1,1146 @@
-# Root v2 question map
-
-Version: **genii-root.v2**. The route contains 56 training slots and 8 sealed checks. Every candidate is assigned to exactly one slot.
-
-## Route slots
-
-| Slot | Candidates in preference order | Primary domain | Window | Evidence |
-| --- | --- | --- | --- | --- |
-| slot-01 | q01 | context | Context | self_report |
-| slot-02 | q02 | context | Context | self_report |
-| slot-03 | q03 | personality | Scenario | hypothetical |
-| slot-04 | q04 | personality | Scenario | hypothetical |
-| slot-05 | q05 | personality | Scenario | hypothetical |
-| slot-06 | q06 | personality | Scenario | hypothetical |
-| slot-07 | q07 | personality | Scenario | hypothetical |
-| slot-08 | q08 | personality | Latest · past month | actual_event |
-| slot-09 | q09 | personality | Scenario | hypothetical |
-| slot-10 | q10 -> q81 | personality | Scenario | hypothetical |
-| slot-11 | q94 | health | Usual · past month | self_report |
-| slot-12 | q13 | personality | Scenario | hypothetical |
-| slot-13 | q95 | health | Usual · past month | self_report |
-| slot-14 | q15 -> q82 | personality | Scenario | hypothetical |
-| slot-15 | q16 | personality | Latest · past month | actual_event |
-| slot-16 | q17 | health | Usual · past month | self_report |
-| slot-17 | q18 -> q83 | emotion | Scenario | hypothetical |
-| slot-18 | q19 -> q84 | emotion | Scenario | hypothetical |
-| slot-19 | q20 | health | Recent · last 7 days | self_report |
-| slot-20 | q21 -> q85 | emotion | Latest · past month | actual_event |
-| slot-21 | q22 -> q86 | emotion | Scenario | hypothetical |
-| slot-22 | q23 -> q87 | emotion | Scenario | hypothetical |
-| slot-23 | q24 -> q88 | emotion | Scenario | hypothetical |
-| slot-24 | q29 -> q89 | personality | Latest · past month | actual_event |
-| slot-25 | q30 -> q90 | emotion | Latest · past month | actual_event |
-| slot-26 | q31 | personality | Scenario | hypothetical |
-| slot-27 | q32 | personality | Latest · past month | actual_event |
-| slot-28 | q65 | emotion | Latest · past month | actual_event |
-| slot-29 | q66 | emotion | Latest · past month | actual_event |
-| slot-30 | q67 | emotion | Latest · past month | actual_event |
-| slot-31 | q68 | emotion | Latest · past month | actual_event |
-| slot-32 | q69 | emotion | Latest · past month | actual_event |
-| slot-33 | q70 | emotion | Latest · past month | actual_event |
-| slot-34 | q71 | emotion | Latest · past month | actual_event |
-| slot-35 | q33 | personality | Scenario | hypothetical |
-| slot-36 | q41 | personality | Scenario | hypothetical |
-| slot-37 | q42 | personality | Scenario | hypothetical |
-| slot-38 | q43 | health | Scenario | hypothetical |
-| slot-39 | q44 | health | Latest · past month | actual_event |
-| slot-40 | q45 | health | Scenario | hypothetical |
-| slot-41 | q46 | health | Recent · last 7 days | self_report |
-| slot-42 | q47 | health | Latest · past month | actual_event |
-| slot-43 | q74 | health | Usual · past month | self_report |
-| slot-44 | q75 | health | Usual · past month | self_report |
-| slot-45 | q77 | health | Usual · past month | self_report |
-| slot-46 | q78 | health | Context | self_report |
-| slot-47 | q97 | health | Usual · past month | self_report |
-| slot-48 | q98 | health | Recent · last 7 days | self_report |
-| slot-49 | q99 | health | Usual · past month | self_report |
-| slot-50 | q101 | health | Usual · past month | self_report |
-| slot-51 | q72 | health | Usual · past month | self_report |
-| slot-52 | q73 | health | Recent · last 7 days | self_report |
-| slot-53 | q76 | health | Recent · last 7 days | self_report |
-| slot-54 | q100 | health | Usual · past month | self_report |
-| slot-55 | q102 | health | Recent · last 7 days | self_report |
-| slot-56 | q96 | health | Latest · past month | actual_event |
-| slot-57 | q57 | personality | Scenario | hypothetical |
-| slot-58 | q58 -> q92 | emotion | Scenario | hypothetical |
-| slot-59 | q59 | personality | Scenario | hypothetical |
-| slot-60 | q60 | personality | Scenario | hypothetical |
-| slot-61 | q61 | health | Scenario | hypothetical |
-| slot-62 | q62 -> q93 | emotion | Scenario | hypothetical |
-| slot-63 | q63 | personality | Scenario | hypothetical |
-| slot-64 | q64 | personality | Scenario | hypothetical |
-
-## Candidate records
-
-Each option lists literal observations. Tags are legacy scored observations. Measures are direct reported bands. Signals are emotion records with an explicit layer.
-
-### q01 | Who gets the unfiltered version of you?
-
-- Slot: slot-01; chapter: 1; role: context; test: no
-- Domain: context; subject: close_person; window: Context; evidence: self_report
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: Who gets the unfiltered version of you? Setup: Before the story starts, choose the recurring close person who may appear later.
-  - a: My mother. She has the complete chat history. facts={"close":"mother"} reaction="Your mother has the receipts. Noted."
-  - b: My father. An unexpected but strong contender. facts={"close":"father"} reaction="Unexpected contender officially on the board."
-  - c: My partner. They have seen the extended cut. facts={"close":"partner"} reaction="The extended cut has been screened."
-  - d: A close friend. Unfortunately, they know the lore. facts={"close":"friend"} reaction="Your friend knows the lore. Dangerous, useful."
-  - e: No recurring close person for this survey. facts={"close":"none"} reaction="No recurring close person; we’ll keep the frame open."
-
-### q02 | Who lives with you and the collection of useful cables?
-
-- Slot: slot-02; chapter: 1; role: context; test: no
-- Domain: context; subject: household; window: Context; evidence: self_report
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: Who lives with you and the collection of useful cables? Setup: Pick the closest living arrangement; a mixed answer is welcome.
-  - a: Just me. Every mysterious noise is my problem. facts={"household":"alone"} reaction="Just you, with the place to yourself."
-  - b: People I share a home with. The sponge has a rota. facts={"household":"shared"} reaction="A shared home, with the sponge rota."
-  - c: Family. Privacy is more of a suggestion. facts={"household":"family"} reaction="Family household; privacy stays a suggestion."
-  - d: I would rather leave the household unspecified. facts={"household":"unspecified"} reaction="Household unspecified. That’s okay."
-
-### q03 | Three free days and enough money for one small trip. Who comes to mind first?
-
-- Slot: slot-03; chapter: 1; role: hypothetical; test: no
-- Domain: personality; subject: self; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: Three free days and enough money for one small trip. Who comes to mind first? Setup: A light opener: the tickets are not bought yet.
-  - a: The person who would make the story funniest. tags=[{"d":"D1","v":"people","target":"general"}] reaction="A funny story gets first casting rights."
-  - b: The place. I need a destination before a companion. tags=[{"d":"D1","v":"task","target":"general"}] reaction="Destination first. The map has the floor."
-  - c: Me. I am taking the free days and negotiating later. tags=[{"d":"D1","v":"self","target":"general"}] reaction="You are taking the days; negotiations can follow."
-  - d: Nobody yet. I open a map and see what happens. tags=[{"d":"D1","v":"task","target":"general"},{"d":"D3","v":"improvise","target":"general"}] reaction="Nobody yet. Letting the map improvise is allowed."
-
-### q04 | A local suggests a detour nobody has reviewed online. Your move?
-
-- Slot: slot-04; chapter: 1; role: hypothetical; test: no
-- Domain: personality; subject: self; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: A local suggests a detour nobody has reviewed online. Your move? Setup: The detour is safe enough, strange enough, and inconvenient enough.
-  - a: Absolutely. The review section can meet us there. tags=[{"d":"D2","v":"novel","target":"general"},{"d":"D3","v":"improvise","target":"general"}] reaction="You are willing to let the review section catch up in person."
-  - b: Ask a few questions, then decide. tags=[{"d":"D2","v":"conditional","target":"general"},{"d":"D3","v":"plan","target":"general"}] reaction="Questions first, then the detour gets a vote."
-  - c: Keep the original route. Reliable is a beautiful word. tags=[{"d":"D2","v":"familiar","target":"general"},{"d":"D3","v":"plan","target":"general"}] reaction="Original route selected; reliability has a fan."
-  - d: Try it only if the person with me is keen too. tags=[{"d":"D2","v":"conditional","target":"general"}] reaction="The companion’s yes matters here."
-
-### q05 | The saved restaurant has a 90-minute queue and your companion is starving.
-
-- Slot: slot-05; chapter: 1; role: hypothetical; test: no
-- Domain: personality; subject: self; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: The saved restaurant has a 90-minute queue and your companion is starving. Setup: The famous place is still famous. Your companion is now mostly stomach.
-  - a: Find food now. The queue can write its memoir. tags=[{"d":"D1","v":"people","target":"general"}] reaction="Food now. The queue can keep its memoir."
-  - b: Stay; we came for this and planned around it. tags=[{"d":"D1","v":"task","target":"general"},{"d":"D3","v":"plan","target":"general"}] reaction="You stay with the plan despite the hunger clock."
-  - c: Ask what they want and choose together. tags=[{"d":"D1","v":"people","target":"general"}] reaction="You turn the decision into a joint call."
-  - d: I grab something small and let them decide. tags=[{"d":"D1","v":"self","target":"general"}] reaction="You get a small thing and leave the choice open."
-
-### q06 | Mid-trip, work or family asks you to handle something right now.
-
-- Slot: slot-06; chapter: 1; role: hypothetical; test: no
-- Domain: personality; subject: self; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: Mid-trip, work or family asks you to handle something right now. Setup: It is important, but not literally on fire.
-  - a: Handle it. The trip can pause. tags=[{"d":"D1","v":"people","target":"general"},{"d":"D11","v":"duty","target":"general"}] reaction="The current plan yields to the immediate request."
-  - b: Say I can do it later and finish the current plan. tags=[{"d":"D1","v":"task","target":"general"},{"d":"D11","v":"autonomy","target":"general"}] reaction="You set a later boundary and keep the thread."
-  - c: Ask someone else to cover it. tags=[{"d":"D1","v":"self","target":"general"},{"d":"D11","v":"autonomy","target":"general"}] reaction="You route the ask to someone else."
-  - d: Work out the smallest useful fix, then return. tags=[{"d":"D1","v":"task","target":"general"},{"d":"D3","v":"plan","target":"general"}] reaction="Smallest useful fix, then back to the trip."
-
-### q07 | A surprise cost appears on a trip with your group of friends.
-
-- Slot: slot-07; chapter: 1; role: hypothetical; test: no
-- Domain: personality; subject: self; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: A surprise cost appears on a trip with your group of friends. Setup: You ordered the salad; someone else added expensive extras you did not use, then suggests an even split.
-  - a: Split it by what each of us used. tags=[{"d":"D8","v":"proportional","target":"friends"},{"d":"D7","v":"direct","target":"friends"}] reaction="You split by actual use."
-  - b: Pay evenly to avoid public arithmetic. tags=[{"d":"D8","v":"absorb","target":"friends"}] reaction="Even split to avoid table arithmetic."
-  - c: Quietly explain my share and ask to adjust it. tags=[{"d":"D8","v":"proportional","target":"friends"},{"d":"D7","v":"soften","target":"friends"}] reaction="You name your share and ask for an adjustment."
-  - d: Pay the extra and say nothing. tags=[{"d":"D8","v":"absorb","target":"friends"},{"d":"D7","v":"hint","target":"friends"}] reaction="You absorb the extra cost and do not announce it."
-
-### q08 | What did you actually do the last time a plan went sideways?
-
-- Slot: slot-08; chapter: 1; role: actual; test: no
-- Domain: personality; subject: self; window: Latest · past month; evidence: actual_event
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: What did you actually do the last time a plan went sideways? Setup: Choose a recent real response; skip if there is no useful example.
-  - a: I changed course immediately. tags=[{"d":"D3","v":"improvise","target":"general"}] reaction="You changed course immediately."
-  - b: I made a new plan before moving. tags=[{"d":"D3","v":"plan","target":"general"}] reaction="You paused for a new plan."
-  - c: I asked somebody else what they wanted to do. tags=[{"d":"D1","v":"people","target":"general"},{"d":"D3","v":"consult","target":"general"}] reaction="You asked someone else what they wanted."
-  - d: I carried on and hoped the problem got bored. tags=[{"d":"D3","v":"avoid","target":"general"}] reaction="You carried on and waited it out."
-
-### q09 | A windfall equal to one month of costs lands today.
-
-- Slot: slot-09; chapter: 2; role: hypothetical; test: no
-- Domain: personality; subject: self; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: A windfall equal to one month of costs lands today. Setup: It is yours to use, save, or give a job later.
-  - a: Put it somewhere safe first. tags=[{"d":"D4","v":"security","target":"general"},{"d":"D3","v":"plan","target":"general"}] reaction="Safe place first for the windfall."
-  - b: Use it for a new experience I have been postponing. tags=[{"d":"D4","v":"enjoyment","target":"general"},{"d":"D2","v":"novel","target":"general"}] reaction="A new experience gets the windfall."
-  - c: Buy the thing that gives me time back. tags=[{"d":"D4","v":"freedom","target":"general"}] reaction="Time back gets priority."
-  - d: Buy the recognizable version. The logo may have a point. tags=[{"d":"D4","v":"status","target":"general"},{"d":"D9","v":"recognition","target":"general"}] reaction="The recognizable version gets a seat."
-
-### q10 | You and {close} planned an outing. They ordered extras and suggest splitting everything evenly.
-
-- Slot: slot-10; chapter: 2; role: hypothetical; test: no
-- Domain: personality; subject: self; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: You and {close} planned an outing. They ordered extras and suggest splitting everything evenly. Setup: The extra dessert has entered the shared spreadsheet.
-  - a: Ask to split the extras by who ordered them. tags=[{"d":"D8","v":"proportional","target":"close"},{"d":"D7","v":"direct","target":"close"}] reaction="Extras follow whoever ordered them."
-  - b: Explain my share privately and adjust the total. tags=[{"d":"D8","v":"proportional","target":"close"},{"d":"D7","v":"soften","target":"close"}] reaction="You explain your share privately."
-  - c: Pay evenly; it is easier than doing arithmetic together. tags=[{"d":"D8","v":"absorb","target":"close"}] reaction="Even split keeps the arithmetic brief."
-  - d: Pay and leave the dessert unmentioned. tags=[{"d":"D8","v":"absorb","target":"close"},{"d":"D7","v":"avoid","target":"close"}] reaction="Dessert stays unmentioned."
-
-### q13 | A family member asks to borrow money while your month is tight.
-
-- Slot: slot-12; chapter: 2; role: hypothetical; test: no
-- Domain: personality; subject: self; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: A family member asks to borrow money while your month is tight. Setup: They promise to repay you, with the confidence of a person who has not seen your spreadsheet.
-  - a: Say what I can afford and lend that amount. tags=[{"d":"D8","v":"limit","target":"family"},{"d":"D7","v":"direct","target":"family"}]
-  - b: Ask what happened and work out another kind of help. tags=[{"d":"D8","v":"limit","target":"family"},{"d":"D11","v":"duty","target":"family"}]
-  - c: Lend it; family should not be stranded. tags=[{"d":"D8","v":"absorb","target":"family"},{"d":"D11","v":"duty","target":"family"}]
-  - d: Decline. My own bills are already doing theatre. tags=[{"d":"D8","v":"limit","target":"family"},{"d":"D11","v":"autonomy","target":"family"}]
-
-### q15 | The people you live with think the house cleans itself.
-
-- Slot: slot-14; chapter: 2; role: hypothetical; test: no
-- Domain: personality; subject: self; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: The people you live with think the house cleans itself. Setup: You are the house. The sponge has entered negotiations.
-  - a: Suggest we split the chores by task. tags=[{"d":"D8","v":"proportional","target":"household"},{"d":"D7","v":"direct","target":"household"}]
-  - b: Make a rota; the bin needs a custody agreement. tags=[{"d":"D8","v":"proportional","target":"household"},{"d":"D3","v":"plan","target":"general"}]
-  - c: Do it myself; discussing the dish takes longer. tags=[{"d":"D8","v":"absorb","target":"household"},{"d":"D7","v":"avoid","target":"household"}]
-  - d: Stop doing their share and wait for the magic to end. tags=[{"d":"D8","v":"limit","target":"household"}]
-
-### q16 | What did you actually do the last time a money split with friends got awkward?
-
-- Slot: slot-15; chapter: 2; role: actual; test: no
-- Domain: personality; subject: self; window: Latest · past month; evidence: actual_event
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: What did you actually do the last time a money split with friends got awkward? Setup: Think of a real friends’ bill or shared cost; skip if none comes to mind.
-  - a: Named the amount plainly. tags=[{"d":"D8","v":"proportional","target":"friends"},{"d":"D7","v":"direct","target":"friends"}]
-  - b: Sent a careful message privately. tags=[{"d":"D8","v":"proportional","target":"friends"},{"d":"D7","v":"soften","target":"friends"}]
-  - c: Paid or lent it and moved on. tags=[{"d":"D8","v":"absorb","target":"friends"},{"d":"D7","v":"avoid","target":"friends"}]
-  - d: Kept my share and let someone else handle the rest. tags=[{"d":"D8","v":"proportional","target":"friends"}]
-
-### q17 | What time do you usually stop being available to consciousness?
-
-- Slot: slot-16; chapter: 3; role: context; test: no
-- Domain: health; subject: self; window: Usual · past month; evidence: self_report
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: What time do you usually stop being available to consciousness? Setup: Report your usual pattern; shifts and variation are valid answers.
-  - a: Before 11 p.m. Tomorrow me has excellent representation. facts={"bedtime":"before 23:00"} reaction="Before eleven; tomorrow has a representative."
-  - b: Between 11 p.m. and 1 a.m. One more episode is a reasonable proposal. facts={"bedtime":"23:00-01:00"} reaction="Eleven to one; the clock keeps late hours."
-  - c: After 1 a.m. The internet becomes important at midnight. facts={"bedtime":"after 01:00"} reaction="After one; that is a late handoff to tomorrow."
-  - d: It varies or I work shifts. Time and I have an arrangement. facts={"bedtime":"variable-or-shifts"} reaction="Variable or shifts; the clock stays flexible."
-
-### q18 | When {close} goes quiet after a hard day, what is your first story?
-
-- Slot: slot-17; chapter: 3; role: hypothetical; test: no
-- Domain: emotion; subject: self; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: When {close} goes quiet after a hard day, what is your first story? Setup: Use the selected close person if you have one; skip if this does not fit.
-  - a: They are probably busy. The silence and I can coexist. tags=[{"d":"D5","v":"secure","target":"close"}]
-  - b: I worry they are upset with me and send a check-in. tags=[{"d":"D5","v":"worry","target":"close"},{"d":"D6","v":"support","target":"close"}]
-  - c: I reread my message and look for what I did wrong. tags=[{"d":"D5","v":"reassurance","target":"close"},{"d":"D6","v":"private","target":"close"}]
-  - d: I ask directly whether we are okay. tags=[{"d":"D5","v":"reassurance","target":"close"},{"d":"D7","v":"direct","target":"close"}]
-
-### q19 | It is 11 p.m. after a cursed day. Who gets the first version?
-
-- Slot: slot-18; chapter: 3; role: hypothetical; test: no
-- Domain: emotion; subject: self; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: It is 11 p.m. after a cursed day. Who gets the first version? Setup: The day has already filed its paperwork; choose how much to share.
-  - a: I tell {close} the whole story and ask them to listen. tags=[{"d":"D6","v":"support","target":"close"}]
-  - b: I tell {close} a small version, then go quiet. tags=[{"d":"D6","v":"selective","target":"close"}]
-  - c: I process it privately before telling {close} anything. tags=[{"d":"D6","v":"private","target":"close"}]
-  - d: I talk to someone else first. tags=[{"d":"D6","v":"selective","target":"general"}]
-
-### q20 | In the last seven days, how many dinners arrived from a restaurant or takeaway?
-
-- Slot: slot-19; chapter: 3; role: context; test: no
-- Domain: health; subject: self; window: Recent · last 7 days; evidence: self_report
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: In the last seven days, how many dinners arrived from a restaurant or takeaway? Setup: Count meals, not virtue. The delivery app is not a moral authority.
-  - a: None. The kitchen has proof of life. facts={"takeaway":"0 days / last 7"} measures=[{"id":"takeaway_days","value":0,"label":"None in the last seven days."}] reaction="No takeaway dinners in the last seven days."
-  - b: One or two. The app knows me casually. facts={"takeaway":"1-2 days / last 7"} measures=[{"id":"takeaway_days","value":1,"label":"One or two days."}] reaction="One or two takeaway dinners."
-  - c: Three or four. We are becoming close. facts={"takeaway":"3-4 days / last 7"} measures=[{"id":"takeaway_days","value":2,"label":"Three or four days."}] reaction="Three or four takeaway dinners."
-  - d: Five to seven. The doorbell is my dinner bell. facts={"takeaway":"5-7 days / last 7"} measures=[{"id":"takeaway_days","value":3,"label":"Five to seven days."}] reaction="Five to seven takeaway dinners."
-
-### q21 | The last time you felt ignored by {close}, what did you actually do?
-
-- Slot: slot-20; chapter: 3; role: actual; test: no
-- Domain: emotion; subject: self; window: Latest · past month; evidence: actual_event
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: The last time you felt ignored by {close}, what did you actually do? Setup: Choose a close-person response; skip if there is no safe or useful example.
-  - a: Said what was bothering me. tags=[{"d":"D7","v":"direct","target":"close"}]
-  - b: Eased into it gently. tags=[{"d":"D7","v":"soften","target":"close"}]
-  - c: Asked for time and came back to talk. tags=[{"d":"D7","v":"pause","target":"close"},{"d":"D6","v":"private","target":"close"}]
-  - d: Avoided the conversation and let it pass. tags=[{"d":"D7","v":"avoid","target":"close"},{"d":"D6","v":"private","target":"close"}]
-
-### q22 | After a fight, {close} sends a raccoon eating grapes. No explanation.
-
-- Slot: slot-21; chapter: 3; role: hypothetical; test: no
-- Domain: emotion; subject: self; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: After a fight, {close} sends a raccoon eating grapes. No explanation. Setup: The raccoon is excellent at conflict avoidance. What do you do?
-  - a: “He is incredible. Can we talk about yesterday?” tags=[{"d":"D7","v":"direct","target":"close"},{"d":"D12","v":"repair","target":"close"}]
-  - b: Send one back, then ask to talk tonight. tags=[{"d":"D7","v":"soften","target":"close"},{"d":"D12","v":"repair","target":"close"}]
-  - c: Send one back and leave it there. tags=[{"d":"D7","v":"avoid","target":"close"}]
-  - d: Say I need a day before we talk. tags=[{"d":"D7","v":"pause","target":"close"},{"d":"D6","v":"private","target":"close"}]
-
-### q23 | You forgot something important to {close}. What comes next?
-
-- Slot: slot-22; chapter: 3; role: hypothetical; test: no
-- Domain: emotion; subject: self; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: You forgot something important to {close}. What comes next? Setup: The full stop in “it’s fine” has entered the room.
-  - a: Apologize and ask how to make it right. tags=[{"d":"D12","v":"repair","target":"close"},{"d":"D7","v":"direct","target":"close"}]
-  - b: Apologize and explain what happened. tags=[{"d":"D12","v":"explain","target":"close"},{"d":"D7","v":"soften","target":"close"}]
-  - c: Arrange something thoughtful to make up for it. tags=[{"d":"D12","v":"action","target":"close"},{"d":"D3","v":"plan","target":"general"}]
-  - d: Ask for space, then agree when to talk. tags=[{"d":"D12","v":"pause","target":"close"},{"d":"D7","v":"pause","target":"close"}]
-
-### q24 | When {close} cancels a catch-up and suggests no new date, what do you assume first?
-
-- Slot: slot-23; chapter: 3; role: hypothetical; test: no
-- Domain: emotion; subject: self; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: When {close} cancels a catch-up and suggests no new date, what do you assume first? Setup: Choose the closest first interpretation; skip if this scene does not fit.
-  - a: They are busy; we will find another time. tags=[{"d":"D5","v":"secure","target":"close"}]
-  - b: I worry they are pulling away and want reassurance. tags=[{"d":"D5","v":"worry","target":"close"},{"d":"D6","v":"support","target":"close"}]
-  - c: Ask directly whether we are okay. tags=[{"d":"D5","v":"reassurance","target":"close"},{"d":"D7","v":"direct","target":"close"}]
-  - d: Wait; I do not choose an explanation yet. tags=[{"d":"D5","v":"uncertain","target":"close"},{"d":"D6","v":"private","target":"close"}]
-
-### q29 | What did you actually do the last time an outing with {close} became uneven?
-
-- Slot: slot-24; chapter: 4; role: actual; test: no
-- Domain: personality; subject: self; window: Latest · past month; evidence: actual_event
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: What did you actually do the last time an outing with {close} became uneven? Setup: The bill or effort stopped matching; choose a real response or skip.
-  - a: Named the imbalance and asked to split it fairly. tags=[{"d":"D8","v":"proportional","target":"close"},{"d":"D7","v":"direct","target":"close"}]
-  - b: Sent a careful message about my share. tags=[{"d":"D8","v":"proportional","target":"close"},{"d":"D7","v":"soften","target":"close"}]
-  - c: Covered it and kept the peace. tags=[{"d":"D8","v":"absorb","target":"close"}]
-  - d: Stopped covering it without discussing why. tags=[{"d":"D8","v":"limit","target":"close"},{"d":"D7","v":"avoid","target":"close"}]
-
-### q30 | What did you actually do the last time a setback happened to you?
-
-- Slot: slot-25; chapter: 4; role: actual; test: no
-- Domain: emotion; subject: self; window: Latest · past month; evidence: actual_event
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: What did you actually do the last time a setback happened to you? Setup: Choose what you told {close}, or skip if there is no useful example.
-  - a: Told {close} quickly and asked them to stay with me in it. tags=[{"d":"D6","v":"support","target":"close"}]
-  - b: Told {close} a small version first. tags=[{"d":"D6","v":"selective","target":"close"}]
-  - c: Worked it out privately before saying anything. tags=[{"d":"D6","v":"private","target":"close"}]
-  - d: Talked to someone else before {close}. tags=[{"d":"D6","v":"selective","target":"general"}]
-
-### q31 | You lose your job. Who in the family hears it, and when?
-
-- Slot: slot-26; chapter: 4; role: hypothetical; test: no
-- Domain: personality; subject: self; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: You lose your job. Who in the family hears it, and when? Setup: Imagine the news arriving today; skip if this scene does not fit.
-  - a: Tell the family quickly; I need people around me. tags=[{"d":"D6","v":"support","target":"family"}]
-  - b: Tell one person privately first. tags=[{"d":"D6","v":"selective","target":"family"}]
-  - c: Wait until I have a plan. tags=[{"d":"D6","v":"private","target":"family"},{"d":"D3","v":"plan","target":"general"}]
-  - d: Handle it alone for a while. tags=[{"d":"D6","v":"distance","target":"family"}]
-
-### q32 | What did you actually do the last time family wanted something different from you?
-
-- Slot: slot-27; chapter: 4; role: actual; test: no
-- Domain: personality; subject: self; window: Latest · past month; evidence: actual_event
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: What did you actually do the last time family wanted something different from you? Setup: Think of the latest such disagreement in the past month. Choose “No example to use” if this has not happened in the past month.
-  - a: Said no and kept my plan. tags=[{"d":"D11","v":"autonomy","target":"family"},{"d":"D7","v":"direct","target":"family"}]
-  - b: Found a compromise. tags=[{"d":"D11","v":"conditional","target":"family"}]
-  - c: Went along with them. tags=[{"d":"D11","v":"duty","target":"family"},{"d":"D1","v":"people","target":"general"}]
-  - d: Avoided the conversation for now. tags=[{"d":"D7","v":"avoid","target":"family"}]
-
-### q33 | The friend you brought becomes the centre of the party.
-
-- Slot: slot-35; chapter: 5; role: hypothetical; test: no
-- Domain: personality; subject: self; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: The friend you brought becomes the centre of the party. Setup: Everyone is delighted. Your ego would like a small private meeting.
-  - a: Introduce them to more people and enjoy it. tags=[{"d":"D9","v":"noncompetitive","target":"general"}]
-  - b: Stay close and make sure I am not forgotten. tags=[{"d":"D9","v":"recognition","target":"general"}]
-  - c: Turn it into a joint bit. We can be famous together. tags=[{"d":"D9","v":"competitive","target":"general"},{"d":"D1","v":"people","target":"general"}]
-  - d: Leave early; the social battery has become a witness. tags=[{"d":"D14d","v":"rest","target":"general"}]
-
-### q41 | A soaked stray cat looks at you like you control the weather.
-
-- Slot: slot-36; chapter: 6; role: hypothetical; test: no
-- Domain: personality; subject: self; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: A soaked stray cat looks at you like you control the weather. Setup: You cannot take it home. Your options are still real.
-  - a: Bring food and water. Catering, not accommodation. tags=[{"d":"D13","v":"bounded","target":"general"}]
-  - b: Contact a rescue with cat capacity. tags=[{"d":"D13","v":"coordinate","target":"general"},{"d":"D3","v":"plan","target":"general"}]
-  - c: Ask nearby people who can help. tags=[{"d":"D13","v":"coordinate","target":"general"},{"d":"D1","v":"people","target":"general"}]
-  - d: Leave; I cannot safely help right now. tags=[{"d":"D13","v":"limit","target":"general"},{"d":"D1","v":"self","target":"general"}]
-
-### q42 | You are exhausted. A stranger asks for help finding their stop.
-
-- Slot: slot-37; chapter: 6; role: hypothetical; test: no
-- Domain: personality; subject: self; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: You are exhausted. A stranger asks for help finding their stop. Setup: Your own bus is arriving in two minutes.
-  - a: Stay and help. The bus and I will meet again. tags=[{"d":"D13","v":"direct","target":"general"},{"d":"D1","v":"people","target":"general"}]
-  - b: Give quick directions, then catch my bus. tags=[{"d":"D13","v":"bounded","target":"general"}]
-  - c: Point them to staff before I go. tags=[{"d":"D13","v":"coordinate","target":"general"},{"d":"D1","v":"task","target":"general"}]
-  - d: Apologize, protect my remaining energy, and catch my bus. tags=[{"d":"D13","v":"limit","target":"general"},{"d":"D14d","v":"rest","target":"general"}]
-
-### q43 | Your planned movement meets an appealing alternative.
-
-- Slot: slot-38; chapter: 6; role: hypothetical; test: no
-- Domain: health; subject: self; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: Your planned movement meets an appealing alternative. Setup: You have one hour, and the alternative has excellent snacks.
-  - a: Keep the movement plan. tags=[{"d":"D14c","v":"planned","target":"general"},{"d":"D3","v":"plan","target":"general"}]
-  - b: Move it to another time and take the alternative. tags=[{"d":"D14c","v":"adjust","target":"general"},{"d":"D3","v":"plan","target":"general"}]
-  - c: Skip movement today. tags=[{"d":"D14c","v":"skip","target":"general"}]
-  - d: Do a shorter version, then join the alternative. tags=[{"d":"D14c","v":"adjust","target":"general"},{"d":"D3","v":"improvise","target":"general"}]
-
-### q44 | What did you actually eat the last time a stressful dinner plan fell apart?
-
-- Slot: slot-39; chapter: 6; role: actual; test: no
-- Domain: health; subject: self; window: Latest · past month; evidence: actual_event
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: What did you actually eat the last time a stressful dinner plan fell apart? Setup: Choose a real recent response; skip if you have no useful example.
-  - a: Made the meal I had planned. tags=[{"d":"D14b","v":"planned","target":"general"}]
-  - b: Adapted the plan into a quick version. tags=[{"d":"D14b","v":"bounded","target":"general"}]
-  - c: Ordered comfort food immediately. tags=[{"d":"D14b","v":"comfort","target":"general"},{"d":"D10","v":"act","target":"general"}]
-  - d: Delayed eating until I could think clearly. tags=[{"d":"D14b","v":"delay","target":"general"},{"d":"D10","v":"wait","target":"general"}]
-
-### q45 | You are about to sleep when an optional extra task appears.
-
-- Slot: slot-40; chapter: 6; role: hypothetical; test: no
-- Domain: health; subject: self; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: You are about to sleep when an optional extra task appears. Setup: It would help, but it can wait until morning.
-  - a: Go to bed and move the task. tags=[{"d":"D14a","v":"protect","target":"general"},{"d":"D14d","v":"rest","target":"general"}]
-  - b: Do the task, then sleep later. tags=[{"d":"D14a","v":"delay","target":"general"},{"d":"D14d","v":"obligation","target":"general"}]
-  - c: Move tomorrow’s wake-up later so I can finish this and still sleep. tags=[{"d":"D14a","v":"adjust","target":"general"},{"d":"D3","v":"plan","target":"general"}]
-  - d: Decline the task; tonight is closed. tags=[{"d":"D14a","v":"protect","target":"general"},{"d":"D14d","v":"rest","target":"general"}]
-
-### q46 | In the last seven days, on how many days did you deliberately get some movement?
-
-- Slot: slot-41; chapter: 6; role: context; test: no
-- Domain: health; subject: self; window: Recent · last 7 days; evidence: self_report; counterpart: q101
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: In the last seven days, on how many days did you deliberately get some movement? Setup: Walks, wheelchair exercise, and movement that works for your body all count.
-  - a: Zero. A factual answer, not a confession. facts={"movement":"0 days / last 7"} measures=[{"id":"movement_consistency","value":0,"label":"Zero days."}]
-  - b: One or two. Witnesses exist. facts={"movement":"1-2 days / last 7"} measures=[{"id":"movement_consistency","value":1,"label":"One or two days."}]
-  - c: Three or four. A recurring event. facts={"movement":"3-4 days / last 7"} measures=[{"id":"movement_consistency","value":2,"label":"Three or four days."}]
-  - d: Five to seven. My calendar has trainers on. facts={"movement":"5-7 days / last 7"} measures=[{"id":"movement_consistency","value":3,"label":"Five to seven days."}]
-
-### q47 | What did you actually do the last time a movement plan met a hard day?
-
-- Slot: slot-42; chapter: 6; role: actual; test: no
-- Domain: health; subject: self; window: Latest · past month; evidence: actual_event
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: What did you actually do the last time a movement plan met a hard day? Setup: Choose a real response or skip.
-  - a: Kept the plan. tags=[{"d":"D14c","v":"planned","target":"general"}]
-  - b: Adapted it to fit the day. tags=[{"d":"D14c","v":"adjust","target":"general"},{"d":"D3","v":"plan","target":"general"}]
-  - c: Skipped it and did not replace it. tags=[{"d":"D14c","v":"skip","target":"general"}]
-  - d: Did a shorter version. tags=[{"d":"D14c","v":"adjust","target":"general"}]
-
-### q57 | A friend offers a last-minute trip to a place you have never visited.
-
-- Slot: slot-57; chapter: 8; role: holdout; test: yes
-- Domain: personality; subject: self; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: A friend offers a last-minute trip to a place you have never visited. Setup: You have the time, but only one evening to decide.
-  - a: Go. The map can explain itself later. tags=[{"d":"D2","v":"novel","target":"general"}]
-  - b: Check the details before saying yes. tags=[{"d":"D2","v":"conditional","target":"general"}]
-  - c: Choose a familiar plan instead. tags=[{"d":"D2","v":"familiar","target":"general"}]
-  - d: Go only if someone I know joins. tags=[{"d":"D2","v":"conditional","target":"general"}]
-
-### q58 | {close} cancels a plan that mattered to you.
-
-- Slot: slot-58; chapter: 8; role: holdout; test: yes
-- Domain: emotion; subject: close; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: {close} cancels a plan that mattered to you. Setup: They offer a replacement without mentioning the cancellation.
-  - a: Rebook, and say why the cancellation hurt. tags=[{"d":"D7","v":"direct","target":"close"}]
-  - b: Start warmly, then bring it up gently. tags=[{"d":"D7","v":"soften","target":"close"}]
-  - c: Ask for a day, then set a time to talk. tags=[{"d":"D7","v":"pause","target":"close"}]
-  - d: Accept the new plan and say nothing about it. tags=[{"d":"D7","v":"avoid","target":"close"}]
-
-### q59 | Your friends’ bill includes a shared item you did not use.
-
-- Slot: slot-59; chapter: 8; role: holdout; test: yes
-- Domain: personality; subject: self; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: Your friends’ bill includes a shared item you did not use. Setup: Your friends want one clean split and your calculator wants a union representative.
-  - a: Ask to remove my share of that item. tags=[{"d":"D8","v":"proportional","target":"friends"},{"d":"D7","v":"direct","target":"friends"}]
-  - b: Message the organizer privately. tags=[{"d":"D8","v":"proportional","target":"friends"},{"d":"D7","v":"soften","target":"friends"}]
-  - c: Tell them it is okay and pay it for simplicity. tags=[{"d":"D8","v":"absorb","target":"friends"},{"d":"D7","v":"direct","target":"friends"}]
-  - d: Pay and keep the irritation to yourself. tags=[{"d":"D8","v":"absorb","target":"friends"},{"d":"D7","v":"hint","target":"friends"}]
-
-### q60 | A surprise gift leaves you with one optional purchase.
-
-- Slot: slot-60; chapter: 8; role: holdout; test: yes
-- Domain: personality; subject: self; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: A surprise gift leaves you with one optional purchase. Setup: The gift is yours; the category motive is the question.
-  - a: Choose the reliable version and keep the rest safe. tags=[{"d":"D4","v":"security","target":"general"}]
-  - b: Choose the option that saves time and opens choices. tags=[{"d":"D4","v":"freedom","target":"general"}]
-  - c: Choose the one that simply delights me. tags=[{"d":"D4","v":"enjoyment","target":"general"}]
-  - d: Choose the recognizable version. tags=[{"d":"D4","v":"status","target":"general"}]
-
-### q61 | An extra task would help your team, but you are already out of battery.
-
-- Slot: slot-61; chapter: 8; role: holdout; test: yes
-- Domain: health; subject: self; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: An extra task would help your team, but you are already out of battery. Setup: It is optional, and the team will survive a conversation.
-  - a: Decline and recover. tags=[{"d":"D14d","v":"rest","target":"general"}]
-  - b: Take it on and finish the team’s need. tags=[{"d":"D14d","v":"obligation","target":"general"}]
-  - c: Find someone with capacity to share it. tags=[{"d":"D14d","v":"connection","target":"general"}]
-  - d: Offer a smaller piece and protect the rest of the evening. tags=[{"d":"D14d","v":"bounded","target":"general"}]
-
-### q62 | You let {close} down again, in a different situation.
-
-- Slot: slot-62; chapter: 8; role: holdout; test: yes
-- Domain: emotion; subject: close; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: You let {close} down again, in a different situation. Setup: The repair starts with one clear sentence.
-  - a: Apologize directly and ask what would help. tags=[{"d":"D12","v":"repair","target":"close"}]
-  - b: Apologize and explain what led to it. tags=[{"d":"D12","v":"explain","target":"close"}]
-  - c: Arrange a thoughtful concrete way to make up for it. tags=[{"d":"D12","v":"action","target":"close"}]
-  - d: Agree on space and a time to reconnect. tags=[{"d":"D12","v":"pause","target":"close"}]
-
-### q63 | You want to help someone, but you have one hour and no spare money.
-
-- Slot: slot-63; chapter: 8; role: holdout; test: yes
-- Domain: personality; subject: self; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: You want to help someone, but you have one hour and no spare money. Setup: The need is genuine; your capacity is also genuine.
-  - a: Use the hour to do the task myself. tags=[{"d":"D13","v":"direct","target":"general"}]
-  - b: Find someone or a service better placed to help. tags=[{"d":"D13","v":"coordinate","target":"general"}]
-  - c: Say I cannot take this on today. tags=[{"d":"D13","v":"limit","target":"general"}]
-  - d: Offer ten minutes, then hand it back. tags=[{"d":"D13","v":"bounded","target":"general"}]
-
-### q64 | A plan fails at the last minute and someone asks what happens next.
-
-- Slot: slot-64; chapter: 8; role: holdout; test: yes
-- Domain: personality; subject: self; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: A plan fails at the last minute and someone asks what happens next. Setup: The plot has finally admitted it was improvising.
-  - a: Choose a workable next step immediately. tags=[{"d":"D3","v":"improvise","target":"general"}]
-  - b: Pause, gather details, and make a new plan. tags=[{"d":"D3","v":"plan","target":"general"}]
-  - c: Ask the affected people what they prefer, then plan around it. tags=[{"d":"D3","v":"consult","target":"general"}]
-  - d: Drop it; there is no capacity for a new version. tags=[{"d":"D3","v":"stop","target":"general"}]
-
-### q65 | Your plan acquires a surprise problem.
-
-- Slot: slot-28; chapter: 5; role: actual; test: no
-- Domain: emotion; subject: self; window: Latest · past month; evidence: actual_event
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: Your plan acquires a surprise problem. Setup: Think of the latest time this happened in the past month. Choose “No example to use” if this has not happened in the past month. The plan has sent a tiny emergency memo. What was the inside voice?
-  - a: I felt a flash of irritation and said what needed changing. signals=[{"family":"frustration","layer":"feeling","value":"present","label":"A flash of irritation"},{"family":"frustration","layer":"response","value":"direct","label":"Said what needed changing"}] reaction="A flash of irritation, then you named the change."
-  - b: I felt properly angry and went quiet before deciding. signals=[{"family":"frustration","layer":"feeling","value":"high","label":"Properly angry"},{"family":"frustration","layer":"response","value":"pause","label":"Went quiet before deciding"}] reaction="Anger showed up; you went quiet before deciding."
-  - c: I was mildly bothered, gave myself a reset, and moved to the next step. signals=[{"family":"frustration","layer":"feeling","value":"low","label":"Mildly bothered"},{"family":"frustration","layer":"recovery","value":"reset","label":"Gave myself a reset"}] reaction="Mild bother, a reset, then the next step."
-  - d: I felt stuck and asked someone to help untangle it. signals=[{"family":"frustration","layer":"feeling","value":"uncertain","label":"Felt stuck"},{"family":"frustration","layer":"response","value":"support","label":"Asked for help"}] reaction="Feeling stuck led to asking for help."
-
-### q66 | A needed message sits unread while the deadline approaches.
-
-- Slot: slot-29; chapter: 5; role: actual; test: no
-- Domain: emotion; subject: self; window: Latest · past month; evidence: actual_event
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: A needed message sits unread while the deadline approaches. Setup: Think of the latest time this happened in the past month. Choose “No example to use” if this has not happened in the past month. Your brain has opened seventeen tabs about one blue tick.
-  - a: I felt uneasy and sent one clear check-in. signals=[{"family":"worry","layer":"feeling","value":"present","label":"Felt uneasy"},{"family":"worry","layer":"response","value":"check_in","label":"Sent one check-in"}] reaction="Uneasy, then one clear check-in."
-  - b: I felt very worried and checked the details again. signals=[{"family":"worry","layer":"feeling","value":"high","label":"Very worried"},{"family":"worry","layer":"response","value":"checking","label":"Checked the details"}] reaction="Very worried, then a second detail check."
-  - c: I did not feel especially worried. I assumed they were busy and carried on. signals=[{"family":"worry","layer":"feeling","value":"low","label":"Did not feel especially worried"},{"family":"worry","layer":"response","value":"continue","label":"Carried on"}] reaction="You assumed busy and carried on."
-  - d: I felt uncertain, then put the phone away for a while. signals=[{"family":"worry","layer":"feeling","value":"uncertain","label":"Felt uncertain"},{"family":"worry","layer":"recovery","value":"space","label":"Put the phone away"}] reaction="Uncertain, then phone away."
-
-### q67 | A plan you wanted gets canceled at the last minute.
-
-- Slot: slot-30; chapter: 5; role: actual; test: no
-- Domain: emotion; subject: self; window: Latest · past month; evidence: actual_event
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: A plan you wanted gets canceled at the last minute. Setup: Think of the latest time this happened in the past month. Choose “No example to use” if this has not happened in the past month. The cancellation arrived with no useful footnotes.
-  - a: I felt disappointed and said I wanted to reschedule. signals=[{"family":"disappointment","layer":"feeling","value":"present","label":"Felt disappointed"},{"family":"disappointment","layer":"response","value":"reschedule","label":"Asked to reschedule"}] reaction="Disappointment and a reschedule request."
-  - b: I felt sad, took the evening quietly, and revisited it later. signals=[{"family":"disappointment","layer":"feeling","value":"present","label":"Felt sad"},{"family":"disappointment","layer":"recovery","value":"space","label":"Took the evening quietly"}] reaction="Sadness, a quiet evening, then revisit."
-  - c: I was barely bothered and made another plan. signals=[{"family":"disappointment","layer":"feeling","value":"low","label":"Barely bothered"},{"family":"disappointment","layer":"response","value":"adjust","label":"Made another plan"}] reaction="Barely bothered; another plan."
-  - d: I felt let down and asked what had changed. signals=[{"family":"disappointment","layer":"feeling","value":"present","label":"Felt let down"},{"family":"disappointment","layer":"response","value":"context","label":"Asked what changed"}] reaction="Let down, then ask what changed."
-
-### q68 | You call someone by the spectacularly wrong name in a group.
-
-- Slot: slot-31; chapter: 5; role: actual; test: no
-- Domain: emotion; subject: self; window: Latest · past month; evidence: actual_event
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: You call someone by the spectacularly wrong name in a group. Setup: Think of the latest time this happened in the past month. Choose “No example to use” if this has not happened in the past month. The room has noticed. Your dignity is taking a short break.
-  - a: I felt embarrassed and laughed, then corrected myself. signals=[{"family":"embarrassment","layer":"feeling","value":"present","label":"Felt embarrassed"},{"family":"embarrassment","layer":"response","value":"repair","label":"Corrected and laughed"}] reaction="Embarrassed, laughed, corrected."
-  - b: I felt intensely embarrassed and went quiet for a beat. signals=[{"family":"embarrassment","layer":"feeling","value":"high","label":"Intensely embarrassed"},{"family":"embarrassment","layer":"response","value":"pause","label":"Went quiet"}] reaction="Intensely embarrassed; a quiet beat."
-  - c: I felt a little awkward and kept the conversation moving. signals=[{"family":"embarrassment","layer":"feeling","value":"low","label":"A little awkward"},{"family":"embarrassment","layer":"response","value":"continue","label":"Kept moving"}] reaction="A little awkward; the conversation continues."
-  - d: I felt embarrassed, apologized, and let the moment move on. signals=[{"family":"embarrassment","layer":"feeling","value":"present","label":"Felt embarrassed"},{"family":"embarrassment","layer":"recovery","value":"repair","label":"Apologized"}] reaction="Embarrassed, apologized, let the moment move on."
-
-### q69 | You remember a promise only after the other person has waited.
-
-- Slot: slot-32; chapter: 5; role: actual; test: no
-- Domain: emotion; subject: self; window: Latest · past month; evidence: actual_event
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: You remember a promise only after the other person has waited. Setup: Think of the latest time this happened in the past month. Choose “No example to use” if this has not happened in the past month. The reminder notification has chosen violence.
-  - a: I felt guilty and apologized plainly. signals=[{"family":"guilt","layer":"feeling","value":"present","label":"Felt guilty"},{"family":"guilt","layer":"response","value":"repair","label":"Apologized"}] reaction="Guilty, then a plain apology."
-  - b: I felt awful, explained the miss, and offered a fix. signals=[{"family":"guilt","layer":"feeling","value":"high","label":"Felt awful"},{"family":"guilt","layer":"recovery","value":"repair","label":"Offered a fix"}] reaction="Awful feeling, context, and a fix."
-  - c: I felt a little guilty and set a reminder for next time. signals=[{"family":"guilt","layer":"feeling","value":"low","label":"Felt a little guilty"},{"family":"guilt","layer":"response","value":"prevention","label":"Set a reminder"}] reaction="A little guilt, then a reminder."
-  - d: I felt guilty, asked for a little time, then came back to it. signals=[{"family":"guilt","layer":"feeling","value":"present","label":"Felt guilty"},{"family":"guilt","layer":"recovery","value":"pause","label":"Came back later"}] reaction="Guilty, asked for time, returned."
-
-### q70 | Someone tells you good news you had been quietly hoping for.
-
-- Slot: slot-33; chapter: 5; role: actual; test: no
-- Domain: emotion; subject: self; window: Latest · past month; evidence: actual_event
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: Someone tells you good news you had been quietly hoping for. Setup: Think of the latest time this happened in the past month. Choose “No example to use” if this has not happened in the past month. The news is excellent. Your face has issued a press release.
-  - a: I felt delighted and called someone to celebrate. signals=[{"family":"joy","layer":"feeling","value":"present","label":"Felt delighted"},{"family":"joy","layer":"response","value":"celebrate","label":"Called to celebrate"}] reaction="Delighted; call to celebrate."
-  - b: I felt fizzing excitement and made a plan for the next step. signals=[{"family":"joy","layer":"feeling","value":"present","label":"Felt excited"},{"family":"joy","layer":"response","value":"act","label":"Planned next step"}] reaction="Fizzing excitement; plan the next step."
-  - c: I felt happy, took it in privately, and let the moment land. signals=[{"family":"joy","layer":"feeling","value":"present","label":"Felt happy"},{"family":"joy","layer":"recovery","value":"savor","label":"Let it land"}] reaction="Happy, private pause, let it land."
-  - d: I felt pleased and said exactly how much it meant. signals=[{"family":"joy","layer":"feeling","value":"present","label":"Felt pleased"},{"family":"joy","layer":"response","value":"express","label":"Said what it meant"}] reaction="Pleased; say what it meant."
-
-### q71 | The stressful thing you have been carrying finally ends.
-
-- Slot: slot-34; chapter: 5; role: actual; test: no
-- Domain: emotion; subject: self; window: Latest · past month; evidence: actual_event
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: The stressful thing you have been carrying finally ends. Setup: Think of the latest time this happened in the past month. Choose “No example to use” if this has not happened in the past month. The problem has left the building and taken its clipboard.
-  - a: I felt relieved and exhaled before doing anything else. signals=[{"family":"relief","layer":"feeling","value":"present","label":"Felt relieved"},{"family":"relief","layer":"recovery","value":"rest","label":"Exhaled first"}] reaction="Relief, then an exhale."
-  - b: I felt relief arrive slowly, then rested. signals=[{"family":"relief","layer":"feeling","value":"present","label":"Relief arrived slowly"},{"family":"relief","layer":"recovery","value":"rest","label":"Rested"}] reaction="Relief arrived slowly; rest followed."
-  - c: I felt relieved and told the person who had helped me. signals=[{"family":"relief","layer":"feeling","value":"present","label":"Felt relieved"},{"family":"relief","layer":"response","value":"connect","label":"Told the helper"}] reaction="Relief, then tell the person who helped."
-  - d: I felt relieved, then checked the next small step. signals=[{"family":"relief","layer":"feeling","value":"present","label":"Felt relieved"},{"family":"relief","layer":"response","value":"next_step","label":"Checked next step"}] reaction="Relief, then the next small step."
-
-### q72 | Over the past month, how regular was your usual sleep timing?
-
-- Slot: slot-51; chapter: 7; role: context; test: no
-- Domain: health; subject: self; window: Usual · past month; evidence: self_report; counterpart: q73
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: Over the past month, how regular was your usual sleep timing? Setup: Count your ordinary pattern, including shifts or changing days.
-  - a: It changed a lot from day to day. measures=[{"id":"sleep_regularity","value":0,"label":"It changed a lot from day to day."}] reaction="Sleep timing changed a lot over the month."
-  - b: It had a loose pattern. measures=[{"id":"sleep_regularity","value":1,"label":"It had a loose pattern."}] reaction="A loose pattern."
-  - c: It was usually consistent. measures=[{"id":"sleep_regularity","value":2,"label":"It was usually consistent."}] reaction="Usually consistent timing."
-  - d: It was very consistent. measures=[{"id":"sleep_regularity","value":3,"label":"It was very consistent."}] reaction="Very consistent timing."
-
-### q73 | In the last seven days, how regular was your sleep timing?
-
-- Slot: slot-52; chapter: 7; role: context; test: no
-- Domain: health; subject: self; window: Recent · last 7 days; evidence: self_report; counterpart: q72
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: In the last seven days, how regular was your sleep timing? Setup: Look at the actual week. Sleep timing gets its own report card here.
-  - a: It changed a lot from day to day. measures=[{"id":"sleep_regularity","value":0,"label":"It changed a lot from day to day."}] reaction="Recent sleep timing changed a lot."
-  - b: It had a loose pattern. measures=[{"id":"sleep_regularity","value":1,"label":"It had a loose pattern."}] reaction="Recent sleep timing had a loose pattern."
-  - c: It was usually consistent. measures=[{"id":"sleep_regularity","value":2,"label":"It was usually consistent."}] reaction="Recent sleep timing was usually consistent."
-  - d: It was very consistent. measures=[{"id":"sleep_regularity","value":3,"label":"It was very consistent."}] reaction="Recent sleep timing was very consistent."
-
-### q74 | Over the past month, how often did you notice body cues before deciding what to do?
-
-- Slot: slot-43; chapter: 6; role: context; test: no
-- Domain: health; subject: self; window: Usual · past month; evidence: self_report
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: Over the past month, how often did you notice body cues before deciding what to do? Setup: Cues can be hunger, tension, temperature, pain, or needing a break. Choose what fits your experience.
-  - a: I often noticed late or postponed them. measures=[{"id":"body_attention","value":0,"label":"I often noticed late or postponed them."}] reaction="Body cues noticed late or postponed."
-  - b: I noticed some, depending on the day. measures=[{"id":"body_attention","value":1,"label":"I noticed some, depending on the day."}] reaction="Some noticed, depending on the day."
-  - c: I usually noticed and responded. measures=[{"id":"body_attention","value":2,"label":"I usually noticed and responded."}] reaction="Usually noticed and answered."
-  - d: I made room for them consistently. measures=[{"id":"body_attention","value":3,"label":"I made room for them consistently."}] reaction="Consistent room made for them."
-
-### q75 | Over the past month, how did skin comfort or care show up in your routine?
-
-- Slot: slot-44; chapter: 6; role: context; test: no
-- Domain: health; subject: self; window: Usual · past month; evidence: self_report
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: Over the past month, how did skin comfort or care show up in your routine? Setup: Skin comfort has its own notes. What did you notice or do?
-  - a: I rarely tracked it. measures=[{"id":"skin_attention","value":0,"label":"I rarely tracked it."}] reaction="Skin care rarely tracked."
-  - b: I noticed issues when they appeared. measures=[{"id":"skin_attention","value":1,"label":"I noticed issues when they appeared."}] reaction="Issues noticed when they appeared."
-  - c: I had a small routine or check-in. measures=[{"id":"skin_attention","value":2,"label":"I had a small routine or check-in."}] reaction="A small routine or check-in."
-  - d: I tracked what helped my comfort. measures=[{"id":"skin_attention","value":3,"label":"I tracked what helped my comfort."}] reaction="You tracked what helped comfort."
-
-### q76 | In the last seven days, how often did your energy feel enough for the day?
-
-- Slot: slot-53; chapter: 7; role: context; test: no
-- Domain: health; subject: self; window: Recent · last 7 days; evidence: self_report; counterpart: q99
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: In the last seven days, how often did your energy feel enough for the day? Setup: Enough is your own threshold. Some days arrive with more battery than others.
-  - a: Rarely. measures=[{"id":"felt_energy","value":0,"label":"Rarely."}] reaction="Energy rarely felt enough."
-  - b: Some days. measures=[{"id":"felt_energy","value":1,"label":"Some days."}] reaction="Energy felt enough on some days."
-  - c: Most days. measures=[{"id":"felt_energy","value":2,"label":"Most days."}] reaction="Energy felt enough most days."
-  - d: Nearly every day. measures=[{"id":"felt_energy","value":3,"label":"Nearly every day."}] reaction="Energy felt enough nearly every day."
-
-### q77 | Over the past month, on how many busy days did you remember a drink break?
-
-- Slot: slot-45; chapter: 6; role: context; test: no
-- Domain: health; subject: self; window: Usual · past month; evidence: self_report
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: Over the past month, on how many busy days did you remember a drink break? Setup: Use your own rough count. The drink-break department keeps imperfect minutes.
-  - a: Almost none. measures=[{"id":"hydration_cues","value":0,"label":"Almost none."}] reaction="Drink breaks on almost no busy days."
-  - b: Some busy days. measures=[{"id":"hydration_cues","value":1,"label":"Some busy days."}] reaction="Some busy days included a drink break."
-  - c: Most busy days. measures=[{"id":"hydration_cues","value":2,"label":"Most busy days."}] reaction="Most busy days included a break."
-  - d: Nearly every busy day. measures=[{"id":"hydration_cues","value":3,"label":"Nearly every busy day."}] reaction="Nearly every busy day included a break."
-
-### q78 | Is there optional health context you want to record for this conversation?
-
-- Slot: slot-46; chapter: 6; role: context; test: no
-- Domain: health; subject: self; window: Context; evidence: self_report
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: Is there optional health context you want to record for this conversation? Setup: Choose one context, or use Other for more than one. It stays a reported fact.
-  - a: Allergies or sensitivities. facts={"healthContext":"allergies-or-sensitivities"} reaction="Allergies or sensitivities can have a line in the notes."
-  - b: An existing condition or ongoing treatment. facts={"healthContext":"existing-condition-or-treatment"} reaction="An existing condition or treatment gets a careful line."
-  - c: A cycle or recurring body pattern. facts={"healthContext":"cycle-or-recurring-pattern"} reaction="A cycle or recurring body pattern gets space here."
-  - d: None of these, or I would rather not say. facts={"healthContext":"none-or-prefer-not-to-say"} reaction="No optional health context today."
-
-### q97 | On your usual days this past month, how regular were your meal times?
-
-- Slot: slot-47; chapter: 6; role: context; test: no
-- Domain: health; subject: self; window: Usual · past month; evidence: self_report; counterpart: q98
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: On your usual days this past month, how regular were your meal times? Setup: Think of the pattern that showed up most often, including days when the clock went rogue.
-  - a: They varied a lot. measures=[{"id":"meal_regularity","value":0,"label":"They varied a lot."}]
-  - b: They had a loose pattern. measures=[{"id":"meal_regularity","value":1,"label":"They had a loose pattern."}]
-  - c: They were usually predictable. measures=[{"id":"meal_regularity","value":2,"label":"They were usually predictable."}]
-  - d: They were very predictable. measures=[{"id":"meal_regularity","value":3,"label":"They were very predictable."}]
-
-### q98 | In the last seven days, how did your meal timing hold up?
-
-- Slot: slot-48; chapter: 6; role: context; test: no
-- Domain: health; subject: self; window: Recent · last 7 days; evidence: self_report; counterpart: q97
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: In the last seven days, how did your meal timing hold up? Setup: Look at the actual week, with its meetings, errands, and suspiciously late snacks.
-  - a: It changed from day to day. measures=[{"id":"meal_regularity","value":0,"label":"It changed from day to day."}]
-  - b: It had a loose pattern. measures=[{"id":"meal_regularity","value":1,"label":"It had a loose pattern."}]
-  - c: It was predictable most days. measures=[{"id":"meal_regularity","value":2,"label":"It was predictable most days."}]
-  - d: It was very predictable. measures=[{"id":"meal_regularity","value":3,"label":"It was very predictable."}]
-
-### q99 | On your usual days this past month, how often did your energy feel enough for the day?
-
-- Slot: slot-49; chapter: 6; role: context; test: no
-- Domain: health; subject: self; window: Usual · past month; evidence: self_report; counterpart: q76
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: On your usual days this past month, how often did your energy feel enough for the day? Setup: Use your own threshold for enough. Your ordinary battery has the deciding vote.
-  - a: Rarely. measures=[{"id":"felt_energy","value":0,"label":"Rarely."}]
-  - b: Some days. measures=[{"id":"felt_energy","value":1,"label":"Some days."}]
-  - c: Most days. measures=[{"id":"felt_energy","value":2,"label":"Most days."}]
-  - d: Nearly every day. measures=[{"id":"felt_energy","value":3,"label":"Nearly every day."}]
-
-### q100 | Over the past month, how often did your usual sleep leave you feeling restored?
-
-- Slot: slot-54; chapter: 7; role: context; test: no
-- Domain: health; subject: self; window: Usual · past month; evidence: self_report; counterpart: q102
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: Over the past month, how often did your usual sleep leave you feeling restored? Setup: Think of the ordinary pattern, not the one heroic night that arrived with a cape.
-  - a: Rarely restored. measures=[{"id":"sleep_restoration","value":0,"label":"Rarely restored."}]
-  - b: Restored on some days. measures=[{"id":"sleep_restoration","value":1,"label":"Restored on some days."}]
-  - c: Restored most days. measures=[{"id":"sleep_restoration","value":2,"label":"Restored most days."}]
-  - d: Every day or nearly every day. measures=[{"id":"sleep_restoration","value":3,"label":"Every day or nearly every day."}]
-
-### q101 | During a typical week in the past month, on how many days did you deliberately get some movement?
-
-- Slot: slot-50; chapter: 6; role: context; test: no
-- Domain: health; subject: self; window: Usual · past month; evidence: self_report; counterpart: q46
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: During a typical week in the past month, on how many days did you deliberately get some movement? Setup: Count movement that works for your body, from a walk to a wheelchair workout to an excellent stretch.
-  - a: Zero days. measures=[{"id":"movement_consistency","value":0,"label":"Zero days."}]
-  - b: One or two days. measures=[{"id":"movement_consistency","value":1,"label":"One or two days."}]
-  - c: Three or four days. measures=[{"id":"movement_consistency","value":2,"label":"Three or four days."}]
-  - d: Five to seven days. measures=[{"id":"movement_consistency","value":3,"label":"Five to seven days."}]
-
-### q102 | In the last seven days, how often did sleep leave you feeling restored?
-
-- Slot: slot-55; chapter: 7; role: context; test: no
-- Domain: health; subject: self; window: Recent · last 7 days; evidence: self_report; counterpart: q100
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: In the last seven days, how often did sleep leave you feeling restored? Setup: Think of the actual week, including the night your pillow became a negotiation partner.
-  - a: Rarely restored. measures=[{"id":"sleep_restoration","value":0,"label":"Rarely restored."}]
-  - b: Restored on some days. measures=[{"id":"sleep_restoration","value":1,"label":"Restored on some days."}]
-  - c: Restored most days. measures=[{"id":"sleep_restoration","value":2,"label":"Restored most days."}]
-  - d: Every day or nearly every day. measures=[{"id":"sleep_restoration","value":3,"label":"Every day or nearly every day."}]
-
-### q94 | What time do you usually wake up?
-
-- Slot: slot-11; chapter: 2; role: context; test: no
-- Domain: health; subject: self; window: Usual · past month; evidence: self_report
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: What time do you usually wake up? Setup: Use your ordinary past-month pattern.
-  - a: Before 6 a.m. facts={"wake":"before 06:00"}
-  - b: 6 to 8 a.m. facts={"wake":"06:00-08:00"}
-  - c: 8 to 9 a.m. facts={"wake":"08:00-09:00"}
-  - d: After 9 a.m. facts={"wake":"after 09:00"}
-  - e: It varies too much for one band. facts={"wake":"variable"}
-
-### q95 | How long do you usually sleep?
-
-- Slot: slot-13; chapter: 2; role: context; test: no
-- Domain: health; subject: self; window: Usual · past month; evidence: self_report
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: How long do you usually sleep? Setup: Think of your ordinary past-month pattern.
-  - a: Under 6 hours. facts={"sleepDuration":"under-6-hours"}
-  - b: 6 to under 7 hours. facts={"sleepDuration":"6-to-under-7-hours"}
-  - c: 7 to under 9 hours. facts={"sleepDuration":"7-to-under-9-hours"}
-  - d: 9 hours or more. facts={"sleepDuration":"9-hours-or-more"}
-  - e: It varies too much for one band. facts={"sleepDuration":"variable"}
-
-### q96 | Think of the latest night this month when an optional task competed with sleep.
-
-- Slot: slot-56; chapter: 7; role: actual; test: no
-- Domain: health; subject: self; window: Latest · past month; evidence: actual_event
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: Think of the latest night this month when an optional task competed with sleep. Setup: Choose “No example to use” if this has not happened in the past month. What did you actually do?
-  - a: Stopped and went to sleep. tags=[{"d":"D14a","v":"protect","target":"general"},{"d":"D14d","v":"rest","target":"general"}]
-  - b: Finished the task and slept later. tags=[{"d":"D14a","v":"delay","target":"general"},{"d":"D14d","v":"obligation","target":"general"}]
-  - c: Moved the task or changed tomorrow. tags=[{"d":"D14a","v":"adjust","target":"general"},{"d":"D3","v":"plan","target":"general"}]
-  - d: Asked someone how they handle a night like that. tags=[{"d":"D14d","v":"connection","target":"general"}]
-
-### q81 | You and someone important planned an outing. They ordered extras and suggest splitting everything evenly.
-
-- Slot: slot-10; chapter: 2; role: hypothetical; test: no
-- Domain: personality; subject: general; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: You and someone important planned an outing. They ordered extras and suggest splitting everything evenly. Setup: The extra dessert has entered the shared spreadsheet.
-  - a: Ask to split the extras by who ordered them. tags=[{"d":"D8","v":"proportional","target":"general"},{"d":"D7","v":"direct","target":"general"}] reaction="Extras follow whoever ordered them."
-  - b: Explain my share privately and adjust the total. tags=[{"d":"D8","v":"proportional","target":"general"},{"d":"D7","v":"soften","target":"general"}] reaction="You explain your share privately."
-  - c: Pay evenly; it is easier than doing arithmetic together. tags=[{"d":"D8","v":"absorb","target":"general"}] reaction="Even split keeps the arithmetic brief."
-  - d: Pay and leave the dessert unmentioned. tags=[{"d":"D8","v":"absorb","target":"general"},{"d":"D7","v":"avoid","target":"general"}] reaction="Dessert stays unmentioned."
-
-### q82 | A shared project workload needs a fair plan.
-
-- Slot: slot-14; chapter: 2; role: hypothetical; test: no
-- Domain: personality; subject: self; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: A shared project workload needs a fair plan. Setup: The project has one deadline and several people with different capacity.
-  - a: Name the contributions and split the work. tags=[{"d":"D8","v":"proportional","target":"general"},{"d":"D7","v":"direct","target":"general"}]
-  - b: Send a private message about my share. tags=[{"d":"D8","v":"proportional","target":"general"},{"d":"D7","v":"soften","target":"general"}]
-  - c: Take the extra work to keep it moving. tags=[{"d":"D8","v":"absorb","target":"general"}]
-  - d: State what I can do and stop there. tags=[{"d":"D8","v":"limit","target":"general"}]
-
-### q83 | When someone important goes quiet after a hard day, what is your first story?
-
-- Slot: slot-17; chapter: 3; role: hypothetical; test: no
-- Domain: emotion; subject: general; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: When someone important goes quiet after a hard day, what is your first story? Setup: Use the selected close person if you have one; skip if this does not fit.
-  - a: They are probably busy. The silence and I can coexist. tags=[{"d":"D5","v":"secure","target":"general"}]
-  - b: I worry they are upset with me and send a check-in. tags=[{"d":"D5","v":"worry","target":"general"},{"d":"D6","v":"support","target":"general"}]
-  - c: I reread my message and look for what I did wrong. tags=[{"d":"D5","v":"reassurance","target":"general"},{"d":"D6","v":"private","target":"general"}]
-  - d: I ask directly whether we are okay. tags=[{"d":"D5","v":"reassurance","target":"general"},{"d":"D7","v":"direct","target":"general"}]
-
-### q84 | It is 11 p.m. after a cursed day. Who gets the first version?
-
-- Slot: slot-18; chapter: 3; role: hypothetical; test: no
-- Domain: emotion; subject: general; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: It is 11 p.m. after a cursed day. Who gets the first version? Setup: The day has already filed its paperwork; choose how much to share.
-  - a: I tell someone important the whole story and ask them to listen. tags=[{"d":"D6","v":"support","target":"general"}]
-  - b: I tell someone important a small version, then go quiet. tags=[{"d":"D6","v":"selective","target":"general"}]
-  - c: I process it privately before telling someone important anything. tags=[{"d":"D6","v":"private","target":"general"}]
-  - d: I talk to someone else first. tags=[{"d":"D6","v":"selective","target":"general"}]
-
-### q85 | The last time you felt ignored by someone important, what did you actually do?
-
-- Slot: slot-20; chapter: 3; role: actual; test: no
-- Domain: emotion; subject: general; window: Latest · past month; evidence: actual_event
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: The last time you felt ignored by someone important, what did you actually do? Setup: Choose a close-person response; skip if there is no safe or useful example.
-  - a: Said what was bothering me. tags=[{"d":"D7","v":"direct","target":"general"}]
-  - b: Eased into it gently. tags=[{"d":"D7","v":"soften","target":"general"}]
-  - c: Asked for time and came back to talk. tags=[{"d":"D7","v":"pause","target":"general"},{"d":"D6","v":"private","target":"general"}]
-  - d: Avoided the conversation and let it pass. tags=[{"d":"D7","v":"avoid","target":"general"},{"d":"D6","v":"private","target":"general"}]
-
-### q86 | After a fight, someone important sends a raccoon eating grapes. No explanation.
-
-- Slot: slot-21; chapter: 3; role: hypothetical; test: no
-- Domain: emotion; subject: general; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: After a fight, someone important sends a raccoon eating grapes. No explanation. Setup: The raccoon is excellent at conflict avoidance. What do you do?
-  - a: “He is incredible. Can we talk about yesterday?” tags=[{"d":"D7","v":"direct","target":"general"},{"d":"D12","v":"repair","target":"general"}]
-  - b: Send one back, then ask to talk tonight. tags=[{"d":"D7","v":"soften","target":"general"},{"d":"D12","v":"repair","target":"general"}]
-  - c: Send one back and leave it there. tags=[{"d":"D7","v":"avoid","target":"general"}]
-  - d: Say I need a day before we talk. tags=[{"d":"D7","v":"pause","target":"general"},{"d":"D6","v":"private","target":"general"}]
-
-### q87 | You forgot something important to someone important. What comes next?
-
-- Slot: slot-22; chapter: 3; role: hypothetical; test: no
-- Domain: emotion; subject: general; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: You forgot something important to someone important. What comes next? Setup: The full stop in “it’s fine” has entered the room.
-  - a: Apologize and ask how to make it right. tags=[{"d":"D12","v":"repair","target":"general"},{"d":"D7","v":"direct","target":"general"}]
-  - b: Apologize and explain what happened. tags=[{"d":"D12","v":"explain","target":"general"},{"d":"D7","v":"soften","target":"general"}]
-  - c: Arrange something thoughtful to make up for it. tags=[{"d":"D12","v":"action","target":"general"},{"d":"D3","v":"plan","target":"general"}]
-  - d: Ask for space, then agree when to talk. tags=[{"d":"D12","v":"pause","target":"general"},{"d":"D7","v":"pause","target":"general"}]
-
-### q88 | When someone important cancels a catch-up and suggests no new date, what do you assume first?
-
-- Slot: slot-23; chapter: 3; role: hypothetical; test: no
-- Domain: emotion; subject: general; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: When someone important cancels a catch-up and suggests no new date, what do you assume first? Setup: Choose the closest first interpretation; skip if this scene does not fit.
-  - a: They are busy; we will find another time. tags=[{"d":"D5","v":"secure","target":"general"}]
-  - b: I worry they are pulling away and want reassurance. tags=[{"d":"D5","v":"worry","target":"general"},{"d":"D6","v":"support","target":"general"}]
-  - c: Ask directly whether we are okay. tags=[{"d":"D5","v":"reassurance","target":"general"},{"d":"D7","v":"direct","target":"general"}]
-  - d: Wait; I do not choose an explanation yet. tags=[{"d":"D5","v":"uncertain","target":"general"},{"d":"D6","v":"private","target":"general"}]
-
-### q89 | What did you actually do the last time an outing with someone important became uneven?
-
-- Slot: slot-24; chapter: 4; role: actual; test: no
-- Domain: personality; subject: general; window: Latest · past month; evidence: actual_event
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: What did you actually do the last time an outing with someone important became uneven? Setup: The bill or effort stopped matching; choose a real response or skip.
-  - a: Named the imbalance and asked to split it fairly. tags=[{"d":"D8","v":"proportional","target":"general"},{"d":"D7","v":"direct","target":"general"}]
-  - b: Sent a careful message about my share. tags=[{"d":"D8","v":"proportional","target":"general"},{"d":"D7","v":"soften","target":"general"}]
-  - c: Covered it and kept the peace. tags=[{"d":"D8","v":"absorb","target":"general"}]
-  - d: Stopped covering it without discussing why. tags=[{"d":"D8","v":"limit","target":"general"},{"d":"D7","v":"avoid","target":"general"}]
-
-### q90 | What did you actually do the last time a setback happened to you?
-
-- Slot: slot-25; chapter: 4; role: actual; test: no
-- Domain: emotion; subject: general; window: Latest · past month; evidence: actual_event
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: What did you actually do the last time a setback happened to you? Setup: Choose what you told someone important, or skip if there is no useful example.
-  - a: Told someone important quickly and asked them to stay with me in it. tags=[{"d":"D6","v":"support","target":"general"}]
-  - b: Told someone important a small version first. tags=[{"d":"D6","v":"selective","target":"general"}]
-  - c: Worked it out privately before saying anything. tags=[{"d":"D6","v":"private","target":"general"}]
-  - d: Talked to someone else before someone important. tags=[{"d":"D6","v":"selective","target":"general"}]
-
-### q92 | someone important cancels a plan that mattered to you.
-
-- Slot: slot-58; chapter: 8; role: holdout; test: yes
-- Domain: personality; subject: general; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: someone important cancels a plan that mattered to you. Setup: They offer a replacement without mentioning the cancellation.
-  - a: Rebook, and say why the cancellation hurt. tags=[{"d":"D7","v":"direct","target":"general"}]
-  - b: Start warmly, then bring it up gently. tags=[{"d":"D7","v":"soften","target":"general"}]
-  - c: Ask for a day, then set a time to talk. tags=[{"d":"D7","v":"pause","target":"general"}]
-  - d: Accept the new plan and say nothing about it. tags=[{"d":"D7","v":"avoid","target":"general"}]
-
-### q93 | You let someone important down again, in a different situation.
-
-- Slot: slot-62; chapter: 8; role: holdout; test: yes
-- Domain: personality; subject: general; window: Scenario; evidence: hypothetical
-- Source: PERSONALITY-HEALTH-SPEC.md (authorial, genii-root.v2)
-- Prompt: You let someone important down again, in a different situation. Setup: The repair starts with one clear sentence.
-  - a: Apologize directly and ask what would help. tags=[{"d":"D12","v":"repair","target":"general"}]
-  - b: Apologize and explain what led to it. tags=[{"d":"D12","v":"explain","target":"general"}]
-  - c: Arrange a thoughtful concrete way to make up for it. tags=[{"d":"D12","v":"action","target":"general"}]
-  - d: Agree on space and a time to reconnect. tags=[{"d":"D12","v":"pause","target":"general"}]
-
-## Measures
-
-| ID | Domain | Label | Endpoints | Unit | Meaning |
-| --- | --- | --- | --- | --- | --- |
-| sleep_timing | sleep | Usual bedtime | before 11 p.m. to after 1 a.m. | ordinal | Reported usual bedtime band. |
-| sleep_restoration | sleep | Sleep restoration | rarely refreshed to usually refreshed | ordinal | Reported sleep restoration across usual and recent windows. |
-| sleep_regularity | sleep | Sleep timing consistency | very irregular to very regular | ordinal | Reported sleep timing consistency across usual and recent windows. |
-| sleep_wake | sleep | Usual wake time | before 6 a.m. to after 9 a.m. | ordinal | Reported usual wake-time band. |
-| sleep_duration | sleep | Usual sleep duration | under 6 hours to 9 hours or more | ordinal | Reported usual sleep-duration band. |
-| meal_regularity | eating | Meal timing regularity | very varied to very regular | ordinal | Reported usual or recent meal timing pattern. |
-| takeaway_days | eating | Takeaway dinners | none in seven days to five to seven days | ordinal | Reported takeaway dinner count. It does not rate diet quality. |
-| movement_consistency | movement | Movement consistency | none or rare to most days | ordinal | Reported movement frequency or routine. |
-| body_attention | body | Body cue attention | often postponed to usually noticed and addressed | ordinal | Reported attention to body cues. |
-| skin_attention | skin | Skin care attention | rarely tracked to regularly tracked | ordinal | Reported skin experience and routine attention. |
-| felt_energy | recovery | Felt energy | usually depleted to usually enough for the day | ordinal | Reported energy, not a medical measurement. |
-| hydration_cues | hydration | Drink-break routine | almost never remembered to nearly every busy day | ordinal | Reported drink-break recall. |
-| sleep_interference | sleep | Sleep and optional tasks | protect sleep to delay sleep | ordinal | Reported response to an optional task at bedtime. |
-
-## Coverage checks
-
-- Training route slots 33 to 39 are the seven literal emotion families. Every candidate scene records an explicit feeling and a separate response or recovery signal.
-- Direct health sources include usual and recent sleep regularity, usual and recent meal timing, usual and recent movement consistency, usual and recent felt energy, usual sleep restoration and recent restfulness, body cues, skin comfort, wake time, sleep duration, takeaway count, drink-break frequency, and actual sleep interference.
-- Optional health context q78 records allergies or sensitivities, existing conditions or treatment, cycles or recurring body patterns, or none or prefer not to say. Other remains an engine state and is never authored as a tag.
-- Candidate count: 76. Routed IDs: 76. Unique routed IDs: 76.
+# English question bank and evidence map
+
+Respondent-facing wording after the 2026-09-17 voice pass. The 64-slot route selects from 76 candidates. Mapping columns are author-only. Wording lives in `src/english-copy.js`; routing and semantics live in `src/data.js`.
+
+## q01 · slot-01
+
+Who knows the version of you that would never make LinkedIn?
+
+Pick one close person to keep in mind for a few questions. You can leave this open.
+
+Source: self_report; window: context.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | My mom. She's seen several eras. | close=mother |
+| b | My dad. He knows the behind-the-scenes version. | close=father |
+| c | My partner. They've seen the extended cut. | close=partner |
+| d | A close friend. Unfortunately, they know the lore. | close=friend |
+| e | No particular person for this conversation. | close=none |
+
+## q02 · slot-02
+
+Who's in your household cast?
+
+The people, not the chair currently wearing all your clothes. Pick your living arrangement.
+
+Source: self_report; window: context.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Just me. Every mysterious noise is my problem. | household=alone |
+| b | People I share a home with. An ensemble cast. | household=shared |
+| c | Family. Plenty of shared history. | household=family |
+| d | I'd rather keep this one private. | household=unspecified |
+
+## q03 · slot-03
+
+Three days off. Trip money. Your brain opens which tab first?
+
+You have enough for one small trip. Nothing's booked yet. What comes first?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Who to bring. The right person makes the story. | D1:people (general) |
+| b | Where to go. Destination before guest list. | D1:task (general) |
+| c | What I want. For once, I'm the itinerary. | D1:self (general) |
+| d | Open a map and see what looks good. We'll find a plot. | D1:task (general); D3:improvise (general) |
+
+## q04 · slot-04
+
+A local says, “Trust me, take this detour.” The internet has zero opinions.
+
+It's safe, unfamiliar, and a little out of the way. Do you go?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Go. Someone has to become the first review. | D2:novel (general); D3:improvise (general) |
+| b | Ask a few questions before saying yes. | D2:conditional (general); D3:plan (general) |
+| c | Stick to the route. Boring can be a love language. | D2:familiar (general); D3:plan (general) |
+| d | Only if my travel companion is into it too. | D2:conditional (general) |
+
+## q05 · slot-05
+
+The restaurant is viral. Your friend is becoming hangry in real time.
+
+You planned to eat here, but the wait is 90 minutes. What's your first move?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Find food now. The famous noodles will survive without us. | D1:people (general) |
+| b | Stay. We planned the day around this place. | D1:task (general); D3:plan (general) |
+| c | Ask what they want and decide together. | D1:people (general) |
+| d | Grab myself a snack and let them choose. | D1:self (general) |
+
+## q06 · slot-06
+
+You're on a trip. “Quick favor?” has found your location.
+
+Work or family needs something handled now. It's important, but not an emergency. What do you do?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Handle it now. The trip can pause. | D1:people (general); D11:duty (general) |
+| b | Say when I can help later. Finish the current plan. | D1:task (general); D11:autonomy (general) |
+| c | Ask someone else to cover it. I'm away. | D1:self (general); D11:autonomy (general) |
+| d | Do the smallest useful fix, then get back to the trip. | D1:task (general); D3:plan (general) |
+
+## q07 · slot-07
+
+You ordered a salad. The group ordered a financial event.
+
+On a trip with friends, the bill includes pricey extras you didn't use. They suggest splitting evenly. Your move?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Ask everyone to pay for what they actually used. | D8:proportional (friends); D7:direct (friends) |
+| b | Split evenly. I'd pay a little to end the table math. | D8:absorb (friends) |
+| c | Explain my share privately and ask to adjust it. | D8:proportional (friends); D7:soften (friends) |
+| d | Pay the extra. Say nothing. Notice everything. | D8:absorb (friends); D7:hint (friends) |
+
+## q08 · slot-08
+
+Last time a plan went off-script, did you also go off-script?
+
+Think of the most recent time in the past month. What did you actually do when the plan fell apart?
+
+Source: actual_event; window: latest_instance_past_month.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Changed course immediately. New plot, let's go. | D3:improvise (general) |
+| b | Made a new plan before doing anything. | D3:plan (general) |
+| c | Asked someone else what they wanted to do. | D1:people (general); D3:consult (general) |
+| d | Carried on and hoped the problem got bored. | D3:avoid (general) |
+
+## q09 · slot-09
+
+A month's worth of bills just landed in your account. As a gift. Breathe.
+
+It's yours to keep. What gets first dibs?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Savings. I want the cushion before the confetti. | D4:security (general); D3:plan (general) |
+| b | A new experience I've been putting off. | D4:enjoyment (general); D2:novel (general) |
+| c | Something that buys my time back. | D4:freedom (general) |
+| d | The recognizable brand. Yes, the logo is part of the appeal. | D4:status (general); D9:recognition (general) |
+
+## q10 · slot-10
+
+{close} orders the extras. Apparently, so does your wallet.
+
+You're out together. They suggest splitting the bill evenly, including extras only they ordered. What do you do?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Ask them to cover their extras. The dessert knows whose it is. | D8:proportional (close); D7:direct (close) |
+| b | Explain my share privately and adjust the split. | D8:proportional (close); D7:soften (close) |
+| c | Split evenly. Less math, more evening. | D8:absorb (close) |
+| d | Pay the extra and leave it unmentioned. | D8:absorb (close); D7:avoid (close) |
+
+## q81 · slot-10
+
+Someone important to you orders the extras. Apparently, so does your wallet.
+
+You're out together. They suggest splitting the bill evenly, including extras only they ordered. What do you do?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Ask them to cover their extras. The dessert knows whose it is. | D8:proportional (general); D7:direct (general) |
+| b | Explain my share privately and adjust the split. | D8:proportional (general); D7:soften (general) |
+| c | Split evenly. Less math, more evening. | D8:absorb (general) |
+| d | Pay the extra and leave it unmentioned. | D8:absorb (general); D7:avoid (general) |
+
+## q94 · slot-11
+
+When does your day usually start loading?
+
+Over the past month, what time did you usually wake up? Sleepy staring at the ceiling still counts as awake.
+
+Source: self_report; window: past_month.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Before 6 a.m. | wake=before 06:00 |
+| b | 6 to before 8 a.m. | wake=06:00-08:00 |
+| c | 8 to 9 a.m. | wake=08:00-09:00 |
+| d | After 9 a.m. | wake=after 09:00 |
+| e | It varies too much for one range. | wake=variable |
+
+## q13 · slot-12
+
+Family needs a loan. Your bank balance would also like one.
+
+Your month is already tight. They promise to pay you back. What's your response?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Say what I can afford and lend that amount. | D8:limit (family); D7:direct (family) |
+| b | Ask what's going on and find another way to help. | D8:limit (family); D11:duty (family) |
+| c | Lend it. I don't want family left stranded. | D8:absorb (family); D11:duty (family) |
+| d | Decline. My own bills have called dibs. | D8:limit (family); D11:autonomy (family) |
+
+## q95 · slot-13
+
+How much sleep makes it into the final cut?
+
+Over the past month, how long did you usually actually sleep? Time in bed thinking about everything doesn't count.
+
+Source: self_report; window: past_month.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Under 6 hours. | sleepDuration=under-6-hours |
+| b | 6 to under 7 hours. | sleepDuration=6-to-under-7-hours |
+| c | 7 to under 9 hours. | sleepDuration=7-to-under-9-hours |
+| d | 9 hours or more. | sleepDuration=9-hours-or-more |
+| e | It varies too much for one range. | sleepDuration=variable |
+
+## q15 · slot-14
+
+Your housemates believe in a cleaning fairy. It's you. You're the fairy.
+
+You've been doing more than your share. How do you handle it?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Ask to split the chores by task. | D8:proportional (household); D7:direct (household) |
+| b | Make a schedule. The trash needs shared custody. | D8:proportional (household); D3:plan (general) |
+| c | Do it myself. Discussing the dish takes longer. | D8:absorb (household); D7:avoid (household) |
+| d | Stop doing their share. Let the magic wear off. | D8:limit (household) |
+
+## q82 · slot-14
+
+The shared project is starting to feel suspiciously like your solo debut.
+
+One deadline, several people, different amounts of free time. How do you handle the workload?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Name each person's contribution and split the work. | D8:proportional (general); D7:direct (general) |
+| b | Send a private message about my share. | D8:proportional (general); D7:soften (general) |
+| c | Take on the extra to keep things moving. | D8:absorb (general) |
+| d | State what I can do and stop there. | D8:limit (general) |
+
+## q16 · slot-15
+
+Think of the last friend-group bill that got… interesting.
+
+In the past month, when a shared cost got awkward, what did you actually do?
+
+Source: actual_event; window: latest_instance_past_month.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Said the amount plainly. Gave the number a voice. | D8:proportional (friends); D7:direct (friends) |
+| b | Sent a careful message privately. | D8:proportional (friends); D7:soften (friends) |
+| c | Paid or lent the money and let it go. | D8:absorb (friends); D7:avoid (friends) |
+| d | Paid my share and left the rest for someone else to sort. | D8:proportional (friends) |
+
+## q17 · slot-16
+
+When do you usually log off being a person?
+
+Over the past month, what time did you usually go to sleep? Count actual sleep, not getting into bed to scroll.
+
+Source: self_report; window: past_month.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Before 11 p.m. Early credits. | bedtime=before 23:00 |
+| b | 11 p.m. to 1 a.m. The late showing. | bedtime=23:00-01:00 |
+| c | After 1 a.m. Bonus content. | bedtime=after 01:00 |
+| d | It varies, or I work shifts. Different showtimes. | bedtime=variable-or-shifts |
+
+## q18 · slot-17
+
+{close} goes quiet after a hard day. Your brain starts writing… what?
+
+You haven't heard back. What's your first interpretation or response?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | They're probably busy. Silence can just be silence. | D5:secure (close) |
+| b | Worry they're upset with me and send a check-in. | D5:worry (close); D6:support (close) |
+| c | Reread my message, looking for what I did wrong. | D5:reassurance (close); D6:private (close) |
+| d | Ask directly if we're okay. Skip the detective season. | D5:reassurance (close); D7:direct (close) |
+
+## q83 · slot-17
+
+Someone important to you goes quiet after a hard day. Your brain starts writing… what?
+
+You haven't heard back. What's your first interpretation or response?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | They're probably busy. Silence can just be silence. | D5:secure (general) |
+| b | Worry they're upset with me and send a check-in. | D5:worry (general); D6:support (general) |
+| c | Reread my message, looking for what I did wrong. | D5:reassurance (general); D6:private (general) |
+| d | Ask directly if we're okay. Skip the detective season. | D5:reassurance (general); D7:direct (general) |
+
+## q19 · slot-18
+
+It's 11 p.m. Today deserves a one-star review.
+
+How much of the story do you share with {close}?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | The whole thing. I ask them to listen. | D6:support (close) |
+| b | The trailer, then I go quiet. | D6:selective (close) |
+| c | I sort it out privately before telling them anything. | D6:private (close) |
+| d | Someone else gets the first call. | D6:selective (general) |
+
+## q84 · slot-18
+
+It's 11 p.m. Today deserves a one-star review.
+
+How much of the story do you share with someone important to you?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | The whole thing. I ask them to listen. | D6:support (general) |
+| b | The trailer, then I go quiet. | D6:selective (general) |
+| c | I sort it out privately before telling them anything. | D6:private (general) |
+| d | Someone else gets the first call. | D6:selective (general) |
+
+## q20 · slot-19
+
+How often did dinner have a tracking number?
+
+In the last 7 days, how many dinners came from a restaurant, takeout, or delivery? Eating there counts too.
+
+Source: self_report; window: last_7_days.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | None. Zero restaurant dinners. | takeaway_days=0; takeaway=0 days / last 7 |
+| b | 1–2 dinners. An occasional guest appearance. | takeaway_days=1; takeaway=1-2 days / last 7 |
+| c | 3–4 dinners. A recurring character. | takeaway_days=2; takeaway=3-4 days / last 7 |
+| d | 5–7 dinners. A series regular. | takeaway_days=3; takeaway=5-7 days / last 7 |
+
+## q21 · slot-20
+
+Last time you felt ignored by {close}, what made it out of your head?
+
+Think of the most recent time in the past month. Pick what you actually did, not the comeback you wrote in the shower.
+
+Source: actual_event; window: latest_instance_past_month.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Said what was bothering me. Out loud, to them. | D7:direct (close) |
+| b | Eased into the conversation gently. | D7:soften (close) |
+| c | Asked for time, then came back to talk. | D7:pause (close); D6:private (close) |
+| d | Let it pass without having the conversation. | D7:avoid (close); D6:private (close) |
+
+## q85 · slot-20
+
+Last time you felt ignored by someone important to you, what made it out of your head?
+
+Think of the most recent time in the past month. Pick what you actually did, not the comeback you wrote in the shower.
+
+Source: actual_event; window: latest_instance_past_month.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Said what was bothering me. Out loud, to them. | D7:direct (general) |
+| b | Eased into the conversation gently. | D7:soften (general) |
+| c | Asked for time, then came back to talk. | D7:pause (general); D6:private (general) |
+| d | Let it pass without having the conversation. | D7:avoid (general); D6:private (general) |
+
+## q22 · slot-21
+
+You had a fight. {close} sends a raccoon eating grapes.
+
+No apology. No explanation. Just a very well-fed raccoon. What do you send back?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | “He's incredible. Can we talk about yesterday?” | D7:direct (close); D12:repair (close) |
+| b | A meme back, then a request to talk tonight. | D7:soften (close); D12:repair (close) |
+| c | A meme back. Let the raccoon handle the rest. | D7:avoid (close) |
+| d | “I need a day. Then let's talk.” | D7:pause (close); D6:private (close) |
+
+## q86 · slot-21
+
+You had a fight. someone important to you sends a raccoon eating grapes.
+
+No apology. No explanation. Just a very well-fed raccoon. What do you send back?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | “He's incredible. Can we talk about yesterday?” | D7:direct (general); D12:repair (general) |
+| b | A meme back, then a request to talk tonight. | D7:soften (general); D12:repair (general) |
+| c | A meme back. Let the raccoon handle the rest. | D7:avoid (general) |
+| d | “I need a day. Then let's talk.” | D7:pause (general); D6:private (general) |
+
+## q23 · slot-22
+
+{close} says “it's fine.” The period says otherwise.
+
+You forgot something important to them. What do you do next?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Apologize and ask what would help make it right. | D12:repair (close); D7:direct (close) |
+| b | Apologize and explain what happened. | D12:explain (close); D7:soften (close) |
+| c | Plan something thoughtful to make up for it. | D12:action (close); D3:plan (general) |
+| d | Ask for some space and agree on when we'll talk. | D12:pause (close); D7:pause (close) |
+
+## q87 · slot-22
+
+They say “it's fine.” The period says otherwise.
+
+You forgot something important to someone you care about. What do you do next?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Apologize and ask what would help make it right. | D12:repair (general); D7:direct (general) |
+| b | Apologize and explain what happened. | D12:explain (general); D7:soften (general) |
+| c | Plan something thoughtful to make up for it. | D12:action (general); D3:plan (general) |
+| d | Ask for some space and agree on when we'll talk. | D12:pause (general); D7:pause (general) |
+
+## q24 · slot-23
+
+{close} cancels. A new date is apparently sold separately.
+
+They haven't suggested another time. What's your first interpretation or response?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | They're busy. We'll find another time. | D5:secure (close) |
+| b | Worry they're pulling away and want reassurance. | D5:worry (close); D6:support (close) |
+| c | Ask directly whether we're okay. | D5:reassurance (close); D7:direct (close) |
+| d | Wait. I don't have enough information to write the story. | D5:uncertain (close); D6:private (close) |
+
+## q88 · slot-23
+
+Someone important to you cancels. A new date is apparently sold separately.
+
+They haven't suggested another time. What's your first interpretation or response?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | They're busy. We'll find another time. | D5:secure (general) |
+| b | Worry they're pulling away and want reassurance. | D5:worry (general); D6:support (general) |
+| c | Ask directly whether we're okay. | D5:reassurance (general); D7:direct (general) |
+| d | Wait. I don't have enough information to write the story. | D5:uncertain (general); D6:private (general) |
+
+## q29 · slot-24
+
+Last hangout where you carried more than {close}: did you say something?
+
+Think of the latest time in the past month you paid more or did more of the organizing. What did you actually do?
+
+Source: actual_event; window: latest_instance_past_month.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Pointed out the imbalance and asked for a fairer split. | D8:proportional (close); D7:direct (close) |
+| b | Sent a careful private message about my share. | D8:proportional (close); D7:soften (close) |
+| c | Covered the extra and kept the peace. | D8:absorb (close) |
+| d | Stopped covering the extra without explaining why. | D8:limit (close); D7:avoid (close) |
+
+## q89 · slot-24
+
+Last hangout where you carried more than someone important to you: did you say something?
+
+Think of the latest time in the past month you paid more or did more of the organizing. What did you actually do?
+
+Source: actual_event; window: latest_instance_past_month.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Pointed out the imbalance and asked for a fairer split. | D8:proportional (general); D7:direct (general) |
+| b | Sent a careful private message about my share. | D8:proportional (general); D7:soften (general) |
+| c | Covered the extra and kept the peace. | D8:absorb (general) |
+| d | Stopped covering the extra without explaining why. | D8:limit (general); D7:avoid (general) |
+
+## q30 · slot-25
+
+Something went wrong. Did {close} get the live coverage or the recap?
+
+Think of your most recent setback in the past month. What did you actually share?
+
+Source: actual_event; window: latest_instance_past_month.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Told them quickly and asked for support. | D6:support (close) |
+| b | Gave them a smaller version first. | D6:selective (close) |
+| c | Worked through it privately before saying anything. | D6:private (close) |
+| d | Talked to someone else before telling them. | D6:selective (general) |
+
+## q90 · slot-25
+
+Something went wrong. Did someone important to you get the live coverage or the recap?
+
+Think of your most recent setback in the past month. What did you actually share?
+
+Source: actual_event; window: latest_instance_past_month.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Told them quickly and asked for support. | D6:support (general) |
+| b | Gave them a smaller version first. | D6:selective (general) |
+| c | Worked through it privately before saying anything. | D6:private (general) |
+| d | Talked to someone else before telling them. | D6:selective (general) |
+
+## q31 · slot-26
+
+You lose your job. The family group chat is still sending recipes.
+
+Imagine this happened today. Who in your family would you tell, and when?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Tell them quickly. I need my people around me. | D6:support (family) |
+| b | Tell one person privately first. | D6:selective (family) |
+| c | Wait until I have a plan to go with the news. | D6:private (family); D3:plan (general) |
+| d | Handle it on my own for a while. | D6:distance (family) |
+
+## q32 · slot-27
+
+Your family had a plan for your life. Cute. Was it your plan?
+
+Think of the latest disagreement in the past month about something they wanted you to do. What did you actually do?
+
+Source: actual_event; window: latest_instance_past_month.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Said no and stuck with my own plan. | D11:autonomy (family); D7:direct (family) |
+| b | Found a compromise we could live with. | D11:conditional (family) |
+| c | Went along with what they wanted. | D11:duty (family); D1:people (general) |
+| d | Avoided the conversation for now. | D7:avoid (family) |
+
+## q65 · slot-28
+
+A plan hit a surprise problem. What was the face-to-inner-monologue ratio?
+
+Think of the latest time in the past month. Pick the closest combination of what you felt and what you did.
+
+Source: actual_event; window: latest_instance_past_month.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | A flash of irritation. I said what needed changing. | frustration/feeling:present; frustration/response:direct |
+| b | Properly angry inside. Quiet outside while I decided. | frustration/feeling:high; frustration/response:pause |
+| c | Mildly bothered. Took a reset, moved to the next step. | frustration/feeling:low; frustration/recovery:reset |
+| d | Felt stuck. Asked someone to help untangle it. | frustration/feeling:uncertain; frustration/response:support |
+
+## q66 · slot-29
+
+The deadline was getting closer. Their reply was not.
+
+Think of the latest time in the past month a message you needed sat unread. What did you feel and do?
+
+Source: actual_event; window: latest_instance_past_month.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Uneasy. Sent one clear check-in. | worry/feeling:present; worry/response:check_in |
+| b | Very worried. Checked the details again. | worry/feeling:high; worry/response:checking |
+| c | Not especially worried. Assumed they were busy and carried on. | worry/feeling:low; worry/response:continue |
+| d | Uncertain. Put the phone away for a bit. | worry/feeling:uncertain; worry/recovery:space |
+
+## q67 · slot-30
+
+The plan you were looking forward to got canceled. Plot twist nobody ordered.
+
+Think of the latest time in the past month. What happened inside, and what did you do next?
+
+Source: actual_event; window: latest_instance_past_month.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Disappointed. Said I wanted to reschedule. | disappointment/feeling:present; disappointment/response:reschedule |
+| b | Sad. Took a quiet evening and revisited it later. | disappointment/feeling:present; disappointment/recovery:space |
+| c | Barely bothered. Made another plan. | disappointment/feeling:low; disappointment/response:adjust |
+| d | Let down. Asked what had changed. | disappointment/feeling:present; disappointment/response:context |
+
+## q68 · slot-31
+
+You called someone the wrong name. In front of other people. Lovely.
+
+If this happened in the past month, think of the most recent time. What did you feel and do?
+
+Source: actual_event; window: latest_instance_past_month.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Embarrassed. Laughed and corrected myself. | embarrassment/feeling:present; embarrassment/response:repair |
+| b | Intensely embarrassed. Went quiet for a beat. | embarrassment/feeling:high; embarrassment/response:pause |
+| c | A little awkward. Kept the conversation moving. | embarrassment/feeling:low; embarrassment/response:continue |
+| d | Embarrassed. Apologized and let the moment pass. | embarrassment/feeling:present; embarrassment/recovery:repair |
+
+## q69 · slot-32
+
+Your brain remembered the promise. After the other person waited. Excellent timing.
+
+Think of the latest time in the past month. What did you feel, and how did you respond?
+
+Source: actual_event; window: latest_instance_past_month.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Guilty. Apologized plainly. | guilt/feeling:present; guilt/response:repair |
+| b | Awful. Explained what happened and offered a fix. | guilt/feeling:high; guilt/recovery:repair |
+| c | A little guilty. Set a reminder for next time. | guilt/feeling:low; guilt/response:prevention |
+| d | Guilty. Asked for some time, then came back to it. | guilt/feeling:present; guilt/recovery:pause |
+
+## q70 · slot-33
+
+That good news you'd been quietly hoping for? It actually happened.
+
+Think of the latest time in the past month. How did the happy get out?
+
+Source: actual_event; window: latest_instance_past_month.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Delighted. Called someone to celebrate. | joy/feeling:present; joy/response:celebrate |
+| b | Fizzing with excitement. Made a plan for the next step. | joy/feeling:present; joy/response:act |
+| c | Happy. Kept it private and let it sink in. | joy/feeling:present; joy/recovery:savor |
+| d | Pleased. Told them exactly how much it meant. | joy/feeling:present; joy/response:express |
+
+## q71 · slot-34
+
+The stressful thing finally ended. Did the rest of you get the memo?
+
+Think of the latest time in the past month a stressful situation ended. What did relief look like for you?
+
+Source: actual_event; window: latest_instance_past_month.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Felt relieved. Exhaled before doing anything else. | relief/feeling:present; relief/recovery:rest |
+| b | The relief arrived slowly. Then I rested. | relief/feeling:present; relief/recovery:rest |
+| c | Felt relieved and told the person who'd helped. | relief/feeling:present; relief/response:connect |
+| d | Felt relieved, then checked the next small step. | relief/feeling:present; relief/response:next_step |
+
+## q33 · slot-35
+
+You bring a friend to the party. They become the party.
+
+Everyone loves them. You're standing there holding two drinks. What's your move?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Introduce them to more people. Enjoy watching them shine. | D9:noncompetitive (general) |
+| b | Stay close and make sure I'm not forgotten. | D9:recognition (general) |
+| c | Make it a double act. We can be iconic together. | D9:competitive (general); D1:people (general) |
+| d | Head out early. My social battery is done. | D14d:rest (general) |
+
+## q41 · slot-36
+
+A soaked cat looks at you like you're customer support for the weather.
+
+You can't take it home. How would you respond?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Bring food and water. Catering, not accommodation. | D13:bounded (general) |
+| b | Contact a rescue that can help. | D13:coordinate (general); D3:plan (general) |
+| c | Ask nearby people who can pitch in. | D13:coordinate (general); D1:people (general) |
+| d | Leave. I can't safely help right now. | D13:limit (general); D1:self (general) |
+
+## q42 · slot-37
+
+You're running on 2%. A stranger needs directions. Your bus is coming.
+
+You're exhausted, and the bus arrives in two minutes. What do you do?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Stay and help them. I'll catch another bus. | D13:direct (general); D1:people (general) |
+| b | Give quick directions, then catch my bus. | D13:bounded (general) |
+| c | Point them toward staff before I go. | D13:coordinate (general); D1:task (general) |
+| d | Apologize and catch my bus. That's what I have capacity for. | D13:limit (general); D14d:rest (general) |
+
+## q43 · slot-38
+
+Your movement plan has competition. The competition brought snacks.
+
+You've got one free hour and an appealing alternative to your planned movement. What wins?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | The original movement plan. Keeping the appointment. | D14c:planned (general); D3:plan (general) |
+| b | The alternative. Reschedule the movement. | D14c:adjust (general); D3:plan (general) |
+| c | The alternative. Skip movement today. | D14c:skip (general) |
+| d | A shorter bit of movement, then join in. A crossover episode. | D14c:adjust (general); D3:improvise (general) |
+
+## q44 · slot-39
+
+Last time dinner fell apart, what was the edible backup plan?
+
+Think of the latest stressful dinner-plan failure in the past month. What did you actually do about eating?
+
+Source: actual_event; window: latest_instance_past_month.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Made the meal I'd planned anyway. | D14b:planned (general) |
+| b | Made a quick version of the original plan. | D14b:bounded (general) |
+| c | Ordered comfort food right away. Dinner needed a soft landing. | D14b:comfort (general); D10:act (general) |
+| d | Put off eating until I could think clearly. | D14b:delay (general); D10:wait (general) |
+
+## q45 · slot-40
+
+You're about to sleep. One more task appears like a post-credits scene.
+
+It would help, but it's optional and can wait until morning. What do you do?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Move it to tomorrow and go to bed. | D14a:protect (general); D14d:rest (general) |
+| b | Finish it, then sleep later. | D14a:delay (general); D14d:obligation (general) |
+| c | Finish it and shift tomorrow's wake-up so I can still sleep. | D14a:adjust (general); D3:plan (general) |
+| d | Decline it. Tonight is closed. | D14a:protect (general); D14d:rest (general) |
+
+## q46 · slot-41
+
+This week's movement count. Tiny walks are allowed to have main-character energy.
+
+In the last 7 days, on how many days did you deliberately move? Walks, wheelchair exercise, and movement that works for your body all count.
+
+Source: self_report; window: last_7_days.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | 0 days. | movement_consistency=0; movement=0 days / last 7 |
+| b | 1–2 days. | movement_consistency=1; movement=1-2 days / last 7 |
+| c | 3–4 days. | movement_consistency=2; movement=3-4 days / last 7 |
+| d | 5–7 days. | movement_consistency=3; movement=5-7 days / last 7 |
+
+## q47 · slot-42
+
+Last time life stepped on your movement plan, what survived?
+
+Think of the latest time in the past month a hard day got in the way. What did you actually do?
+
+Source: actual_event; window: latest_instance_past_month.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Kept the original plan. | D14c:planned (general) |
+| b | Changed the plan to fit the day. | D14c:adjust (general); D3:plan (general) |
+| c | Skipped it and didn't replace it. | D14c:skip (general) |
+| d | Did a shorter version. The pocket edition. | D14c:adjust (general) |
+
+## q74 · slot-43
+
+When your body sends a notification, does it get left on read?
+
+Over the past month, how did you notice and respond to cues like hunger, tension, pain, or needing a bathroom break?
+
+Source: self_report; window: past_month.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Often noticed late or put them off. | body_attention=0 |
+| b | Noticed some. Depended on the day. | body_attention=1 |
+| c | Usually noticed and responded. | body_attention=2 |
+| d | Consistently made room for them. | body_attention=3 |
+
+## q75 · slot-44
+
+Your skin lives with you rent-free. How much attention did it get?
+
+Over the past month, how did you notice or care for skin comfort? No 12-step routine required.
+
+Source: self_report; window: past_month.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Rarely kept track of it. | skin_attention=0 |
+| b | Noticed issues when they appeared. | skin_attention=1 |
+| c | Had a small routine or check-in. | skin_attention=2 |
+| d | Kept track of what helped it feel comfortable. | skin_attention=3 |
+
+## q77 · slot-45
+
+Your water bottle: beverage or desk accessory?
+
+Over the past month, how often did you remember a drink break on busy days? Count the break, not how aesthetic the bottle is.
+
+Source: self_report; window: past_month.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Almost no busy days. | hydration_cues=0 |
+| b | Some busy days. | hydration_cues=1 |
+| c | Most busy days. | hydration_cues=2 |
+| d | Nearly every busy day. | hydration_cues=3 |
+
+## q78 · slot-46
+
+Anything your body would like to add to the group chat?
+
+Optional: choose one health context, or use Other for more than one. Share only what you're comfortable recording on this device.
+
+Source: self_report; window: context.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Allergies or sensitivities. | healthContext=allergies-or-sensitivities |
+| b | An existing condition or ongoing treatment. | healthContext=existing-condition-or-treatment |
+| c | A cycle or recurring body pattern. | healthContext=cycle-or-recurring-pattern |
+| d | None of these, or I'd rather not say. | healthContext=none-or-prefer-not-to-say |
+
+## q97 · slot-47
+
+Do your meals have regular time slots, or just surprise cameos?
+
+Over the past month, how predictable were your usual meal times? Think timing, not what was on the plate.
+
+Source: self_report; window: past_month.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Varied a lot. | meal_regularity=0 |
+| b | Had a loose pattern. | meal_regularity=1 |
+| c | Usually predictable. | meal_regularity=2 |
+| d | Very predictable. | meal_regularity=3 |
+
+## q98 · slot-48
+
+This week, did meals keep their appointments?
+
+In just the last 7 days, how predictable were your meal times? Count the week you had, including any lunch that auditioned for dinner.
+
+Source: self_report; window: last_7_days.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Changed from day to day. | meal_regularity=0 |
+| b | Had a loose pattern. | meal_regularity=1 |
+| c | Predictable most days. | meal_regularity=2 |
+| d | Very predictable. | meal_regularity=3 |
+
+## q99 · slot-49
+
+On a usual day, does your battery last as long as your to-do list?
+
+Over the past month, how often did your energy feel enough for your day? Enough means enough for you.
+
+Source: self_report; window: past_month.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Rarely. | felt_energy=0 |
+| b | Some days. | felt_energy=1 |
+| c | Most days. | felt_energy=2 |
+| d | Nearly every day. | felt_energy=3 |
+
+## q101 · slot-50
+
+Zooming out: how often does movement make the weekly lineup?
+
+During a typical week in the past month, on how many days did you deliberately move? Walks, wheelchair workouts, stretches: your version counts.
+
+Source: self_report; window: past_month.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | 0 days. | movement_consistency=0 |
+| b | 1–2 days. | movement_consistency=1 |
+| c | 3–4 days. | movement_consistency=2 |
+| d | 5–7 days. | movement_consistency=3 |
+
+## q72 · slot-51
+
+Does your sleep schedule have a pattern, or is it more of a guest appearance?
+
+Over the past month, how consistent were the times you went to sleep and woke up? Include shifts and changing days.
+
+Source: self_report; window: past_month.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Changed a lot from day to day. | sleep_regularity=0 |
+| b | A loose pattern. Roughly in the same universe. | sleep_regularity=1 |
+| c | Usually consistent. | sleep_regularity=2 |
+| d | Very consistent. Similar times day to day. | sleep_regularity=3 |
+
+## q73 · slot-52
+
+And this past week: same sleep schedule, or surprise remix?
+
+In just the last 7 days, how consistent were your sleep and wake times? This can differ from your usual month.
+
+Source: self_report; window: last_7_days.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Changed a lot from day to day. | sleep_regularity=0 |
+| b | A loose pattern. | sleep_regularity=1 |
+| c | Usually consistent. | sleep_regularity=2 |
+| d | Very consistent. | sleep_regularity=3 |
+
+## q76 · slot-53
+
+This week's energy: enough to run the day, or a lot of low-battery pop-ups?
+
+In the last 7 days, how often did your energy feel enough for your day? Use your own meaning of “enough.”
+
+Source: self_report; window: last_7_days.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Rarely. | felt_energy=0 |
+| b | Some days. | felt_energy=1 |
+| c | Most days. | felt_energy=2 |
+| d | Nearly every day. | felt_energy=3 |
+
+## q100 · slot-54
+
+You slept. Did it feel like a recharge or just a very long blink?
+
+Over the past month, how often did sleep leave you feeling restored? Think your usual pattern, not one unusually good night.
+
+Source: self_report; window: past_month.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Rarely restored. | sleep_restoration=0 |
+| b | Restored on some days. | sleep_restoration=1 |
+| c | Restored most days. | sleep_restoration=2 |
+| d | Every day or nearly every day. | sleep_restoration=3 |
+
+## q102 · slot-55
+
+And this week: did sleep actually hit refresh?
+
+In just the last 7 days, how often did you wake up feeling restored? The pillow can keep its marketing claims.
+
+Source: self_report; window: last_7_days.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Rarely restored. | sleep_restoration=0 |
+| b | Restored on some days. | sleep_restoration=1 |
+| c | Restored most days. | sleep_restoration=2 |
+| d | Every day or nearly every day. | sleep_restoration=3 |
+
+## q96 · slot-56
+
+Last time “one more thing” tried to steal bedtime, who won?
+
+Think of the latest night in the past month an optional task competed with sleep. What did you actually do?
+
+Source: actual_event; window: latest_instance_past_month.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Stopped and went to sleep. Rolled the credits. | D14a:protect (general); D14d:rest (general) |
+| b | Finished the task and slept later. | D14a:delay (general); D14d:obligation (general) |
+| c | Moved the task or changed tomorrow's plan. | D14a:adjust (general); D3:plan (general) |
+| d | Asked someone how they handle a night like that. | D14d:connection (general) |
+
+## q57 · slot-57 · held-out
+
+“Pack a bag.” Your friend has a last-minute trip and almost no notice.
+
+You've never been there. You have the time, but only tonight to decide. What do you do?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Go. The map can explain itself later. | D2:novel (general) |
+| b | Check the details before saying yes. | D2:conditional (general) |
+| c | Pick something familiar instead. | D2:familiar (general) |
+| d | Only go if someone I know joins. | D2:conditional (general) |
+
+## q58 · slot-58 · held-out
+
+{close} cancels something you cared about. Then offers a sequel.
+
+They suggest a replacement plan without mentioning what happened. How do you respond?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Rebook, and explain why the cancellation hurt. | D7:direct (close) |
+| b | Start warmly, then gently bring up the cancellation. | D7:soften (close) |
+| c | Ask for a day and set a time to talk. | D7:pause (close) |
+| d | Accept the new plan and leave it unmentioned. | D7:avoid (close) |
+
+## q92 · slot-58 · held-out
+
+Someone important to you cancels something you cared about. Then offers a sequel.
+
+They suggest a replacement plan without mentioning what happened. How do you respond?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Rebook, and explain why the cancellation hurt. | D7:direct (general) |
+| b | Start warmly, then gently bring up the cancellation. | D7:soften (general) |
+| c | Ask for a day and set a time to talk. | D7:pause (general) |
+| d | Accept the new plan and leave it unmentioned. | D7:avoid (general) |
+
+## q59 · slot-59 · held-out
+
+A group bill includes something you didn't use. Your wallet has questions.
+
+Your friends suggest splitting everything evenly. How do you handle it?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Ask to take that item off my share. | D8:proportional (friends); D7:direct (friends) |
+| b | Message the organizer privately about my share. | D8:proportional (friends); D7:soften (friends) |
+| c | Say it's okay and pay it. Simplicity is worth it here. | D8:absorb (friends); D7:direct (friends) |
+| d | Pay it. Keep the irritation to myself. | D8:absorb (friends); D7:hint (friends) |
+
+## q60 · slot-60 · held-out
+
+Someone gives you spending money. Your shopping cart sits up straight.
+
+You can make one optional purchase. What matters most in your choice?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Something reliable, with money left over to save. | D4:security (general) |
+| b | Something that gives me time and options back. | D4:freedom (general) |
+| c | Something that makes me happy. That's the reason. | D4:enjoyment (general) |
+| d | The recognizable version. I like that people know it. | D4:status (general) |
+
+## q61 · slot-61 · held-out
+
+The team needs one more favor. You're at 1%, no charger in sight.
+
+It's optional. You're already exhausted. What do you offer?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | A no. I need to recover. | D14d:rest (general) |
+| b | The whole task. I'll get it done for the team. | D14d:obligation (general) |
+| c | Help finding someone with capacity to share it. | D14d:connection (general) |
+| d | A small piece, then my evening belongs to me. | D14d:bounded (general) |
+
+## q62 · slot-62 · held-out
+
+You let {close} down. The apology is still in your drafts.
+
+Imagine a different mistake from the one earlier. How would you begin making it right?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Apologize directly and ask what would help. | D12:repair (close) |
+| b | Apologize and explain what led to it. | D12:explain (close) |
+| c | Arrange something thoughtful to make up for it. | D12:action (close) |
+| d | Agree on some space and a time to reconnect. | D12:pause (close) |
+
+## q93 · slot-62 · held-out
+
+You let someone important to you down. The apology is still in your drafts.
+
+Imagine a different mistake from the one earlier. How would you begin making it right?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Apologize directly and ask what would help. | D12:repair (general) |
+| b | Apologize and explain what led to it. | D12:explain (general) |
+| c | Arrange something thoughtful to make up for it. | D12:action (general) |
+| d | Agree on some space and a time to reconnect. | D12:pause (general) |
+
+## q63 · slot-63 · held-out
+
+You want to help. Your available resources: one hour and good intentions.
+
+Someone needs a hand. You have no spare money. What do you do?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Use the hour to help directly. | D13:direct (general) |
+| b | Find a person or service better placed to help. | D13:coordinate (general) |
+| c | Say I can't take it on today. | D13:limit (general) |
+| d | Offer ten minutes, then hand it back. | D13:bounded (general) |
+
+## q64 · slot-64 · held-out
+
+The plan falls apart. Everyone looks at you like you wrote the next episode.
+
+It's the last minute. Someone asks, “So what now?” What do you do first?
+
+Source: hypothetical; window: scenario.
+
+| Answer | Wording | Evidence |
+|---|---|---|
+| a | Pick a workable next step. We can move now. | D3:improvise (general) |
+| b | Pause, get the details, make a new plan. | D3:plan (general) |
+| c | Ask what the affected people want, then plan around it. | D3:consult (general) |
+| d | Let this one go. I don't have capacity for a new version. | D3:stop (general) |

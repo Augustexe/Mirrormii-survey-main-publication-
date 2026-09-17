@@ -100,3 +100,9 @@ At the 2026-09-14 stage, Q-001/Q-003/Q-005/Q-006 were retired. The current revis
 Current Eagle metadata identifies authorized V2 master expressions of one Genii. Current Lark company content remains pending. Fresh checks on 2026-09-14 still encounter this session's network-disabled sandbox, loopback EPERM and Lark Keychain initialization failure. This does not establish broken native logins.
 
 Remote contents, team conventions and default branch remain unverified; no push or integration has occurred. Local feature verification belongs to the current MVP run's evidence, separate from these product decisions. Record future changes with date, scope and the decision they supersede.
+
+## Voice and visibility correction · 2026-09-17
+
+Confirmed by Jerry: prioritize funny, quirky, recognizable English questions and conversational retention while preserving the evidence model. White is the primary theme; purple is a supporting color. Work directly on this pass and keep verification focused. Reuse the existing reference imagery where it supports the design.
+
+Implemented for review in `codex/genii-voice-polish`: all 76 candidate prompts revised; a dedicated English copy layer; selective host replies; clearer answer states; semantic result icons and working routine navigation; separate aligned usual/recent tracks. No scoring, route, or backend changes. Existing tests were reused, with a bounded visual review.

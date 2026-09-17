@@ -1,14 +1,14 @@
 # Genii conversation design
 
-2026-09-17. Implementation direction for `codex/genii-taste-survey`.
+2026-09-17. Current presentation pass: `codex/genii-voice-polish`, based on `codex/genii-taste-survey`.
 
 ## Design read
 
 The product is an observant, playful host for North American participants of all genders. Its first job is to make everyday behavior feel recognizable. The visual system should feel airy, tactile, curious and composed, while keeping one question and its answers unmistakably central.
 
-Use the existing lilac/periwinkle brand, generous silver-white space, graphite typography, a small number of translucent surfaces, and the canonical Genii. A new glass sculpture provides depth around the supplied character, without changing its design. It is an environment asset, not a replacement mascot or a new canon master.
+Use an explicitly white canvas, purple as a secondary accent, graphite typography, a small number of translucent surfaces, and the canonical Genii. A new glass sculpture provides depth around the supplied character, without changing its design. It is an environment asset, not a replacement mascot or a new canon master.
 
-Taste settings: design variance 7, motion intensity 6, visual density 3. Apply the installed Leonxlnx `design-taste-frontend` and `redesign-existing-projects` skills to presentation. The approved survey specification governs routing, evidence, answer collection and results. User requirements for purple/lilac and descriptive bars override generic skill exclusions.
+Taste settings: design variance 7, motion intensity 5, visual density 3. Apply the installed Leonxlnx `design-taste-frontend` and `redesign-existing-projects` skills to presentation. The approved survey specification governs routing, evidence, answer collection and results. User requirements for purple/lilac and descriptive bars override generic skill exclusions.
 
 ## Presentation decisions
 
@@ -26,12 +26,14 @@ Taste settings: design variance 7, motion intensity 6, visual density 3. Apply t
 - [Motion accessibility](https://motion.dev/docs/react-accessibility) recommends respecting the operating system's reduced-motion setting. The implementation uses the installed Motion version and CSS fallbacks; no remote runtime dependency is required.
 - [Radix Dialog](https://www.radix-ui.com/primitives/docs/components/dialog) documents modal focus, labeling and Escape behavior. These are acceptance criteria for the existing dialog implementation, not a claim that Radix is installed.
 
-## Review gates
+## Prior full-build review gates
+
+The current copy/visibility pass reuses existing tests and performs a focused browser review. The longer process below records the preceding build; it is not another required checklist for this pass.
 
 1. Data and route: every reachable slot resolves once; equivalents preserve purpose; Other, Skip, no example and automatic omission remain distinct.
 2. Evidence: direct reports, events and hypothetical choices retain provenance and windows. Internal feeling, outward action and recovery never silently substitute for each other.
 3. Interaction: complete a real 64-question route, edit context, resume, inspect evidence, review claims and export. Confirm predictions remain hidden until checks are resolved.
-4. Visual: inspect desktop/mobile, question and portrait states, light/dark, long answers and unknown evidence. Compare the actual render with the prior build.
+4. Visual: inspect desktop/mobile, question and portrait states, the explicit light theme, long answers and unknown evidence. Compare the actual render with the prior build.
 5. Accessibility: keyboard, focus return/trapping, selected state, contrast, reduced motion/transparency, enlarged text, narrow/short viewports and automated axe checks.
 6. Delivery: production build, local performance measurements, independent review, isolated commit, source/build handoff and SHA-256 receipt. No publication.
 

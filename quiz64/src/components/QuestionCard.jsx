@@ -5,6 +5,9 @@ import {
   Check,
   ChevronDown,
   MessageCircle,
+  Clock3,
+  Lightbulb,
+  Ellipsis,
   SkipForward,
 } from "lucide-react";
 import { applicable, optionText, safeTitle, interpolate } from "../survey.js";
@@ -57,7 +60,7 @@ export function QuestionCard({
   };
   const responseOptions = [
     ...(q.options || []),
-    { id: "other", text: "Something else. I would put it in my own words." },
+    { id: "other", text: "Other. My version is a little different." },
   ];
 
   return (
@@ -66,14 +69,19 @@ export function QuestionCard({
     >
       <div className="question-head">
         <div>
-          <span className="eyebrow">
+          <span className="eyebrow question-frame">
+            {actual ? (
+              <Clock3 size={15} aria-hidden="true" />
+            ) : (
+              <Lightbulb size={15} aria-hidden="true" />
+            )}
             {q.test
-              ? "Sealed check"
+              ? "One last what-if"
               : q.meta?.evidence === "self_report" || q.role === "context"
-                ? "A direct check-in"
+                ? "Your everyday"
                 : q.meta?.evidence === "actual_event" || actual
-                  ? "A real-life check"
-                  : "Imagine this"}
+                  ? "From your life"
+                  : "Picture this"}
           </span>
           <h1 ref={heading} tabIndex="-1">
             {safeTitle(q, state)}
@@ -101,7 +109,11 @@ export function QuestionCard({
               onChange={() => choose(o.id)}
             />
             <span className="answer-token">
-              {o.id === "other" ? "✦" : String.fromCharCode(65 + i)}
+              {o.id === "other" ? (
+                <Ellipsis size={17} aria-hidden="true" />
+              ) : (
+                String.fromCharCode(65 + i)
+              )}
             </span>
             <span className="answer-copy">{optionText(o, state)}</span>
             <Check
@@ -125,7 +137,9 @@ export function QuestionCard({
             onChange={(e) => setOtherText?.(e.target.value)}
             placeholder="A short answer is perfect."
           />
-          <small>{(otherText || "").length}/1200. Saved unscored.</small>
+          <small>
+            {(otherText || "").length}/1200. Optional; saved without scoring.
+          </small>
         </div>
       )}
       {selectedOption?.reaction && draft !== "other" && (
@@ -155,7 +169,7 @@ export function QuestionCard({
           className="none-fit"
           onClick={() => onContinue("no_example", { note: note || "" })}
         >
-          No example to use <span>unscored</span>
+          No example to use <span>This hasn't happened lately</span>
         </button>
       )}
       <div className="question-actions">

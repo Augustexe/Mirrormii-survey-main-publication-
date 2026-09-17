@@ -24,6 +24,7 @@ import {
 import { EvidenceSummary } from "./components/EvidenceSummary.jsx";
 import { useDialogFocus } from "./components/useDialogFocus.js";
 import "./styles.css";
+import "./voice-polish.css";
 
 const MOTION_KEY = "genii.motion.v1";
 const SEEN_KEY = "genii.heldout-seen.v1";
@@ -574,17 +575,15 @@ function Landing({ state, onBegin, onHow }) {
     >
       <section className="landing-hero">
         <div className="hero-copy">
-          <span className="eyebrow">
-            A conversation with oddly specific questions
-          </span>
+          <span className="eyebrow">Your lore. My favorite subject.</span>
           <h1>
             Let’s get
             <br />
             <em>oddly specific.</em>
           </h1>
           <p className="hero-promise">
-            A playful reading of your patterns, feelings, and routines. You
-            choose what fits.
+            The group-chat you. The 1 a.m. you. The “I'm fine” you. Let's get to
+            know the whole situation.
           </p>
           <div className="hero-actions">
             <button
@@ -601,10 +600,7 @@ function Landing({ state, onBegin, onHow }) {
           </div>
         </div>
         <div className="landing-stage">
-          <GeniiStage
-            mood="curious"
-            bubble="Be yourself. I’ll make it specific."
-          />
+          <GeniiStage mood="curious" bubble="Small talk? In this economy?" />
           <span className="stage-charm charm-heart">
             <img
               src={Survey.asset?.("badge-mood.png")}
@@ -646,9 +642,7 @@ function ChapterJourney() {
     <section className="chapter-journey" aria-label="Conversation details">
       <div className="journey-intro">
         <strong>Bring the real version of you.</strong>
-        <small>
-          Patterns, feelings, and routines get room to be complicated.
-        </small>
+        <small>Get to know your patterns. Find small habits that fit.</small>
       </div>
       <div className="journey-fact">
         <b>64</b>
@@ -688,7 +682,15 @@ function Interlude({ chapter, state, route, onContinue, onSave }) {
         <div className="interlude-ring" />
         <GeniiStage
           mood={chapter.id % 2 ? "attentive" : "curious"}
-          bubble="I’m taking notes. Tiny ones."
+          bubble={
+            chapter.id === 5
+              ? "The inside voice gets a turn."
+              : chapter.id === 6
+                ? "Even your water bottle has a subplot."
+                : chapter.id === 7
+                  ? "Usual you. This-week you. Both count."
+                  : "Okay, there’s more to this story."
+          }
         />
       </div>
       <div className="interlude-copy">
@@ -773,7 +775,9 @@ function QuizView({
               : `Scene ${sceneNumber} of ${chapterQs.length || 8}`}
           </strong>
         </div>
-        <span className="quiz-count">{totalResolved} resolved</span>
+        <span className="quiz-count">
+          {totalResolved} / {route.length} explored
+        </span>
       </div>
       <div
         className="progress-rail"
@@ -819,7 +823,13 @@ function QuizView({
             bubble={
               q.test
                 ? "No peeking. I sealed the envelope."
-                : "One answer. Then we keep going."
+                : chapter?.id === 5
+                  ? "Quiet on the outside can still be loud inside."
+                  : chapter?.id === 6
+                    ? "Your body would like to join the conversation."
+                    : chapter?.id === 7
+                      ? "Your actual week. No highlight reel needed."
+                      : "The honest answer is the interesting one."
             }
             chapter={chapter?.id}
             progress={
@@ -827,11 +837,11 @@ function QuizView({
             }
           />
           <div className="guide-copy">
-            <span className="eyebrow">The route</span>
+            <span className="eyebrow">A little more of the story</span>
             <p>
-              <b>{totalResolved}</b> responses resolved
+              <b>{totalResolved}</b> of {route.length} scenes explored
             </p>
-            <small>Each scene on this route adds a little more context.</small>
+            <small>Pick what fits. “Other” and Skip are always welcome.</small>
           </div>
         </aside>
       </div>

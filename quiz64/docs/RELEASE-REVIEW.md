@@ -1,5 +1,13 @@
 # Genii survey implementation review
 
+## Current voice and visibility pass
+
+`codex/genii-voice-polish`, 2026-09-17: all 76 candidate prompts rewritten in natural English, stronger situation hooks, selective conversational replies, white theme with purple accents, result icons and linked routine navigation, aligned usual/recent bars. The engine is unchanged. A structural comparison confirms identical option IDs, tags, measures, facts, signals, windows and route slots. The existing 26 tests pass. Focused browser review covers landing, questions and results on desktop/mobile, the white theme under dark OS preference, Other, claim feedback and routine navigation.
+
+See the current run `20260917T220005Z-63c27586eef7` for screenshots and handoff. No new company claims, new assets, backend changes or publication.
+
+## Previous full-build review
+
 2026-09-17. Local delivery on `codex/genii-taste-survey`, based on `fd7c880` and the previous verified quiz64 build. No publication or backend integration.
 
 ## Delivered behavior
@@ -9,7 +17,7 @@
 - Seven emotion families preserve literal feelings, outward responses and recovery. Only explicit intensity words yield intensity labels. Not every answer supplies every layer; missing layers remain unrecorded.
 - Health coverage includes sleep, eating, movement, energy, hydration, body cues, skin and optional reported health context. Usual/recent sleep timing and restoration are separate questions; movement and restoration pairs use identical bins. No routine bar rates health quality.
 - The portrait uses one continuous layout, descriptive axes, separate evidence coverage, inspectable sources, and per-claim True/False. Feedback records the original claim and result without changing bars, confidence or predictions.
-- Canonical Genii imagery, lilac/periwinkle brand colors, a generated glass environment, restrained motion, keyboard dialogs, dark theme, and reduced-motion/transparency support.
+- Canonical Genii imagery, lilac/periwinkle brand colors, a generated glass environment, restrained motion, keyboard dialogs, the then-current automatic dark theme, and reduced-motion/transparency support.
 - Answer-specific host acknowledgments appear on selected scenes. Silence on other scenes is intentional, avoiding a repetitive response after every choice. No acknowledgments are generated from unscored free text.
 
 ## Verification
