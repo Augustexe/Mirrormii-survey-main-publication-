@@ -1,137 +1,113 @@
-# Genie Survey — Living Product Spec
+# Genii Personality and Health Survey — Product Spec
 
-Version 0.1 · 2026-09-14 · Planning draft · Owner: Jerry Zhang
+Version 0.4 · 2026-09-17 · Owner: Jerry Zhang · Status: specification refinement; next implementation pending shared understanding
 
-## Product idea
+**A funny conversation that reveals how you feel, respond, and handle everyday health routines.**
 
-Genie guides visitors through an entertaining questionnaire about personality, habits, and health or wellbeing in everyday life and work. The intended reward is a personality-style result worth sending to friends. The experience draws inspiration from the presence and reactions of Talking Tom/Talking Ben and the identity appeal of personality quizzes.
+The root survey blends personality, emotional context and health-related habits. Questions remain recognizable, surprising and affectionate; traceable evidence makes the interpretation useful. The existing bank is broadly good. Repair coverage, repetition and routing rather than replace it wholesale.
 
-This is a new MirrorMii marketing project. Its monetization, product structure, questionnaire, result system, affiliate mechanics, and visual treatment will be developed with the founder. Current company grounding remains pending because live Lark access was unavailable in this session.
+The active detailed contract is [PERSONALITY-HEALTH-SPEC.md](PERSONALITY-HEALTH-SPEC.md). Jerry's latest decisions govern over earlier documents. The [founder brief](FOUNDER-BRIEF.md) remains creative and historical source material; its personality-only framing, correction-based rescoring and example percentages are superseded where they conflict with the active contract. Original v0.3 documents are preserved in this specification run's output/reference directory.
 
-## Confirmed from the founder's brief
+## Scope and implementation status
 
-- Build a large marketing campaign around a survey-based website.
-- Genie is the central character and helps the visitor complete the questionnaire.
-- Explore personality, habits, and health in work and daily life.
-- Make the experience fun and the outcome easy to share repeatedly.
-- Broad audience reach is the ambition; the founder described the audience as “everybody.”
-- Include an affiliate system in the product planning.
-- Route survey answers, users, and account information into Lark Base, with agents able to read and write within the eventual defined system.
-- Ground the project in MirrorMii company truth and imagery.
-- Establish a dedicated environment and GitHub collaboration home.
-- Begin with deep, iterative planning; the founder will provide visual direction and assets.
+The review baseline is the React quiz64 app at commit ec89aa7: 64 authored questions, comprising 56 context/training questions and eight internal heldout checks. It has deterministic evidence mappings, separate unscored notes, missing-evidence handling and conservative prediction abstention. Technical verification does not establish personality accuracy.
 
-No launch date, budget, first market, audience age, price, reward amount, question count, result taxonomy, or production stack has been chosen.
+This revision concerns the root survey, evidence semantics and private result. It does not reactivate the earlier 12/30/96-depth implementation or require final Genii family names, one-liners or character matching. Each route should stay around 60 questions using relevant replacements from an expanded bank when questions are omitted. Broader health coverage beyond sleep, eating, movement and rest/energy is confirmed; the additional domains remain open.
 
-## The first decision: what the visitor gets
+Backend integration belongs to Desmond. Production accounts, Lark writes, payments, publication and remote integration remain separate work. This document records requirements; it does not claim that Other, full adaptive bypass, emotional measurements, domain bars or True/False review are implemented.
 
-These are alternatives for discussion, not approved product promises.
+## Confirmed experience
 
-| Direction | Visitor takeaway | Sharing hook | Product consequence |
-| --- | --- | --- | --- |
-| A. Personality + daily habits | “That sounds like me.” | A named archetype friends can compare | Needs memorable original types, grounded explanations, and stable scoring |
-| B. Lifestyle snapshot | “That explains my current routine.” | A current-state card and gentle reflection | Needs a stated time window and clear separation from enduring personality |
-| C. Playful character match | “I got this Genie identity.” | Cute identity reveal or humorous reaction | Needs character variety and a stronger bridge to MirrorMii business value |
+| Moment | Required behavior |
+| --- | --- |
+| Start | Explain the playful personality-and-health-habit purpose plainly; retain the brand assets and established visual direction |
+| Answer | One coherent situation and response frame; short, distinct choices whose literal meaning matches the question |
+| Express a different answer | Offer Other, distinct from Skip or no recalled experience; keep custom text separate from authored categorical scoring |
+| Adapt | Omit known irrelevant questions entirely and use relevant replacements; solo households must not encounter shared-household chores or an N/A screen |
+| Build a portrait | Separate usual patterns from recent state, and internal feelings from outward action and recovery |
+| Read the result | One integrated portrait with routine/behavior bars, separate confidence and accessible evidence |
+| Review an interpretation | True/False beside each individual interpretation logs feedback while preserving the original result, bars, confidence and evidence |
+| Test a prediction | Freeze an unseen-choice prediction before the answer; report agreement and coverage separately from endorsement |
 
-**Working recommendation:** explore A first, with current habits as explanatory detail. Keep enduring traits and recent behavior separate in both questions and results. This is a design hypothesis, not a validated personality instrument or an approved company claim.
+Preserve the approved Simplified Chinese voice and semantic parity when localization resumes. This round develops English and the shared evidence contract. Humor should live in the scenario and phrasing without making answer categories ambiguous. Keep author-facing datapoint mappings outside respondent quiz copy.
 
-The word “health” needs definition before writing questions: general energy/sleep/routine reflection, a health assessment, and clinical screening are different products. The current draft assumes no diagnosis or treatment output; any change to that scope requires a separate evidence and product design pass.
+## Evidence model
 
-## Proposed visitor journey
+Keep direct self-reports, actual-event accounts, hypothetical intentions, inferences, comparisons and respondent endorsements distinct. Actual-event accounts remain self-reports, not externally observed behavior. Question scenery alone does not support an additional dimension.
 
-1. A friend, creator, or campaign link promises a specific interesting result.
-2. Genie welcomes the visitor and explains what they will get and the expected time.
-3. The visitor answers short, clear questions. Genie acknowledges responses and helps with confusing wording.
-4. A reveal presents an original identity or profile, reasons connected to answers, and a compact share card.
-5. The visitor chooses what to share. A friend opens the shared result and can start their own quiz.
-6. An optional next step offers saved results, a useful deeper experience, or a relevant MirrorMii product pathway.
+Each observation needs stable question/option IDs, version, role, context/relationship target, explicit recall window where relevant, and its literal measurements or authored tags. Each inference needs source IDs, contrary evidence, role composition and method/version. Unknown, skipped, omitted and custom responses must not become neutral or negative trait evidence.
 
-Starting hypothesis: mobile web; guest start; a free result before optional account creation; short reactions that do not delay progress. Questionnaire length stays open. Test a short path and a deeper optional path instead of assuming a large campaign requires a long questionnaire.
+The emotional contract separates **internal feelings, outward response and recovery**. Someone can feel intense anger and speak calmly. Silence alone does not establish calmness; directness alone does not establish aggression. Emotional recovery, relationship repair and physical rest are not interchangeable measures.
 
-## Genie's job
+Seven feeling families are confirmed for bank coverage: frustration/anger, worry, disappointment/sadness, embarrassment, guilt, joy/excitement and relief. These are scenario families, not permanent labels or a validated emotional scale.
 
-Genie should provide presence, warmth, progress, and a satisfying reveal. Explore idle, greeting, thinking, acknowledgement, encouragement, clarification, and reveal states. Tapping Genie may create a small delight; completing the questionnaire must remain clear.
+Current direct health facts are q17 bedtime band, q20 takeaway dinner days and q46 movement days. Other health questions mostly concern choices under pressure. These facts cannot establish sleep adequacy, diet quality, fitness or overall health. Select intended claims before adding the measurements needed to support them.
 
-Start by comparing scripted branching against conversational assistance. A language model is not required to choose every next question. If model-generated conversation is used, it must preserve the question's meaning, answer encoding, and scoring contract. Versioned scoring should remain reproducible independently of Genie's wording.
+Survey-answer edits are distinct from True/False review. Answer edits replace or supersede observations and recompute affected eligibility. Review feedback attaches to the original result snapshot and never silently changes it.
 
-Open: voice or text, 2D or 3D, humor level, interruption frequency, whether answers are buttons or conversation, animation budget, and what changes between repeat visits. Audio must be optional; the journey must work without motion or sound.
+## Sleep scope — confirmed
 
-## Questionnaire and result design
+Include all three layers:
 
-Build backward from the chosen result. For each question, record its purpose, dimension, options, skip behavior, scoring contribution, and which result explanation it supports. Avoid questions collected only because data may be useful later.
+1. **Usual routine:** directly reported bedtime, wake time, duration and regularity.
+2. **Recent changes:** directly reported disruption and restfulness, separate from usual patterns.
+3. **Contextual behavior:** evidence-backed interpretations and predictions about protecting or delaying sleep when work, stress or a need for personal downtime interferes.
 
-Proposed domains: social energy, planning/flexibility, work rhythm, recovery routines, and self-described daily energy. These are draft categories, not validated dimensions. The actual domains await founder direction and company alignment.
+Do not guess exact clock times or duration from unrelated personality answers. An interpretation such as “you delay sleep to decompress when overwhelmed” needs observations supporting both the action and the stated reason. Exact windows, units and response formats are still to be specified.
 
-Before a pilot, define scoring, ties, missing answers, incomplete results, and result consistency. Freeze question and scoring versions for each participant. Skips must remain missing values rather than silently becoming negative scores. The same answers under the same versions should produce the same scored result. Generated wording must not invent evidence or change the score.
+## Result and confidence
 
-Use original names, question wording, scoring, and visuals. MBTI and 16Personalities are references for understandable identity and sharing; the project must decide its own promise and methodology.
+The main result is an integrated portrait, not a grid of identity cards. Routine/behavior bars use meaningful labels and endpoints or units. Show usual patterns and recent state separately. Keep evidence and uncertainty accessible through progressive disclosure. Final character templates and comic identity labels are deferred.
 
-## Distribution, sharing, and repeat use
+A bar's position must not double as confidence or an overall health score. Numeric percentages require a defined meaning; decorative “72% healthy,” “80% anxious” or implied population percentiles are not authorized. Missing evidence is not zero. Confidence describes evidence coverage and its limits; the demo establishes no calibrated probability.
 
-Separate two loops:
+True/False means “this interpretation fits me / does not fit me.” Preserve the exact statement, result version and evidence snapshot, then log the response separately. Neither answer changes the profile or counts as another supporting observation, a prediction hit, or a reason to force clarification. Unanswered review is neither agreement nor disagreement.
 
-- **Organic sharing:** complete → identify with result → share → friend visits → friend completes.
-- **Affiliate acquisition:** partner link → eligible conversion → attribution validation → approved reward.
+## Selected benchmarks
 
-The result itself should be useful without recruiting others. Explore friend comparison, a small collectible result card, or a fresh themed edition as reasons to return. Repeating an unchanged personality test, answering a daily check-in, and sending the same result to another friend need separate metrics.
+Jerry delegated benchmark selection. Use two separate comparisons:
 
-Broad reach remains the ambition. Choose one first distribution cohort so the team can test a specific promise. Candidate cohorts could be workplace friend groups, students, or existing MirrorMii followers; none is selected, and age/market boundaries remain open.
+1. **Predictive value:** frozen predictions on unseen situations versus a predictor without the personal profile. Both receive the same permitted scenario/context information. Report eligible/answered items, predictions attempted, abstentions, matches and baseline results so agreement cannot hide low coverage.
+2. **Context sensitivity:** reported usual behavior versus behavior under pressure. In one session this describes a self-reported contrast, not measured improvement, longitudinal change or proof of predictive accuracy.
 
-## Business model options
+The handoff's 80% target and independent 20-item test are historical proposals, not achieved results or automatically approved acceptance thresholds. The eight current internal checks do not fulfill that independent protocol. Peer rankings and clinical/health-quality comparisons are outside the selected benchmarks. True/False resonance remains separate.
 
-| Model | Free value | Revenue event | Main question |
-| --- | --- | --- | --- |
-| Audience and product funnel | Quiz + shareable result | Later MirrorMii product purchase or subscription | Which real company offer is relevant, and why? |
-| Paid deeper result | Quiz + meaningful summary | One-time report or expanded experience | Is there enough added value to buy? |
-| Recurring companion | Initial identity + introduction to Genie | Subscription for ongoing utility | What recurring job makes people come back? |
+## Visual direction and accessibility
 
-Affiliate rewards must correspond to the selected model. Decide whether they reward valid completion, qualified signup, or paid conversion. Paying for raw completions can encourage low-quality responses; test eligible-event quality before setting rewards.
+Retain Genii brand colors and authorized assets, strong typography, readable glass surfaces and purposeful motion. Preserve asset provenance; exploratory artwork is not a canon master. The result should become cohesive and expressive without hiding evidence behind decorative numbers.
 
-No prices, commission percentages, payout promises, sales forecast, or paid plan are approved. Keep commission, payment fees, refunds, operating costs, and acquisition costs visible in unit economics.
+Use one clear current question and primary action. Support keyboard navigation, visible focus, readable contrast, mobile scrolling and reduced motion. Long choices and Other input must work on narrow screens; sticky controls cannot cover content. Motion must not block answers or access to the result.
 
-## Measurement and learning
+Earlier visual work remains a reference, not authority to restore obsolete depth cards, rescoring interactions or character assignments. Final layout and bar scales require the remaining specification decisions.
 
-Define events before launch: landing view, quiz start, question seen, answer saved, quiz completed, result viewed, share attempted, shared-result visit, referred completion, optional signup, purchase, refund, and affiliate qualification. A share attempt is not proof a message was delivered.
+## Acceptance requirements for the next implementation
 
-Proposed measures:
+These are future requirements, not a report of passing checks.
 
-- Completion rate = completed valid sessions / started sessions for a stated cohort and version.
-- Attributed referral yield = eligible referred completions / original completed users for a stated observation window. Deduplicate and distinguish organic from paid sources.
-- Result resonance = participant feedback on accuracy, usefulness, delight, and willingness to send to a named friend.
-- Conversion and margin = chosen business outcome with costs and refunds included.
-- Reliability = acknowledged submissions durably saved, sync lag, unresolved writes, duplicate rate, and recoverability.
+| Area | Required evidence |
+| --- | --- |
+| Adaptive route | Solo/no-selected-person contexts omit irrelevant prompts without interstitials; backtracking updates eligibility and progress |
+| Other and missingness | Choice, Other, Skip, no actual example and system omission remain distinct; custom text is not silently mapped to a scored category |
+| Question integrity | Stem and answers share a subject, scenario and actual/hypothetical/routine frame; repeated scenes are reviewed through a counterpart map |
+| Emotion | Feeling, action and recovery have separate evidence; calmness or explosive behavior is not inferred from an unrelated choice |
+| Health | Each routine/behavior claim has direct or explicitly inferential support; source facts are not repackaged as predictions |
+| Time context | Usual and recent evidence remain separate; no trend is implied from a first session |
+| Result bars | Every axis has named endpoints/units, a defined scale, source IDs, a missing state and separate confidence |
+| Feedback | Both True and False preserve the result/confidence, record versioned endorsement and cannot affect prediction evaluation |
+| Evaluation | Heldout answers never enter the frozen profile; baseline information rules match; abstentions and denominators are visible |
+| Accessibility | Mobile/desktop, long text, keyboard, focus and reduced-motion flows work with routing and review controls |
+| Handoff | Question map, evidence schema, source/version provenance and known limits are reviewable by Desmond |
 
-Set pilot thresholds after choosing the promise, cohort, business outcome, and traffic plan. Any scenario calculator values are hypothetical, never observed performance.
+Use independent review for implementation. Jerry requested Luna for implementation and coordinating-agent verification; no next-version implementation has been dispatched from this specification interview.
 
-## Lark and agent architecture
+## Company grounding and source authority
 
-Confirmed destination intent: Lark Base houses the business records and supports agent operations. See `DATA-DESIGN.md` for a proposed model.
+Fresh native reads on 2026-09-17 verified MirrorMii OS Base revision 201 and relevant Wiki/source documents. TwinsXM schema revision 27 includes personality, sleep/fatigue, diet, activity and psychology/emotion; its corresponding Brand Facts row is draft. The draft company Emotion × Mechanism Map provides creative vocabulary, not a respondent scoring scale. Sally's 80% intent is attributed in the supplied handoff, which also says the framework awaits her confirmation.
 
-Recommended boundary for evaluation: public browser → server-side intake → durable handling/reconciliation → Lark survey records → bounded agent workflows. Whether temporary persistence or a separate authentication provider is acceptable remains open. Do not silently change the founder's all-in-Lark intent.
+The protected aggregate packet remains incomplete. Targeted reads succeeded; do not describe Lark as generally inaccessible or treat drafts as approved capabilities. Source links, revisions and states are in output/COMPANY-CONTEXT.md; exact implementation gaps are in output/SPEC-GAP-AUDIT.md.
 
-The company-canon Base and the future survey-response destination serve different purposes. No survey tables have been chosen or created. Decide whether the survey needs dedicated tables or its own linked Base after checking current schema, access, and capacity.
+Specification run: runs/20260917T193810Z-a886d9810122.
 
-## Failure and trust requirements to settle before build
+## Open decisions
 
-- Resume or clearly report an interrupted session; do not claim an answer was saved before durable acceptance.
-- Reconcile an ambiguous Lark write before retrying creation. Use stable submission identifiers.
-- Prevent one visitor from accessing another visitor's raw answers through share or account endpoints.
-- Share only the selected result, never raw health answers, email, or account identifiers in URLs/cards.
-- Keep marketing contact permission separate from quiz participation and optional sensitive questions.
-- Define withdrawal/deletion, retention, account recovery, affiliate disputes, and handling of duplicate submissions.
-- Choose supported markets and ages before deciding what personal and health information to collect.
-
-These are product requirements to specify, not a claim that a legal or medical review has been completed.
-
-## Planning sequence
-
-1. **Promise:** result identity, emotional payoff, business purpose, and first distribution cohort.
-2. **Experience:** Genie behavior, question format, reveal, share card, and optional signup.
-3. **Method:** dimensions, question bank, scoring, time window, and result explanations.
-4. **Economics:** paid value, affiliate event, attribution, rewards, and margin assumptions.
-5. **Data:** current Lark schema, volume target, accounts, data boundaries, and agent permissions.
-6. **Design:** founder references, canon asset selection, motion/audio, accessibility, and mobile performance.
-7. **Pilot:** prototype with test data, user sessions, result quality, sharing observation, and intake failure tests.
-8. **Build plan:** only after choices are reconciled, define the stack, milestones, task owners, and release criteria.
-
-Planning continues through conversation. This document is the first structured draft, not an implementation-ready or approved specification.
+Round 3 confirmed broader health coverage, all seven feeling families, claim-level True/False and relevant replacements to maintain roughly 60 questions. Additional health domains, recall windows, scales, detailed Other behavior and unknown-context routing remain open. Q7's request for broader coverage did not confirm the suggested past-month/last-seven-days windows. The [core specification's decision tree](PERSONALITY-HEALTH-SPEC.md#11-interview-decision-tree) records status. Recommendations are not accepted decisions; record answers before implementing dependent behavior.
