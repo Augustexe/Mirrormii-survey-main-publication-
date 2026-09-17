@@ -36,7 +36,7 @@ export function QuestionCard({ q, state, draft, setDraft, note, setNote, onConti
       <button type="button" className="button button--quiet" onClick={onBack} disabled={!onBack}><ArrowLeft size={17} aria-hidden="true" /> Back</button>
       <div className="actions-right">
         {!readOnly && <button type="button" className="button button--quiet" onClick={onSkip}><SkipForward size={16} aria-hidden="true" /> Skip</button>}
-        <button type="button" className="button button--primary" onClick={qApplicable ? onContinue : onSkip} disabled={qApplicable ? !draft : false}>{q.test && committed ? 'Next check' : 'Continue'} <ArrowRight size={17} aria-hidden="true" /></button>
+        <button type="button" className="button button--primary" onClick={readOnly ? onContinue : qApplicable ? onContinue : onSkip} disabled={readOnly ? false : qApplicable ? !draft : false}>{q.test && committed ? 'Next check' : 'Continue'} <ArrowRight size={17} aria-hidden="true" /></button>
       </div>
     </div>
     <p className="save-hint" role="status"><span className={`save-dot ${saving && committed ? 'save-dot--on' : ''}`} /> {!saving ? 'Saving unavailable' : committed ? 'Saved on this device' : 'Saves when you continue'} · {q.test ? 'This check is read-only after Continue.' : 'You can revisit this answer later.'}</p>
