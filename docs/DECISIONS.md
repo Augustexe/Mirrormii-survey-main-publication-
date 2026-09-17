@@ -106,3 +106,10 @@ Remote contents, team conventions and default branch remain unverified; no push 
 Confirmed by Jerry: prioritize funny, quirky, recognizable English questions and conversational retention while preserving the evidence model. White is the primary theme; purple is a supporting color. Work directly on this pass and keep verification focused. Reuse the existing reference imagery where it supports the design.
 
 Implemented for review in `codex/genii-voice-polish`: all 76 candidate prompts revised; a dedicated English copy layer; selective host replies; clearer answer states; semantic result icons and working routine navigation; separate aligned usual/recent tracks. No scoring, route, or backend changes. Existing tests were reused, with a bounded visual review.
+
+
+## Living-world visual refinement · 2026-09-17
+
+Jerry approved the preceding layout, text and functionality and authorized a more elaborate visual layer, including new render/media variants of Genii. The Eagle V2 character remains the design reference, not a restriction to the original low-resolution render. Canon master files remain unchanged; generated derivatives stay project-local and are not promoted to canon. White remains primary, purple secondary.
+
+Implemented on `codex/genii-living-world`: two opal-glass character expressions, a generated glass environment, scene-aware animated caustics, ornamental thinking waveforms, tactile button/selection feedback and pearl material icons. Motion is decorative, not a measurement of attention, voice or inference. Existing questionnaire, answers, evidence handling, routing, layout and synthetic developer preview remain authoritative and unchanged. See `quiz64/docs/LIVING-WORLD.md`.

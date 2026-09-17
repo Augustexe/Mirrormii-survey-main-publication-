@@ -9,6 +9,7 @@ import {
   Sparkles,
   House,
 } from "lucide-react";
+import { JewelIcon } from "./JewelIcon.jsx";
 const icons = [
   Compass,
   Shapes,
@@ -23,9 +24,9 @@ export function ChapterObject({ chapter = 1 }) {
   const Icon = icons[chapter - 1] || Sparkles;
   return (
     <span className="chapter-object" aria-hidden="true">
-      <span>
+      <JewelIcon kind={`chapter-${chapter}`} variant="chapter">
         <Icon size={30} strokeWidth={1.3} />
-      </span>
+      </JewelIcon>
     </span>
   );
 }

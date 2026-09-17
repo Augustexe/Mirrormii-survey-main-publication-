@@ -14,6 +14,7 @@ import {
 import * as Survey from "./survey.js";
 import * as Engine from "./engine.js";
 import { GeniiStage } from "./components/GeniiStage.jsx";
+import { AmbientWorld } from "./components/AmbientWorld.jsx";
 import { QuestionCard } from "./components/QuestionCard.jsx";
 import {
   ChapterMap,
@@ -27,6 +28,9 @@ import "./styles.css";
 import "./voice-polish.css";
 import "./launch.css";
 import "./result-visuals.css";
+import "./world.css";
+import "./jewels.css";
+import "./living-world.css";
 import { ChapterRibbon } from "./components/ChapterRibbon.jsx";
 import { ChapterObject } from "./components/ChapterObject.jsx";
 
@@ -376,6 +380,11 @@ export default function App() {
   return (
     <MotionConfig reducedMotion={motionOn ? "user" : "always"}>
       <div className="app-shell" data-screen={screen}>
+        <AmbientWorld
+          scene={screen}
+          chapter={currentChapter?.id || 1}
+          pulseKey={`${screen}-${currentQuestion?.id || ""}-${draft || ""}`}
+        />
         <Header
           state={state}
           storageOK={storageOK}
@@ -605,7 +614,11 @@ function Landing({ state, onBegin, onHow }) {
           </div>
         </div>
         <div className="landing-stage">
-          <GeniiStage mood="curious" bubble="Small talk? In this economy?" />
+          <GeniiStage
+            mood="curious"
+            scene="welcome"
+            bubble="Small talk? In this economy?"
+          />
           <span className="stage-charm charm-heart">
             <img
               src={Survey.asset?.("badge-mood.png")}
@@ -691,6 +704,7 @@ function Interlude({ chapter, state, route, onContinue, onSave }) {
       <div className="interlude-art">
         <div className="interlude-ring" />
         <GeniiStage
+          scene="chapter"
           mood={chapter.id % 2 ? "attentive" : "curious"}
           bubble={
             chapter.id === 5
@@ -876,8 +890,10 @@ function Gateway({ state, trainingDone, onSeal, onSave, onReview, error }) {
       transition={{ duration: 0.35 }}
     >
       <div className="gateway-symbol">
-        <span>08</span>
-        <div className="gateway-orbit" />
+        <GeniiStage scene="thinking" mood="skeptical" bubble={null} />
+        <span className="gateway-seal" aria-hidden="true">
+          08
+        </span>
       </div>
       <div className="gateway-copy">
         <span className="eyebrow">The first reading is ready</span>

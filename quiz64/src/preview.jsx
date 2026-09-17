@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { MotionConfig } from "motion/react";
 import { EvidenceSummary } from "./components/EvidenceSummary.jsx";
+import { AmbientWorld } from "./components/AmbientWorld.jsx";
 import {
   exportPreview,
   makePreviewState,
@@ -14,6 +15,9 @@ import "./voice-polish.css";
 import "./launch.css";
 import "./result-visuals.css";
 import "./preview.css";
+import "./world.css";
+import "./jewels.css";
+import "./living-world.css";
 
 function Preview() {
   const [fixture, setFixture] = useState("complete");
@@ -34,6 +38,7 @@ function Preview() {
   return (
     <MotionConfig reducedMotion="user">
       <div className="preview-page">
+        <AmbientWorld scene="complete" chapter={8} pulseKey={fixture} />
         <header className="preview-toolbar">
           <a
             className="preview-return"

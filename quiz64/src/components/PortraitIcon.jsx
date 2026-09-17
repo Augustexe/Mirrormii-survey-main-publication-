@@ -15,6 +15,7 @@ import {
   Sun,
   Wind,
 } from "lucide-react";
+import { JewelIcon } from "./JewelIcon.jsx";
 
 const icons = {
   sleep: MoonStar,
@@ -40,7 +41,9 @@ export function PortraitIcon({ kind, small = false }) {
       className={`portrait-icon${small ? " portrait-icon--small" : ""}`}
       aria-hidden="true"
     >
-      <Icon size={small ? 19 : 25} strokeWidth={1.65} />
+      <JewelIcon kind={kind} small={small} variant="portrait">
+        <Icon size={small ? 19 : 25} strokeWidth={1.65} />
+      </JewelIcon>
     </span>
   );
 }
