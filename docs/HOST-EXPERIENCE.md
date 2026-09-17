@@ -1,6 +1,6 @@
 # Genii: a conversation worth coming back to
 
-Version 0.1 · 2026-09-17 · Confirmed product direction; example copy and implementation details are drafts
+Version 0.2 · 2026-09-17 · Confirmed product direction; local implementation authorized
 
 ## The first-session job
 
@@ -32,7 +32,7 @@ The desired “撩” quality is attentive, playful rapport. It is not a require
 5. **Offer a provisional portrait.** Integrate the established behavior/routine bars, separate confidence and inspectable evidence. Put True/False beside individual interpretations; preserve the original result regardless of review feedback.
 6. **Give a credible reason to return.** Connect the next interaction to something the participant actually shared. Until ongoing support is implemented, label any proposed follow-up as a preview rather than simulate a saved future service.
 
-This is a proposed flow, not an implemented replacement for quiz64. Roughly 60 refers to respondent questions, not a license to hide large extra response burdens inside cards. Relevant replacement items should preserve intended evidence coverage.
+This flow now guides the authorized quiz64 implementation. See the implementation handoff for what is verified. Roughly 60 refers to respondent questions, not a license to hide large extra response burdens inside cards. Relevant replacement items should preserve intended evidence coverage.
 
 ## English voice samples — drafts for author review
 

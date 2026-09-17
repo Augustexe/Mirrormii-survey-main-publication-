@@ -1,60 +1,394 @@
-import React, { useEffect, useRef } from 'react';
-import { Check, Lock, X, Map, Info, ArrowLeft, RotateCcw, Sun, Moon } from 'lucide-react';
-import { CHAPTERS, QUESTIONS, chapterCount, safeTitle } from '../survey.js';
+import React, { useRef } from "react";
+import {
+  ArrowLeft,
+  Check,
+  Info,
+  Lock,
+  Map,
+  Moon,
+  RotateCcw,
+  Sun,
+  X,
+} from "lucide-react";
+import * as Survey from "../survey.js";
+import { useDialogFocus } from "./useDialogFocus.js";
 
-export function ChapterMap({ open, onClose, state, onVisit, onHow }) {
+const chapterFor = (id) =>
+  (Survey.CHAPTERS || []).find((chapter) => chapter.id === id);
+const statusFor = (q, state) =>
+  Survey.questionStatus?.(q, state) ||
+  (state.answers?.[q.id]
+    ? state.answers[q.id] === "skip"
+      ? "Skipped"
+      : "Answered"
+    : "Open");
+const titleFor = (q, state) =>
+  Survey.safeTitle?.(q, state) ||
+  Survey.interpolate?.(q.title, state) ||
+  q.title;
+
+export function ChapterMap({
+  open,
+  onClose,
+  state,
+  route = [],
+  onVisit,
+  onHow,
+}) {
   const dialog = useRef(null);
-  useEffect(() => {
-    if (open) dialog.current?.showModal();
-    else if (dialog.current?.open) dialog.current.close();
-  }, [open]);
-  const close = () => { if (dialog.current?.open) dialog.current.close(); onClose(); };
-  return <dialog ref={dialog} className="map-dialog" aria-labelledby="map-title" onCancel={(e) => { e.preventDefault(); close(); }} onClick={(e) => { if (e.target === dialog.current) close(); }}>
-    <div className="dialog-top"><div><span className="eyebrow">Your route through the weird</span><h2 id="map-title">Chapter map</h2></div><button type="button" className="icon-button" onClick={close} aria-label="Close chapter map"><X size={20} /></button></div>
-    <p className="dialog-lede">Eight chapters, 56 getting-to-know-you questions, then eight sealed checks. Every stop is optional.</p>
-    <div className="chapter-list">
-      {CHAPTERS.map((chapter, i) => {
-        const count = chapterCount(state, chapter.id); const future = i > 0 && !CHAPTERS.slice(0, i).every((c) => chapterCount(state, c.id).resolved === chapterCount(state, c.id).total);
-        const qs = QUESTIONS.filter((q) => q.chapter === chapter.id && !q.test); const isGateway = chapter.id === 8; const current = state.cursor >= QUESTIONS.findIndex((q) => q.chapter === chapter.id) && state.cursor <= QUESTIONS.findIndex((q) => q.chapter === chapter.id) + 7;
-        return <button key={chapter.id} type="button" className={`chapter-row ${future ? 'chapter-row--locked' : ''} ${current ? 'chapter-row--current' : ''}`} disabled={future || (!qs.length && !isGateway)} onClick={() => { onVisit(qs[0] || { chapter: 8, test: true }); close(); }}>
-          <span className="chapter-emblem">{future ? <Lock size={16} /> : count.resolved === count.total ? <Check size={18} /> : <span>{String(chapter.id).padStart(2, '0')}</span>}</span>
-          <span className="chapter-copy"><strong>{chapter.title}</strong><small>{chapter.subtitle}</small></span>
-          <span className="chapter-count">{count.answered} answered · {count.skipped} skipped</span>
-        </button>;
-      })}
-    </div>
-    <button type="button" className="how-link" onClick={() => { close(); onHow(); }}><Info size={16} /> How the evidence works</button>
-  </dialog>;
+  const close = () => {
+    if (dialog.current?.open) dialog.current.close();
+    onClose();
+  };
+  useDialogFocus(dialog, open);
+  const training = route.filter((q) => !q.test);
+  const chapters = Survey.CHAPTERS || [];
+  return (
+    <dialog
+      ref={dialog}
+      className="map-dialog"
+      aria-labelledby="map-title"
+      onCancel={(e) => {
+        e.preventDefault();
+        close();
+      }}
+      onClick={(e) => {
+        if (e.target === dialog.current) close();
+      }}
+    >
+      <div className="dialog-top">
+        <div>
+          <span className="eyebrow">Your route through the weird</span>
+          <h2 id="map-title">Chapter map</h2>
+        </div>
+        <button
+          type="button"
+          className="icon-button"
+          onClick={close}
+          aria-label="Close chapter map"
+        >
+          <X size={20} />
+        </button>
+      </div>
+      <p className="dialog-lede">
+        A few chapters of specific scenes, then eight sealed checks. Context
+        changes which scenes belong on your route.
+      </p>
+      <div className="chapter-list">
+        {chapters.map((chapter) => {
+          const qs = route.filter(
+            (q) => q.chapter === chapter.id && (!q.test || state.locked),
+          );
+          const resolved = qs.filter(
+            (q) => state.answers?.[q.id] !== undefined,
+          ).length;
+          const locked = !qs.length;
+          return (
+            <button
+              key={chapter.id}
+              type="button"
+              className={`chapter-row ${locked ? "chapter-row--locked" : ""}`}
+              disabled={locked}
+              onClick={() => {
+                onVisit(qs.find((q) => !state.answers?.[q.id]) || qs[0]);
+                close();
+              }}
+            >
+              <span className="chapter-emblem">
+                {locked ? (
+                  <Lock size={16} />
+                ) : resolved === qs.length ? (
+                  <Check size={18} />
+                ) : (
+                  <Map size={15} />
+                )}
+              </span>
+              <span className="chapter-copy">
+                <strong>{chapter.title}</strong>
+                <small>{chapter.subtitle}</small>
+              </span>
+              <span className="chapter-count">
+                {resolved} of {qs.length} resolved
+              </span>
+            </button>
+          );
+        })}
+      </div>
+      <button
+        type="button"
+        className="how-link"
+        onClick={() => {
+          close();
+          onHow();
+        }}
+      >
+        <Info size={16} /> How the evidence works
+      </button>
+    </dialog>
+  );
 }
 
-export function ReviewDialog({ open, onClose, state, onVisit }) {
+export function ReviewDialog({ open, onClose, state, route = [], onVisit }) {
   const dialog = useRef(null);
-  useEffect(() => { if (open) dialog.current?.showModal(); else if (dialog.current?.open) dialog.current.close(); }, [open]);
-  const close = () => { if (dialog.current?.open) dialog.current.close(); onClose(); };
-  return <dialog ref={dialog} className="map-dialog review-dialog" aria-labelledby="review-title" onCancel={(e) => { e.preventDefault(); close(); }}>
-    <div className="dialog-top"><div><span className="eyebrow">Private answer trail</span><h2 id="review-title">Review your answers</h2></div><button type="button" className="icon-button" onClick={close} aria-label="Close review"><X size={20} /></button></div>
-    <p className="dialog-lede">Read the choices you committed. Sealed checks show only their own answer state until all eight are resolved.</p>
-    <div className="review-list">{QUESTIONS.map((q, i) => { const value = state.answers?.[q.id]; const status = value === 'skip' ? 'Skipped' : value ? 'Answered' : 'Open'; const locked = q.test && Boolean(state.locked); const showPrompt = !q.test || Boolean(value); return <button type="button" key={q.id} className="review-row" onClick={() => { if (!value && q.test) return; onVisit(q); close(); }} disabled={!value && q.test}><span className="review-number">{String(i + 1).padStart(2, '0')}</span><span><strong>{showPrompt ? safeTitle(q, state) : `Sealed check ${String(i - 55).padStart(2, '0')}`}</strong><small>{q.test ? 'Sealed check · ' : ''}{status}</small></span><span className={`review-status ${value ? 'is-done' : ''}`}>{locked && q.test && !value ? 'locked' : status.toLowerCase()}</span></button>; })}</div>
-  </dialog>;
+  const close = () => {
+    if (dialog.current?.open) dialog.current.close();
+    onClose();
+  };
+  useDialogFocus(dialog, open);
+  return (
+    <dialog
+      ref={dialog}
+      className="map-dialog review-dialog"
+      aria-labelledby="review-title"
+      onCancel={(e) => {
+        e.preventDefault();
+        close();
+      }}
+    >
+      <div className="dialog-top">
+        <div>
+          <span className="eyebrow">Private answer trail</span>
+          <h2 id="review-title">Review your answers</h2>
+        </div>
+        <button
+          type="button"
+          className="icon-button"
+          onClick={close}
+          aria-label="Close review"
+        >
+          <X size={20} />
+        </button>
+      </div>
+      <p className="dialog-lede">
+        Only eligible scenes on this attempt appear here. Sealed checks stay
+        read-only after you continue.
+      </p>
+      <div className="review-list">
+        {route.map((q, i) => {
+          const value = state.answers?.[q.id];
+          const status = statusFor(q, state);
+          const readOnly = Boolean(q.test && value);
+          return (
+            <button
+              type="button"
+              key={q.id}
+              className="review-row"
+              onClick={() => {
+                if (!value || (q.test && !state.locked)) return;
+                onVisit(q);
+                close();
+              }}
+              disabled={!value || (q.test && !state.locked)}
+            >
+              <span className="review-number">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <span>
+                <strong>
+                  {q.test && !value
+                    ? `Sealed check ${i + 1}`
+                    : titleFor(q, state)}
+                </strong>
+                <small>
+                  {q.test ? "Sealed check. " : ""}
+                  {status}
+                </small>
+              </span>
+              <span className={`review-status ${value ? "is-done" : ""}`}>
+                {readOnly ? "read-only" : status.toLowerCase()}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </dialog>
+  );
 }
 
 export function HowDialog({ open, onClose }) {
   const dialog = useRef(null);
-  useEffect(() => { if (open) dialog.current?.showModal(); else if (dialog.current?.open) dialog.current.close(); }, [open]);
-  const close = () => { if (dialog.current?.open) dialog.current.close(); onClose(); };
-  return <dialog ref={dialog} className="map-dialog how-dialog" aria-labelledby="how-title" onCancel={(e) => { e.preventDefault(); close(); }}>
-    <div className="dialog-top"><div><span className="eyebrow">Small print, in human language</span><h2 id="how-title">How this works</h2></div><button type="button" className="icon-button" onClick={close} aria-label="Close how this works"><X size={20} /></button></div>
-    <div className="how-copy"><p>Genii keeps this conversation in your browser. The answer bank is authored in advance and matches repeated choices in the same context. It is a playful local prototype, not a scientific personality assessment.</p><div className="how-grid"><div><b>56 + 8</b><span>56 training questions build the reading. Eight new checks test it afterward.</span></div><div><b>Rule-based</b><span>Every category comes from an actual choice. Thin or tied evidence abstains.</span></div><div><b>Unscored notes</b><span>Context can help you remember why you chose something. It never changes the reading.</span></div><div><b>Your device</b><span>Answers stay on this device. No account or analytics is required.</span></div></div><p className="how-boundary">A self-reported bedtime, meal frequency, or movement count stays a fact. It is not silently turned into a judgment.</p></div>
-  </dialog>;
+  const close = () => {
+    if (dialog.current?.open) dialog.current.close();
+    onClose();
+  };
+  useDialogFocus(dialog, open);
+  return (
+    <dialog
+      ref={dialog}
+      className="map-dialog how-dialog"
+      aria-labelledby="how-title"
+      onCancel={(e) => {
+        e.preventDefault();
+        close();
+      }}
+    >
+      <div className="dialog-top">
+        <div>
+          <span className="eyebrow">Small print, in human language</span>
+          <h2 id="how-title">How this works</h2>
+        </div>
+        <button
+          type="button"
+          className="icon-button"
+          onClick={close}
+          aria-label="Close how this works"
+        >
+          <X size={20} />
+        </button>
+      </div>
+      <div className="how-copy">
+        <p>
+          Answers stay on this device. No account or analytics is required. This
+          is a playful local prototype, not a scientific personality assessment.
+        </p>
+        <div className="how-grid">
+          <div>
+            <b>56 + 8</b>
+            <span>
+              Training scenes build a provisional reading. Eight sealed checks
+              follow.
+            </span>
+          </div>
+          <div>
+            <b>Rule-based</b>
+            <span>
+              Every category comes from an authored choice. Thin or tied
+              evidence abstains.
+            </span>
+          </div>
+          <div>
+            <b>Unscored notes</b>
+            <span>
+              Your optional context helps you remember why you chose something.
+              It never changes the reading.
+            </span>
+          </div>
+          <div>
+            <b>Context aware</b>
+            <span>
+              Known irrelevant scenes are left out instead of asking you to
+              invent an answer.
+            </span>
+          </div>
+        </div>
+        <p className="how-boundary">
+          A self-reported bedtime, meal frequency, or movement count stays a
+          fact. It is not silently turned into a judgment.
+        </p>
+      </div>
+    </dialog>
+  );
 }
 
-export function MoreDialog({ open, onClose, onHow, onReview, onExport, onMap, onSave, onReset, motionOn, setMotionOn }) {
+export function MoreDialog({
+  open,
+  onClose,
+  onHow,
+  onReview,
+  onExport,
+  onMap,
+  onSave,
+  onReset,
+  motionOn,
+  setMotionOn,
+}) {
   const dialog = useRef(null);
-  useEffect(() => { if (open) dialog.current?.showModal(); else if (dialog.current?.open) dialog.current.close(); }, [open]);
-  const close = () => { if (dialog.current?.open) dialog.current.close(); onClose(); };
-  const action = (fn) => { close(); fn(); };
-  return <dialog ref={dialog} className="map-dialog more-dialog" aria-labelledby="more-title" onCancel={(e) => { e.preventDefault(); close(); }}>
-    <div className="dialog-top"><div><span className="eyebrow">Small useful drawer</span><h2 id="more-title">More</h2></div><button type="button" className="icon-button" onClick={close} aria-label="Close menu"><X size={20} /></button></div>
-    <div className="more-actions"><button type="button" onClick={() => action(onMap)}><Map size={17} /><span><b>Chapter map</b><small>See what is open and what is ahead</small></span></button><button type="button" onClick={() => action(onHow)}><Info size={17} /><span><b>How it works</b><small>Read the local-only evidence notes</small></span></button><button type="button" onClick={() => action(onReview)}><Check size={17} /><span><b>Review answers</b><small>Open the choices you have committed</small></span></button><button type="button" onClick={() => action(onExport)}><Map size={17} /><span><b>Export current answers</b><small>Download a private JSON copy</small></span></button><button type="button" onClick={() => action(onSave)}><ArrowLeft size={17} /><span><b>Save &amp; leave</b><small>Return home; this device keeps your place</small></span></button><button type="button" onClick={() => action(onReset)}><RotateCcw size={17} /><span><b>Start again</b><small>Clear this quiz after one last check</small></span></button><button type="button" onClick={() => { setMotionOn(!motionOn); close(); }}><span className="more-icon">{motionOn ? <Sun size={17} /> : <Moon size={17} />}</span><span><b>{motionOn ? 'Motion on' : 'Motion off'}</b><small>{motionOn ? 'Turn ambient movement off' : 'Turn ambient movement on'}</small></span></button></div>
-  </dialog>;
+  const close = () => {
+    if (dialog.current?.open) dialog.current.close();
+    onClose();
+  };
+  useDialogFocus(dialog, open);
+  const action = (fn) => {
+    close();
+    fn();
+  };
+  return (
+    <dialog
+      ref={dialog}
+      className="map-dialog more-dialog"
+      aria-labelledby="more-title"
+      onCancel={(e) => {
+        e.preventDefault();
+        close();
+      }}
+    >
+      <div className="dialog-top">
+        <div>
+          <span className="eyebrow">Small useful drawer</span>
+          <h2 id="more-title">More</h2>
+        </div>
+        <button
+          type="button"
+          className="icon-button"
+          onClick={close}
+          aria-label="Close menu"
+        >
+          <X size={20} />
+        </button>
+      </div>
+      <div className="more-actions">
+        <button type="button" onClick={() => action(onMap)}>
+          <Map size={17} />
+          <span>
+            <b>Chapter map</b>
+            <small>See the eligible scenes on your route</small>
+          </span>
+        </button>
+        <button type="button" onClick={() => action(onHow)}>
+          <Info size={17} />
+          <span>
+            <b>How it works</b>
+            <small>Read the local evidence notes</small>
+          </span>
+        </button>
+        <button type="button" onClick={() => action(onReview)}>
+          <Check size={17} />
+          <span>
+            <b>Review answers</b>
+            <small>Open choices already committed</small>
+          </span>
+        </button>
+        <button type="button" onClick={() => action(onExport)}>
+          <Map size={17} />
+          <span>
+            <b>Export current answers</b>
+            <small>Download a private JSON copy</small>
+          </span>
+        </button>
+        <button type="button" onClick={() => action(onSave)}>
+          <ArrowLeft size={17} />
+          <span>
+            <b>Save and leave</b>
+            <small>Return home with this device keeping your place</small>
+          </span>
+        </button>
+        <button type="button" onClick={() => action(onReset)}>
+          <RotateCcw size={17} />
+          <span>
+            <b>Start again</b>
+            <small>Clear this attempt after one last check</small>
+          </span>
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setMotionOn(!motionOn);
+            close();
+          }}
+        >
+          <span className="more-icon">
+            {motionOn ? <Sun size={17} /> : <Moon size={17} />}
+          </span>
+          <span>
+            <b>{motionOn ? "Motion on" : "Motion off"}</b>
+            <small>
+              {motionOn
+                ? "Turn ambient movement off"
+                : "Turn ambient movement on"}
+            </small>
+          </span>
+        </button>
+      </div>
+    </dialog>
+  );
 }

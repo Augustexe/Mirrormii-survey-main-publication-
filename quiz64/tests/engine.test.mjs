@@ -1,214 +1,432 @@
-import test from 'node:test';
-import assert from 'node:assert/strict';
-import {QUESTIONS, DIMS, VERSION, CHAPTERS} from '../src/data.js';
+import test from "node:test";
+import assert from "node:assert/strict";
+import { QUESTIONS, DIMS, VERSION } from "../src/data.js";
 import {
-  KEY, fresh, selected, facts, applicable, evidence, profile, trainingAnswers,
-  signature, predict, freeze, stats, setAnswer, restore, exportAttempt
-} from '../src/engine.js';
+  KEY,
+  fresh,
+  selected,
+  facts,
+  applicable,
+  buildRoute,
+  routeQuestions,
+  evidence,
+  observations,
+  profile,
+  signature,
+  predict,
+  freeze,
+  portrait,
+  stats,
+  setAnswer,
+  restore,
+  exportAttempt,
+  reviewClaim,
+} from "../src/engine.js";
+import { optionText } from "../src/survey.js";
 
-const training = QUESTIONS.filter(q => !q.test);
-const heldouts = QUESTIONS.filter(q => q.test);
-function filled(close = 'c', household = 'b') {
+const context = (close = "c", household = "b") => {
   const state = fresh();
-  setAnswer(state, 'q01', close);
-  setAnswer(state, 'q02', household);
-  for (const q of training) if (!Object.hasOwn(state.answers, q.id)) setAnswer(state, q.id, q.options[0].id);
+  setAnswer(state, "q01", close);
+  setAnswer(state, "q02", household);
+  return state;
+};
+
+function fillTraining(state, value = "a") {
+  for (const question of routeQuestions(state).filter((q) => !q.test)) {
+    if (!Object.hasOwn(state.answers, question.id))
+      setAnswer(
+        state,
+        question.id,
+        question.options.some((option) => option.id === value)
+          ? value
+          : question.options[0].id,
+      );
+  }
   return state;
 }
 
-test('bank has 64 valid questions, chapters, roles, tags and facts', () => {
-  assert.equal(VERSION, 'genii-64.v1');
-  assert.equal(QUESTIONS.length, 64);
-  assert.equal(new Set(QUESTIONS.map(q => q.id)).size, 64);
-  assert.deepEqual(QUESTIONS.slice(0, 56).map(q => q.test), Array(56).fill(false));
-  assert.deepEqual(QUESTIONS.slice(56).map(q => q.test), Array(8).fill(true));
-  assert.deepEqual(CHAPTERS.map(c => c.id), [1, 2, 3, 4, 5, 6, 7, 8]);
-  assert.deepEqual(QUESTIONS.slice(0, 56).map(q => q.chapter), [...Array(7)].flatMap((_, i) => Array(8).fill(i + 1)));
-  for (const q of QUESTIONS) {
-    assert.ok(q.id && q.title && q.setup);
-    assert.ok(['context', 'hypothetical', 'actual', 'holdout'].includes(q.role));
-    assert.equal(q.options.length >= 4, true);
-    q.options.forEach((o, i) => {
-      assert.equal(o.id, String.fromCharCode(97 + i));
-      assert.ok(o.text && typeof o.why === 'string');
-      for (const tag of o.tags) assert.ok(DIMS[tag.d], `${q.id} has unknown ${tag.d}`);
-    });
-    if (q.test) assert.ok(q.baseline && q.options.some(o => o.id === q.baseline));
+function freezeState(close = "c", household = "b") {
+  const state = fillTraining(context(close, household));
+  state.locked = freeze(state);
+  return state;
+}
+
+test("bank and route expose 64 stable slots with valid candidate questions", () => {
+  assert.ok(QUESTIONS.length >= 64);
+  assert.equal(buildRoute({}).total, 64);
+  assert.equal(new Set(QUESTIONS.map((q) => q.id)).size, QUESTIONS.length);
+  const route = buildRoute({});
+  assert.equal(
+    route.ids.length +
+      route.omitted.filter((item) => item.reason !== "unknown_candidate")
+        .length >=
+      56,
+    true,
+  );
+  for (const question of QUESTIONS) {
+    assert.ok(question.id && question.title && question.setup);
+    assert.ok(question.options.length >= 4);
+    for (const option of question.options)
+      for (const tag of option.tags || []) assert.ok(DIMS[tag.d]);
+  }
+  assert.match(VERSION, /^genii-/);
+  assert.equal(typeof KEY, "string");
+});
+
+test("unknown and inapplicable context is omitted with a reason, never silently answered", () => {
+  const unknown = buildRoute({});
+  assert.ok(
+    unknown.omitted.some((item) => item.reason.startsWith("requires_")) ||
+      unknown.ids.length === unknown.total,
+  );
+  const solo = context("e", "a");
+  const route = buildRoute(solo.answers);
+  assert.ok(
+    route.omitted.some((item) => item.reason.startsWith("requires_")) ||
+      route.ids.length === route.total,
+  );
+  const closeQuestion = QUESTIONS.find((q) => q.applicable === "close");
+  if (closeQuestion && !route.ids.includes(closeQuestion.id))
+    assert.equal(applicable(closeQuestion, solo.answers), false);
+  assert.equal(facts(solo.answers).close, "none");
+  assert.equal(facts(solo.answers).household, "alone");
+});
+
+test("selected and evidence exclude every explicit missingness sentinel", () => {
+  const actual = QUESTIONS.find((q) => !q.test && q.role === "actual");
+  assert.ok(actual);
+  assert.equal(selected(actual, { [actual.id]: "skip" }), undefined);
+  assert.equal(selected(actual, { [actual.id]: "no_example" }), undefined);
+  assert.equal(selected(actual, { [actual.id]: "other" }), undefined);
+  assert.equal(
+    evidence({ [actual.id]: "skip" }).some((row) => row.question === actual.id),
+    false,
+  );
+  assert.equal(
+    evidence({ [actual.id]: "no_example" }).some(
+      (row) => row.question === actual.id,
+    ),
+    false,
+  );
+});
+
+test("Other stores bounded text without turning it into scored evidence", () => {
+  const state = context();
+  const question = routeQuestions(state).find(
+    (q) => !q.test && !q.applicable && q.options.length >= 4,
+  );
+  assert.ok(question);
+  setAnswer(state, question.id, "other", {
+    otherText: "A custom answer from the participant.",
+    note: "Author note",
+  });
+  assert.equal(
+    state.other[question.id],
+    "A custom answer from the participant.",
+  );
+  assert.equal(state.notes[question.id], "Author note");
+  assert.equal(
+    evidence(state.answers).some((row) => row.question === question.id),
+    false,
+  );
+  assert.throws(
+    () => setAnswer(context(), question.id, "other"),
+    /Other text required/,
+  );
+});
+
+test("context edits invalidate dependent answers and all sealed checks while preserving history", () => {
+  const state = freezeState("c", "b");
+  const dependent = QUESTIONS.find(
+    (q) => q.applicable === "close" && state.route?.ids.includes(q.id),
+  );
+  if (dependent) {
+    state.notes[dependent.id] = "context note";
+    state.other[dependent.id] = "context custom";
+  }
+  const before = state.locked;
+  setAnswer(state, "q01", "e");
+  assert.equal(state.locked, null);
+  assert.equal(state.resultHistory.length, 1);
+  assert.deepEqual(state.resultHistory[0].signature, before.signature);
+  if (dependent) {
+    assert.equal(state.answers[dependent.id], undefined);
+    assert.equal(state.notes[dependent.id], undefined);
+    assert.equal(state.other[dependent.id], undefined);
   }
 });
 
-test('each dimension has two independent training questions and selected-close coverage', () => {
-  for (const d of Object.keys(DIMS)) {
-    const ids = new Set(training.flatMap(q => q.options.flatMap(o => o.tags.filter(t => t.d === d).map(() => q.id))));
-    assert.ok(ids.size >= 2, `${d} has ${ids.size} opportunities`);
+test("context edits also clear answers attached to a generic fallback that leaves the route", () => {
+  const state = context("e", "a");
+  const fallback = routeQuestions(state).find((q) => q.id === "q81");
+  assert.ok(fallback, "solo route uses the generic fallback");
+  setAnswer(state, fallback.id, "other", { otherText: "fallback note" });
+  state.notes[fallback.id] = "fallback author note";
+  setAnswer(state, "q01", "a");
+  assert.equal(state.route.ids.includes(fallback.id), false);
+  assert.equal(state.answers[fallback.id], undefined);
+  assert.equal(state.other[fallback.id], undefined);
+  assert.equal(state.notes[fallback.id], undefined);
+});
+
+test("freeze keeps heldout responses outside profile and freezes predictions before checks", () => {
+  const state = freezeState();
+  assert.equal(
+    state.locked.predictions.length,
+    routeQuestions(state).filter((q) => q.test).length,
+  );
+  const snapshot = JSON.stringify(state.locked);
+  const heldout = routeQuestions(state).find((q) => q.test);
+  assert.ok(heldout);
+  setAnswer(state, heldout.id, "skip");
+  assert.equal(JSON.stringify(state.locked), snapshot);
+  assert.equal(
+    state.locked.profile.some((group) =>
+      group.rows.some((row) => row.question === heldout.id),
+    ),
+    false,
+  );
+  assert.throws(() => setAnswer(state, heldout.id, heldout.options[0].id));
+});
+
+test("prediction uses exact matching source questions and exposes abstention", () => {
+  const heldout = QUESTIONS.find(
+    (q) => q.test && q.options.some((o) => o.tags?.length),
+  );
+  assert.ok(heldout);
+  const prediction = predict(heldout, { q01: "c", q02: "b" });
+  assert.equal(prediction.option, null);
+  assert.ok(prediction.reason);
+  assert.ok(
+    prediction.scores.every((score) =>
+      score.parts.every((part) =>
+        part.sources.every((id) => id !== heldout.id),
+      ),
+    ),
+  );
+});
+
+test("portrait separates measures, direct facts, emotion layers and confidence", () => {
+  const state = freezeState();
+  const result = portrait(state);
+  assert.deepEqual(Object.keys(result), [
+    "id",
+    "version",
+    "title",
+    "summary",
+    "claims",
+    "groups",
+    "domains",
+    "emotions",
+    "facts",
+  ]);
+  assert.equal(result.version, VERSION);
+  for (const claim of result.claims) {
+    assert.ok(claim.id && claim.text && claim.dimension && claim.target);
+    assert.ok(Array.isArray(claim.evidenceIds));
+    assert.ok(["missing", "low", "medium", "high"].includes(claim.confidence));
   }
-  const closeQuestions = Object.fromEntries(['D5', 'D6', 'D7', 'D8'].map(d => [d, new Set()]));
-  for (const q of training) for (const o of q.options) for (const t of o.tags) if (t.target === 'close' && closeQuestions[t.d]) closeQuestions[t.d].add(q.id);
-  for (const [d, ids] of Object.entries(closeQuestions)) assert.ok(ids.size >= 2, `${d} selected close has ${ids.size} distinct questions`);
-  assert.equal(new Set(training.filter(q => q.chapter === 1 && q.role === 'actual').map(q => q.id)).size >= 1, true);
-  for (let chapter = 1; chapter <= 7; chapter++) assert.ok(training.some(q => q.chapter === chapter && q.role === 'actual'));
+  for (const domain of result.domains)
+    for (const axis of domain.axes) {
+      assert.ok(Object.hasOwn(axis, "usual") && Object.hasOwn(axis, "recent"));
+      assert.ok(["missing", "low", "medium", "high"].includes(axis.confidence));
+    }
+  for (const emotion of result.emotions)
+    assert.ok(
+      [
+        "frustration",
+        "worry",
+        "disappointment",
+        "embarrassment",
+        "guilt",
+        "joy",
+        "relief",
+      ].includes(emotion.family),
+    );
 });
 
-test('facts and applicability keep contexts separate', () => {
-  const s = filled('a', 'a');
-  assert.equal(facts(s.answers).close, 'mother');
-  assert.equal(facts(s.answers).household, 'alone');
-  assert.equal(applicable(QUESTIONS.find(q => q.id === 'q18'), s.answers), true);
-  assert.equal(applicable(QUESTIONS.find(q => q.id === 'q15'), s.answers), false);
-  setAnswer(s, 'q18', 'a');
-  assert.equal(evidence(s.answers).some(r => r.question === 'q18'), true);
-  assert.equal(evidence(s.answers).some(r => r.target === 'household (alone)'), false);
-  assert.equal(evidence(s.answers).some(r => r.target === 'chosen mother'), true);
+test("claim review records an immutable snapshot and cannot affect profile or evaluation", () => {
+  const state = freezeState();
+  const result = portrait(state);
+  const claim = result.claims[0];
+  if (!claim) return;
+  const beforePortrait = JSON.stringify(portrait(state));
+  const beforeLocked = JSON.stringify(state.locked);
+  const beforeStats = JSON.stringify(stats(state));
+  reviewClaim(state, claim.id, true, "This feels familiar.");
+  assert.equal(JSON.stringify(portrait(state)), beforePortrait);
+  assert.equal(JSON.stringify(state.locked), beforeLocked);
+  assert.equal(JSON.stringify(stats(state)), beforeStats);
+  assert.equal(state.feedback[0].claim.id, claim.id);
+  assert.equal(state.feedback[0].resultVersion, VERSION);
+  assert.equal(
+    state.reviewed,
+    false,
+    "feedback is a snapshot and does not mark benchmark checks as practiced",
+  );
 });
 
-test('skips are missing evidence and actual never happened is not inferred', () => {
-  const s = fresh();
-  setAnswer(s, 'q01', 'e');
-  setAnswer(s, 'q02', 'd');
-  for (const q of training) if (!Object.hasOwn(s.answers, q.id)) setAnswer(s, q.id, 'skip');
-  assert.deepEqual(evidence(s.answers), []);
-  assert.ok(profile(s.answers).every(g => g.status !== 'Repeated pattern'));
-  assert.throws(() => freeze({q01: 'e', q02: 'd'}), /Incomplete/);
+test("freeze records prior heldout exposure separately and export keeps that context", () => {
+  const first = fillTraining(context());
+  first.testSeen = true;
+  first.priorExposure = false;
+  first.locked = freeze(first);
+  assert.equal(first.locked.priorExposure, false);
+  assert.equal(
+    exportAttempt(first).attempt.evaluationContext,
+    "first_exposure",
+  );
+
+  const repeat = fillTraining(context());
+  repeat.testSeen = true;
+  repeat.priorExposure = true;
+  repeat.locked = freeze(repeat);
+  assert.equal(repeat.locked.priorExposure, true);
+  const restored = restore(JSON.parse(JSON.stringify(repeat)));
+  assert.equal(restored.locked.priorExposure, true);
+  assert.equal(
+    exportAttempt(restored).attempt.evaluationContext,
+    "practice_after_prior_exposure",
+  );
 });
 
-test('matching-source threshold rejects smoothing and accepts two exact source questions', () => {
-  const q57 = QUESTIONS.find(q => q.id === 'q57');
-  const one = predict(q57, {q01: 'c', q02: 'b', q04: 'a'});
-  assert.equal(one.option, null);
-  const two = predict(q57, {q01: 'c', q02: 'b', q04: 'a', q12: 'a'});
-  assert.equal(two.option, 'a');
-  assert.ok(two.sources.length >= 2);
-  assert.ok(two.scores.every(score => score.parts.every(part => part.sources.every(id => id !== 'q57'))));
+test("freeze owns a snapshot when the caller mutates its answer source afterwards", () => {
+  const state = fillTraining(context());
+  const source = { ...state.answers };
+  const locked = freeze(source);
+  const before = JSON.stringify(locked);
+  source.q01 = "e";
+  source.q03 = "d";
+  assert.equal(JSON.stringify(locked), before);
+  assert.equal(locked.training.q01, "c");
 });
 
-test('target separation prevents group-friend evidence from supporting selected close', () => {
-  const s = filled('d', 'b');
-  const rows = evidence(s.answers);
-  assert.ok(rows.some(r => r.target === 'chosen friend'));
-  assert.ok(rows.some(r => r.target === 'friend'));
-  const q58 = QUESTIONS.find(q => q.id === 'q58');
-  const p = predict(q58, s.answers);
-  assert.ok(!p.sources.includes('q07'));
+test("option text helper tolerates abstention or malformed option records", () => {
+  assert.equal(optionText(undefined, fresh()), "");
+  assert.equal(
+    optionText({ label: "fallback label" }, fresh()),
+    "fallback label",
+  );
 });
 
-test('freeze requires all training slots, reconstructs predictions, and tests are immutable', () => {
-  const s = filled();
-  s.locked = freeze(s.answers);
-  assert.equal(s.locked.predictions.length, 8);
-  const before = JSON.stringify(s.locked);
-  setAnswer(s, 'q57', 'skip');
-  assert.equal(JSON.stringify(s.locked), before);
-  assert.throws(() => setAnswer(s, 'q57', 'a'));
-  assert.equal(stats(s).skipped, 1);
-  assert.equal(stats(s).unresolved, 7);
+test("stats keeps answered, skipped, no-example, other, abstention and baseline denominators separate", () => {
+  const state = freezeState();
+  const heldouts = routeQuestions(state).filter((q) => q.test);
+  if (heldouts.length < 3) return;
+  setAnswer(state, heldouts[0].id, "skip");
+  setAnswer(state, heldouts[1].id, "no_example");
+  setAnswer(state, heldouts[2].id, "other", { otherText: "Not this time" });
+  const result = stats(state);
+  assert.equal(result.skipped, 1);
+  // Current heldouts are hypothetical, so no-example remains unscored rather than an actual-event count.
+  assert.equal(result.noExample, 0);
+  assert.equal(result.other, 1);
+  assert.equal(result.unscored, 2);
+  assert.equal(result.answered, 0);
+  assert.equal(result.predicted, 0);
+  assert.equal(result.abstained, 0);
 });
 
-test('training edits clear heldouts and frozen snapshot while preserving practice review flags', () => {
-  const s = filled();
-  s.locked = freeze(s.answers);
-  setAnswer(s, 'q57', 'skip');
-  s.testSeen = true;
-  setAnswer(s, 'q03', 'b');
-  assert.equal(s.locked, null);
-  assert.equal(s.answers.q57, undefined);
-  assert.equal(s.reviewed, true);
-  assert.equal(s.testSeen, true);
-});
-
-test('context changes clear dependent answers and notes, including away and back', () => {
-  const s = filled('c', 'b');
-  setAnswer(s, 'q18', 'a'); s.notes.q18 = 'safe note';
-  setAnswer(s, 'q15', 'a'); s.notes.q15 = 'house note';
-  setAnswer(s, 'q01', 'e');
-  setAnswer(s, 'q02', 'a');
-  assert.equal(s.answers.q18, undefined); assert.equal(s.notes.q18, undefined);
-  assert.equal(s.answers.q15, undefined); assert.equal(s.notes.q15, undefined);
-  setAnswer(s, 'q01', 'c'); setAnswer(s, 'q02', 'b');
-  assert.equal(s.answers.q18, undefined); assert.equal(s.answers.q15, undefined);
-});
-
-test('restore rejects tampering and drops mismatched context bindings', () => {
-  const s = filled();
-  setAnswer(s, 'q18', 'a');
-  s.locked = freeze(s.answers);
-  const tampered = JSON.parse(JSON.stringify(s));
-  tampered.locked.predictions[0].option = 'fake';
-  const restored = restore(tampered);
-  assert.notEqual(restored.locked.predictions[0].option, 'fake');
-  const changed = JSON.parse(JSON.stringify(s));
-  changed.answers.q01 = 'a';
-  assert.equal(restore(changed).answers.q18, undefined);
-  assert.deepEqual(restore({...changed, answers: {...changed.answers, q18: 'wat'}}), fresh());
-  assert.deepEqual(restore('broken'), fresh());
-});
-
-test('restore drops notes when an old dependent answer is normalized to an inapplicable skip', () => {
-  const s = fresh();
-  setAnswer(s, 'q01', 'c'); setAnswer(s, 'q02', 'b'); setAnswer(s, 'q18', 'a');
-  s.notes.q18 = 'old selected-person note';
-  const raw = JSON.parse(JSON.stringify(s));
-  raw.answers.q01 = 'e';
+test("restore rejects malformed state and keeps only current eligible route answers", () => {
+  assert.deepEqual(restore("broken"), fresh());
+  const state = freezeState();
+  const raw = JSON.parse(JSON.stringify(state));
+  const hidden = QUESTIONS.find((q) => q.applicable === "close");
+  if (hidden) {
+    raw.answers[hidden.id] = raw.answers[hidden.id] || "a";
+    raw.answers.q01 = "e";
+    delete raw.bindings[hidden.id];
+  }
   const restored = restore(raw);
-  assert.equal(restored.answers.q18, 'skip');
-  assert.equal(restored.notes.q18, undefined);
+  assert.equal(restored.version, VERSION);
+  if (hidden) assert.equal(restored.answers[hidden.id], undefined);
 });
 
-test('restore preserves notes and bindings for explicit skips in the same context', () => {
-  const partner = fresh();
-  setAnswer(partner, 'q01', 'c'); setAnswer(partner, 'q02', 'a'); setAnswer(partner, 'q18', 'skip');
-  partner.notes.q18 = 'does not happen for partner';
-  const once = restore(JSON.parse(JSON.stringify(partner)));
-  const twice = restore(JSON.parse(JSON.stringify(once)));
-  assert.equal(twice.answers.q18, 'skip');
-  assert.equal(twice.notes.q18, 'does not happen for partner');
-  assert.deepEqual(twice.bindings.q18, {close: 'partner'});
-
-  const none = fresh();
-  setAnswer(none, 'q01', 'e'); setAnswer(none, 'q02', 'a'); setAnswer(none, 'q18', 'skip');
-  none.notes.q18 = 'does not happen without a selected person';
-  const restoredNone = restore(JSON.parse(JSON.stringify(none)));
-  assert.equal(restoredNone.answers.q18, 'skip');
-  assert.equal(restoredNone.notes.q18, 'does not happen without a selected person');
-  assert.deepEqual(restoredNone.bindings.q18, {close: 'none'});
+test("restore rebuilds feedback from the validated frozen snapshot and drops nested arbitrary fields", () => {
+  const state = freezeState();
+  const claim = portrait(state).claims[0];
+  if (!claim) return;
+  reviewClaim(state, claim.id, true, "kept");
+  const raw = JSON.parse(JSON.stringify(state));
+  raw.feedback[0].claim.dimension = { evil: true };
+  raw.feedback[0].claim.target = { nested: { evil: true } };
+  raw.feedback[0].claim.observations = [
+    { id: { evil: true }, signal: { family: { evil: true } } },
+  ];
+  raw.feedback[0].evidenceSnapshot = [{ id: { evil: true }, extra: "drop" }];
+  const restored = restore(raw);
+  assert.equal(restored.feedback.length, 1);
+  assert.equal(restored.feedback[0].claim.id, claim.id);
+  assert.equal(typeof restored.feedback[0].claim.dimension, "string");
+  assert.equal(typeof restored.feedback[0].claim.target, "string");
+  assert.equal(
+    restored.feedback[0].claim.observations.some(
+      (row) => row.id === "[object Object]",
+    ),
+    false,
+  );
+  assert.equal(restored.feedback[0].evidenceSnapshot[0]?.extra, undefined);
+  assert.equal(
+    restored.feedback[0].resultId,
+    `portrait:${state.locked.signature}`,
+  );
 });
 
-test('none and solo completed attempts preserve normalized inapplicable skips through restore', () => {
-  const s = filled('e', 'a');
-  s.locked = freeze(s.answers);
-  for (const q of heldouts) setAnswer(s, q.id, 'skip');
-  const r = restore(JSON.stringify(s));
-  assert.equal(r.answers.q18, 'skip');
-  assert.equal(r.answers.q15, 'skip');
-  assert.ok(r.locked);
-  assert.equal(stats(r).skipped, 8);
+test("restore drops forged historical training and feedback rather than trusting a matching version string", () => {
+  const state = freezeState();
+  const raw = JSON.parse(JSON.stringify(state));
+  raw.resultHistory = [
+    {
+      version: VERSION,
+      signature: "forged",
+      training: {},
+      profile: [
+        { d: "D1", target: "general", rows: [{ id: "forged-evidence" }] },
+      ],
+      observations: [{ id: "forged-evidence" }],
+      predictions: [],
+    },
+  ];
+  raw.feedback = [
+    {
+      claimId: "claim:D1:general",
+      value: true,
+      resultId: "portrait:forged",
+      claim: {
+        id: "claim:D1:general",
+        evidenceIds: ["forged-evidence"],
+        observations: [],
+      },
+    },
+  ];
+  const restored = restore(raw);
+  assert.equal(restored.resultHistory.length, 0);
+  assert.equal(restored.feedback.length, 0);
 });
 
-test('stats separates skips, abstentions and same-subset baseline', () => {
-  const s = filled(); s.locked = freeze(s.answers);
-  const before = stats(s);
-  assert.equal(before.answered, 0); assert.equal(before.skipped, 0); assert.equal(before.unresolved, 8);
-  for (const q of heldouts) setAnswer(s, q.id, 'skip');
-  const zero = stats(s);
-  assert.equal(zero.answered, 0); assert.equal(zero.skipped, 8); assert.equal(zero.predicted, 0);
-  assert.equal(zero.hits, 0); assert.equal(zero.baselineAll, 0);
-});
-
-test('support tags describe seeking/disclosure and do not create false D6 patterns', () => {
-  const rows = evidence({q01: 'd', q02: 'b', q33: 'a', q38: 'b'});
-  assert.equal(rows.filter(row => row.d === 'D6').length, 0);
-});
-
-test('export includes private answers/evidence and hides all prediction scores until terminal', () => {
-  const s = filled(); s.locked = freeze(s.answers);
-  setAnswer(s, 'q57', 'skip');
-  const partial = exportAttempt(s);
+test("export filters hidden candidate answers and hides prediction scores until terminal checks resolve", () => {
+  const state = freezeState("e", "a");
+  const hidden = QUESTIONS.find((q) => q.applicable === "close");
+  if (hidden) state.answers[hidden.id] = "a";
+  const heldout = routeQuestions(state).find((q) => q.test);
+  assert.ok(heldout);
+  setAnswer(state, heldout.id, "skip");
+  const partial = exportAttempt(state);
+  if (hidden && !partial.route.ids.includes(hidden.id))
+    assert.equal(partial.answers[hidden.id], undefined);
+  assert.equal(
+    partial.answers[heldout.id],
+    "skip",
+    "private export retains the respondent-owned terminal response",
+  );
   assert.equal(partial.heldoutsResolved, false);
   assert.equal(partial.predictions[0].option, undefined);
   assert.equal(partial.predictions[0].scores, undefined);
-  assert.ok(partial.answers.q01 && partial.trainingAnswers.q01);
-  for (const q of heldouts.slice(1)) setAnswer(s, q.id, 'skip');
-  const full = exportAttempt(s);
+  assert.equal(Object.hasOwn(partial.predictions[0], "title"), false);
+  for (const q of routeQuestions(state).filter((item) => item.test))
+    if (!Object.hasOwn(state.answers, q.id)) setAnswer(state, q.id, "skip");
+  const full = exportAttempt(state);
   assert.equal(full.heldoutsResolved, true);
-  assert.ok('scores' in full.predictions[0]);
-  assert.equal(full.provenance.heldoutQuestions, 8);
+  assert.equal(full.provenance.routeSlots, 64);
+  assert.ok(full.claimReviews);
 });

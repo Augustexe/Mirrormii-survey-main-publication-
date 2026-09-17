@@ -1,5 +1,13 @@
 # Decisions and remaining choices
 
+## Current implementation authorization - 2026-09-17
+
+Jerry explicitly requested implementation on the last build using the installed Taste skill, root management and Luna workers. This supersedes the earlier spec/interview pause. Work is isolated on `codex/genii-taste-survey`, based on `fd7c880` (the latest specification atop the verified `ec89aa7` app). Source, design and evidence contracts are under `quiz64/docs/`.
+
+Concrete local choices: 64 route slots (56 context/profile plus eight checks), relevant replacements from a larger bank, optional unscored Other text, separate measure windows, literal emotion layers, frozen claim-level feedback, and a versioned local storage key. The user delegated implementation details; these choices are reviewable defaults, not claims of psychometric validation. No extra 20 checks, clinical health scores, public deployment or backend writes are included.
+
+The installed Taste skill informs the brand composition and quality review. Its generic palette/bar restrictions yield to the user's explicit lilac brand and descriptive bar requirements. The generated glass environment is a non-canon project asset; canonical Genii art remains byte-for-byte unchanged.
+
 Updated 2026-09-17 · Owner: Jerry · Authority: latest conversation and [active personality/health contract](PERSONALITY-HEALTH-SPEC.md). Earlier decisions below remain historical where explicitly superseded.
 
 ## Active revision — 2026-09-17
@@ -28,7 +36,7 @@ Updated 2026-09-17 · Owner: Jerry · Authority: latest conversation and [active
 | D-034 | First portrait is provisional and can develop through future interaction. This does not change D-019: True/False alone still preserves the original result. Longitudinal implementation is outside this spec checkpoint. |
 | D-035 | Q15 accepts the recommended return value: understand yourself better and gradually find small habits that work for you. This is intended value, not measured benefit or an already implemented service. |
 
-The active [Product Spec v0.5](PRODUCT-SPEC.md), [core specification](PERSONALITY-HEALTH-SPEC.md) and [host experience](HOST-EXPERIENCE.md) govern this revision. Approximately 60 questions remains the working scale; do not reinstate old 12/30/96 tiers. Backend remains Desmond's scope. Q11–Q15 are settled; retain unresolved axis/scale/routing contracts separately. User-facing discussion continues in English. The historical 20-item benchmark and latest “20 accuracy” reference do not settle the respondent-visible count/placement.
+The active [Product Spec v0.6](PRODUCT-SPEC.md), [core specification](PERSONALITY-HEALTH-SPEC.md) and [host experience](HOST-EXPERIENCE.md) govern this revision. Approximately 60 questions remains the working scale; do not reinstate old 12/30/96 tiers. Backend remains Desmond's scope. Q11–Q15 are settled; retain unresolved axis/scale/routing contracts separately. User-facing discussion continues in English. The historical 20-item benchmark and latest “20 accuracy” reference do not settle the respondent-visible count/placement.
 
 Fresh native Lark reads succeeded on 2026-09-17. Relevant schema/vision/emotion sources include drafts, and the aggregate packet remains incomplete. See runs/20260917T193810Z-a886d9810122/output/COMPANY-CONTEXT.md for sources/states. Historical access failures below do not describe current native access.
 

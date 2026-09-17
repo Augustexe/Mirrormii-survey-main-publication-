@@ -1,8 +1,8 @@
 # Genii root survey — personality, emotion and health habits
 
-Version 0.2 · 2026-09-17 · Owner: Jerry Zhang · Status: confirmed direction with open design decisions
+Version 0.3 · 2026-09-17 · Owner: Jerry Zhang · Status: implementation authorized; concrete contracts linked below
 
-This is the active core document for the next survey revision. It records Jerry’s feedback and answers from the current interview. It is a specification, not a claim that the existing app implements these changes. The earlier founder brief and handoff remain source evidence; later explicit decisions in this document take precedence where they conflict.
+This is the active core document for the survey revision. The latest user instruction authorizes implementing it on the previous build. The [implementation contract](../quiz64/docs/IMPLEMENTATION-CONTRACT.md) resolves local engineering defaults and supersedes the earlier interview pause. It records Jerry’s feedback and answers from the current interview. It is a specification, not a claim that the existing app implements these changes. The earlier founder brief and handoff remain source evidence; later explicit decisions in this document take precedence where they conflict.
 
 ## 1. Confirmed product purpose
 
@@ -60,7 +60,7 @@ The same answer must not be recycled across these layers to inflate confidence. 
 
 ## 4. Current bank: verified coverage and gaps
 
-Reviewed app baseline: `quiz64/` at commit `ec89aa7`, with 56 training/context questions and eight internally authored heldouts. Its mappings are deterministic; notes are unscored. It has no implemented True/False result-review events or general Other option, and it currently displays inapplicable screens. The new requirements above are therefore not implemented yet.
+Reviewed app baseline: `quiz64/` at commit `ec89aa7`, with 56 training/context questions and eight internally authored heldouts. Its mappings are deterministic; notes are unscored. It has no implemented True/False result-review events or general Other option, and it currently displays inapplicable screens. That baseline predates this implementation. Use the current handoff and tests for delivery status.
 
 | Domain | Existing evidence | Gap before a richer result |
 |---|---|---|
@@ -143,7 +143,7 @@ The current app’s eight heldouts are internally authored checks, not that inde
 
 Keep separate denominators for eligible items, answered items, predictions attempted, abstentions, matches and feedback endorsements. Do not manufacture higher accuracy by excluding hard questions without reporting coverage, or by treating a repeated exposure as a fresh blind test.
 
-Latest founder direction makes conversation quality the primary product test: does the person feel understood, want to continue, and expect useful ongoing support? These are distinct from prediction accuracy and actual health improvement. Proposed pilot measures belong in HOST-EXPERIENCE.md; no threshold is approved. The reference to “20 accuracy” moments explains their intended trust-building role; it does not settle whether 20 checks appear inside, after, or outside the roughly 60-question route. Keep the count/placement open.
+Latest founder direction makes conversation quality the primary product test: does the person feel understood, want to continue, and expect useful ongoing support? These are distinct from prediction accuracy and actual health improvement. Proposed pilot measures belong in HOST-EXPERIENCE.md; no threshold is approved. The reference to “20 accuracy” moments explains their intended trust-building role; it does not mandate 20 additional checks. The authorized local build retains eight checks after 56 profile/context scenes. A separate independent validation study remains unspecified.
 
 Jerry delegated benchmark selection in Q4. The selected priorities are (1) unseen-choice prediction against a no-profile baseline, and (2) the person's reported usual behavior versus their behavior under pressure. Keep them separate. The first tests predictive value; the second describes context sensitivity and does not establish prediction accuracy or longitudinal change. First-session usual-versus-pressure comparisons are self-reported contrasts, not measurements of improvement over time.
 
@@ -162,24 +162,24 @@ Confirmed: personality + health-habit root survey
 │  └─ Health: broader than four original domains [Q7 direction settled]
 │     ├─ Habits + body/skin; optional relevant health context [Q11 settled]
 │     ├─ Usual past month / recent last seven days [Q12 settled]
-│     └─ Exact axes, domain exceptions, necessary questions [open]
+│     └─ Descriptive ordinal axes and direct recall windows [local implementation contract]
 ├─ Emotional context: feelings + response + recovery [settled]
 │  ├─ Seven feeling families [Q8 settled]
-│  └─ Intensity/recovery scales and counterpart coverage [open]
+│  └─ Literal named feelings/actions/recovery; intensity only when explicit [local implementation contract]
 ├─ True/False: preserve result, log feedback only [settled]
 │  ├─ Beside individual interpretations [Q9 settled]
-│  └─ Timing and optional reason [open]
+│  └─ At final portrait; feedback event only, no required explanation [local implementation contract]
 ├─ Adaptive omission + Other [direction settled]
 │  ├─ Relevant replacements; roughly 60 questions per route [Q10 settled]
 │  ├─ Written Other preserved unscored [Q13 settled]
-│  └─ Replacement coverage, Other placement and unknown-context rule [open]
+│  └─ 64 route slots, generic equivalents, Other on categorical prompts [local implementation contract]
 ├─ First-session recognition and trust; long-term relationship [settled direction]
 │  ├─ North America, all genders, English; earlier segments illustrative [Q14 settled]
 │  └─ Understand self + gradually find suitable small habits [Q15 settled]
 └─ Character templates and comic identity labels [deferred]
 ```
 
-Jerry's “yes to all” accepts the recommendations for Q11–Q13. Do not reopen them as pending. Q14 confirms North America, all genders and English; Q15 confirms understanding self and gradually finding suitable small habits. Other unresolved implementation contracts remain tracked above. No runtime/UI implementation starts from this spec until the interview has reached the shared understanding Jerry requested.
+Jerry's “yes to all” accepts the recommendations for Q11–Q13. Do not reopen them as pending. Q14 confirms North America, all genders and English; Q15 confirms understanding self and gradually finding suitable small habits. Other unresolved implementation contracts remain tracked above. The later explicit request to implement on the previous build completes the interview pause and authorizes local runtime/UI work. Concrete defaults are documented in the implementation contract; remaining pilot and production questions do not block the local build.
 
 ## 12. Source and authority notes
 

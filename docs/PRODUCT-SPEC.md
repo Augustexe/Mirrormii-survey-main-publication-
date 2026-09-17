@@ -1,6 +1,6 @@
 # Genii Personality and Health Survey — Product Spec
 
-Version 0.5 · 2026-09-17 · Owner: Jerry Zhang · Status: specification refinement; next implementation pending shared understanding
+Version 0.6 · 2026-09-17 · Owner: Jerry Zhang · Status: local implementation authorized; verification recorded in the current handoff
 
 **A funny conversation that reveals how you feel, respond, and handle everyday health routines.**
 
@@ -16,7 +16,7 @@ The review baseline is the React quiz64 app at commit ec89aa7: 64 authored quest
 
 This revision concerns the root survey, evidence semantics and private result. It does not reactivate the earlier 12/30/96-depth implementation or require final Genii family names, one-liners or character matching. Each route should stay around 60 questions using relevant replacements from an expanded bank. Confirmed health scope includes habits plus body/skin experience and optional relevant context such as allergies, existing conditions or cycles. Hydration, toilet routines and stress-related eating are illustrative everyday examples, not a mandatory checklist. Optional context remains reported fact, not a personality score.
 
-Backend integration belongs to Desmond. Production accounts, Lark writes, payments, publication and remote integration remain separate work. This document records requirements; it does not claim that Other, full adaptive bypass, emotional measurements, domain bars or True/False review are implemented.
+Backend integration belongs to Desmond. Production accounts, Lark writes, payments, publication and remote integration remain separate work. Jerry explicitly authorized implementation on the last build with Taste guidance and Luna workers. The concrete [implementation contract](../quiz64/docs/IMPLEMENTATION-CONTRACT.md) selects 64 route slots, 56 context/profile questions plus eight frozen checks, with relevant alternatives. Current delivery status and verification belong in the implementation handoff; the older baseline below is historical.
 
 ## Confirmed experience
 
@@ -84,11 +84,11 @@ Retain Genii brand colors and authorized assets, strong typography, readable gla
 
 Use one clear current question and primary action. Support keyboard navigation, visible focus, readable contrast, mobile scrolling and reduced motion. Long choices and Other input must work on narrow screens; sticky controls cannot cover content. Motion must not block answers or access to the result.
 
-Earlier visual work remains a reference, not authority to restore obsolete depth cards, rescoring interactions or character assignments. Final layout and bar scales require the remaining specification decisions.
+Earlier visual work remains a reference, not authority to restore obsolete depth cards, rescoring interactions or character assignments. The current layout and descriptive ordinal axes are specified in the implementation contract and question map.
 
-## Acceptance requirements for the next implementation
+## Acceptance requirements
 
-These are future requirements, not a report of passing checks.
+These define the implementation gates. Recorded results belong in the final local handoff and review reports.
 
 | Area | Required evidence |
 | --- | --- |
@@ -104,7 +104,7 @@ These are future requirements, not a report of passing checks.
 | Accessibility | Mobile/desktop, long text, keyboard, focus and reduced-motion flows work with routing and review controls |
 | Handoff | Question map, evidence schema, source/version provenance and known limits are reviewable by Desmond |
 
-Use independent review for implementation. Jerry requested Luna for implementation and coordinating-agent verification; no next-version implementation has been dispatched from this specification interview.
+Jerry requested Luna implementation with coordinating-agent verification. The current run uses separate question-bank, engine and frontend workers, independent reviews, and root browser verification on the isolated branch.
 
 ## Company grounding and source authority
 
@@ -116,4 +116,4 @@ Foundational specification/source-audit run: runs/20260917T193810Z-a886d9810122.
 
 ## Open decisions
 
-Q11–Q13 are settled: habits/body/skin with optional health context; past-month/last-seven-days default windows; written Other saved unscored. Q14–Q15 confirm North America, all genders, English first, and understanding self plus gradually finding suitable small habits. Exact bar/emotion scales, domain exceptions, unknown-context routing and prediction-check placement remain open. The [core specification's decision tree](PERSONALITY-HEALTH-SPEC.md#11-interview-decision-tree) records status. Recommendations are not accepted decisions; record answers before dependent implementation.
+Q11–Q13 are settled: habits/body/skin with optional health context; past-month/last-seven-days default windows; written Other saved unscored. Q14–Q15 confirm North America, all genders, English first, and understanding self plus gradually finding suitable small habits. The authorized local build selects named ordinal routine bands, literal emotion categories, generic unknown-context replacements, and eight frozen checks after 56 profile/context scenes. These are engineering defaults documented in the implementation contract, not validated psychometric scales. Pilot thresholds, independent validation, production services and final character labels remain future work.

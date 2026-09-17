@@ -3,12 +3,39 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#fdfdff" />
-    <meta name="description" content="A playful, local-only conversation with Genii." />
-    <title>Genii — You have layers</title>
+    <meta
+      name="theme-color"
+      content="#f7f6fb"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#171621"
+      media="(prefers-color-scheme: dark)"
+    />
+    <meta
+      name="description"
+      content="A playful conversation about your personality, feelings and everyday routines. Get to know your patterns with Genii."
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="%BASE_URL%assets/genii-attentive.png"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="%BASE_URL%assets/genii-curious-delivery.png"
+      fetchpriority="high"
+    />
+    <title>Genii | Let's get oddly specific</title>
   </head>
   <body>
     <div id="root"></div>
+    <noscript
+      >This local Genii demo needs JavaScript to ask questions and build your
+      portrait.</noscript
+    >
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

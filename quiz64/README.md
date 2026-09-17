@@ -1,19 +1,39 @@
 # Genii 64 survey
 
-The local React/Vite participant experience for the 56-question training flow and eight sealed checks. It uses the authored `src/data.js` and `src/engine.js` API from Task 1 and keeps attempt state in the browser under the engine's `KEY`.
+Genii is a local React/Vite survey experience with a deterministic, context-aware route. Each attempt has 64 ordered route slots: 56 training questions followed by eight internally authored heldout checks. The bank contains replacement candidates so close-person, household, solo, and unknown context can choose an eligible scene without inventing a fact or showing an inapplicable question.
+
+The implementation contract is [`docs/IMPLEMENTATION-CONTRACT.md`](docs/IMPLEMENTATION-CONTRACT.md). Product, health/personality, and host behavior requirements are [`../docs/PRODUCT-SPEC.md`](../docs/PRODUCT-SPEC.md), [`../docs/PERSONALITY-HEALTH-SPEC.md`](../docs/PERSONALITY-HEALTH-SPEC.md), and [`../docs/HOST-EXPERIENCE.md`](../docs/HOST-EXPERIENCE.md).
+
+## Run locally
 
 ```sh
-/Users/jerryzhang/Workspace-Draft/system/bin/dev npm install
-/Users/jerryzhang/Workspace-Draft/system/bin/dev npm run dev -- --port 4188
-/Users/jerryzhang/Workspace-Draft/system/bin/dev npm run build
+/Users/jerryzhang/Workspace-Draft/system/bin/dev npm install --prefix quiz64
+/Users/jerryzhang/Workspace-Draft/system/bin/dev npm run dev --prefix quiz64 -- --port 4188
+/Users/jerryzhang/Workspace-Draft/system/bin/dev npm run build --prefix quiz64
 ```
 
-The production build uses `base: './'` and resolves local artwork through `import.meta.env.BASE_URL`, so the output can be served from a nested static directory. No runtime data requests, account, analytics, or backend are required; answers are not sent anywhere. The user can export a private JSON attempt at any point.
+The build uses a relative base path and local assets. It has no runtime data requests, account, analytics, backend, messaging, or survey API. Answers stay in the browser unless the respondent explicitly downloads the private JSON export.
 
-The UI is deliberately separate from the evidence implementation. It imports the stable engine functions `fresh`, `restore`, `setAnswer`, `freeze`, `stats`, and `exportAttempt`. `QuestionCard` owns only an uncommitted radio draft; Continue commits it. Heldout answers are read-only after commit and predictions remain absent from the participant-facing review until completion.
+## Evidence behavior
 
-Desmond integration boundary: the current persistence adapter is localStorage under `genii.evidence64.v1`, with private JSON export and no account, server persistence, analytics, messaging, or survey API. Preserve the engine's versioned question IDs, contextual bindings, validation, terminal states, and the separation between training evidence and heldout checks when replacing storage. Notes are optional, unscored strings; any future retention of notes or identifiable responses needs an explicit product and retention design.
+`src/engine.js` owns routing, validation, evidence rows, profile groups, descriptive domain bars, emotion layers, heldout predictions, statistics, restore, and export. `src/survey.js` exposes route-aware helpers to the UI. The current route is derived from the answers and records omitted candidates with reasons. Context changes clear dependent answers, notes, and Other text, as well as all frozen checks; prior frozen results and claim feedback remain in separate history snapshots.
 
-The final Genii type or character layer is intentionally deferred. A future layer should consume the evidence contract while preserving missing, mixed, thin, and abstained states. This build does not assign an MBTI equivalent or claim personality accuracy. See the run's `output/DESMOND-HANDOFF.md` for the complete extension map.
+Training evidence freezes before the eight checks are shown. Heldout answers never enter the profile, portrait, or prediction sources. A prediction can abstain when exact support is too thin or tied. Export keeps respondent-owned answers, including already given check responses, while unresolved check options, scores, evaluation, and future check titles remain hidden until every terminal check is answered.
 
-The canon asset provenance and destination checksums live in [`docs/ASSETS.json`](docs/ASSETS.json). Supplied Genii sprites and MirrorMii marks are copied unchanged; CSS controls only the portal compositing, framing, and motion.
+The portrait contains literal evidence claims only for repeated supported patterns. Thin and mixed groups remain inspectable without becoming claims. Domain axes preserve separate usual past-month and recent last-seven-day values with separate qualitative evidence confidence. Direct facts, actual events, hypotheticals, self-reports, and endorsements retain distinct provenance. Emotion records keep feeling, outward response, and recovery as separate layers across the authored families; a quiet action does not imply a calm feeling.
+
+`skip`, `no_example`, and `other` are distinct. Skip is a missing response; no-example is meaningful for actual-event questions and is unscored; Other stores optional bounded text and is unscored. Notes are optional bounded strings and never affect scoring. There is no clinical score, diagnosis, calibrated probability, population benchmark, or claim of scientific personality accuracy.
+
+Per-claim True/False feedback appends an immutable result, claim, and evidence snapshot. It does not alter the portrait, evidence weights, confidence, or predictions. Restore recomputes frozen snapshots from complete validated training answers, rejects forged history, validates exact feedback bindings, clamps the route cursor, and removes hidden or invalid candidate answers. The current versioned key is `genii.evidence64.v2`; the prior legacy key is left untouched. The UI also uses `genii.heldout-seen.v1` for prior check exposure and `genii.motion.v1` for motion preference. If localStorage is unavailable, the tab remains usable and the UI explains that the respondent should keep the tab open or export answers.
+
+## Verification
+
+From the project root, the managed test command is:
+
+```sh
+/Users/jerryzhang/Workspace-Draft/system/bin/dev npm test --prefix quiz64
+```
+
+The owned engine suite passed all 18 tests on 2026-09-17, and the full bank-plus-engine suite passed all 26 tests after the bank's `q102` candidate was assigned to the route. The production build also passed. The covered engine behavior includes 64-slot routing across context combinations, missingness and Other semantics, direct recall windows, literal emotion layers, heldout secrecy and abstention, context invalidation, immutable feedback, malformed and forged restore payloads, private export filtering, prior exposure, and source mutation.
+
+The final browser interaction evidence is recorded in the allocated run's [review handoff](docs/RELEASE-REVIEW.md).
