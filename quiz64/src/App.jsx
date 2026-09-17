@@ -25,6 +25,10 @@ import { EvidenceSummary } from "./components/EvidenceSummary.jsx";
 import { useDialogFocus } from "./components/useDialogFocus.js";
 import "./styles.css";
 import "./voice-polish.css";
+import "./launch.css";
+import "./result-visuals.css";
+import { ChapterRibbon } from "./components/ChapterRibbon.jsx";
+import { ChapterObject } from "./components/ChapterObject.jsx";
 
 const MOTION_KEY = "genii.motion.v1";
 const SEEN_KEY = "genii.heldout-seen.v1";
@@ -371,7 +375,7 @@ export default function App() {
 
   return (
     <MotionConfig reducedMotion={motionOn ? "user" : "always"}>
-      <div className="app-shell">
+      <div className="app-shell" data-screen={screen}>
         <Header
           state={state}
           storageOK={storageOK}
@@ -436,6 +440,7 @@ export default function App() {
               onContinue={commit}
               onBack={state.cursor > 0 ? back : null}
               onSkip={commit}
+              onMap={() => setMapOpen(true)}
               readOnly={Boolean(
                 currentQuestion.test && state.answers?.[currentQuestion.id],
               )}
@@ -569,7 +574,7 @@ function Landing({ state, onBegin, onHow }) {
   return (
     <motion.main
       className="landing-page page-enter"
-      initial={{ opacity: 0, y: 14 }}
+      initial={false}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
@@ -634,6 +639,11 @@ function Landing({ state, onBegin, onHow }) {
           <ArrowRight size={16} />
         </button>
       </section>
+      {import.meta.env.DEV && (
+        <a className="developer-preview-link" href="./preview.html">
+          Developer result preview <ArrowRight size={14} />
+        </a>
+      )}
     </motion.main>
   );
 }
@@ -694,6 +704,7 @@ function Interlude({ chapter, state, route, onContinue, onSave }) {
         />
       </div>
       <div className="interlude-copy">
+        <ChapterObject chapter={chapter.id} />
         <span className="chapter-kicker">
           {chapter.kicker || chapter.title}
         </span>
@@ -751,6 +762,7 @@ function QuizView({
   readOnly,
   storageOK,
   error,
+  onMap,
 }) {
   const chapterQs = route.filter((item) => item.chapter === chapter?.id);
   const chapterResolved = resolved(chapterQs, state);
@@ -766,6 +778,7 @@ function QuizView({
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.22 }}
     >
+      <ChapterRibbon current={chapter?.id} onOpen={onMap} />
       <div className="quiz-topline">
         <div>
           <span className="eyebrow">{chapter?.title || "Your route"}</span>
@@ -820,6 +833,7 @@ function QuizView({
                   : "curious"
             }
             compact
+            reactionKey={draft ? `${q.id}-${draft}` : undefined}
             bubble={
               q.test
                 ? "No peeking. I sealed the envelope."

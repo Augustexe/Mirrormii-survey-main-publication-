@@ -108,23 +108,40 @@
       "source_sha256": "8f0c5363cac10aa9d64f746aa1e75efd4aca759b9877e40f52ef33b08d059245",
       "destination_sha256": "8f0c5363cac10aa9d64f746aa1e75efd4aca759b9877e40f52ef33b08d059245",
       "rights": "owned; edit free; app-ui"
+    },
+    {
+      "eagle_item_id": "MSF9HPVHLUDJX",
+      "role": "alert host for the launch landing, hypothetical scenes and portrait",
+      "source": "/Users/jerryzhang/Workspace-Draft/assets/Genomii AI.library/images/MSF9HPVHLUDJX.info/Genii2.png",
+      "destination": "public/assets/genii-alert.png",
+      "dimensions": [
+        612,
+        582
+      ],
+      "source_sha256": "8251689c7662d37a8a36c4742a6ec1389e55a290434fada5940cc85e3a660556",
+      "destination_sha256": "8251689c7662d37a8a36c4742a6ec1389e55a290434fada5940cc85e3a660556",
+      "rights": "owned; edit locked; state master; usage app-ui",
+      "metadata_checked_at": "2026-09-17",
+      "folder_id": "MSF9HT9P2IN8T"
     }
   ],
-  "font_policy": "Use installed Avenir Next/Avenir when available; bundled OFL Manrope fallback via @fontsource/manrope. No remote font calls.",
+  "font_policy": "Unmodified Satoshi variable WOFF2 hosted locally, with system sans-serif fallback; ITF Free Font License 2.0 included at public/fonts/FFL.txt. No runtime font calls. Previous Manrope package remains unused.",
   "generated_environment": {
-    "kind": "generated project environment; non-canon",
+    "kind": "generated supporting environment; non-canon",
     "tool": "built-in image_gen",
-    "source": "output/graphics/genii-glass-stage-source.png",
-    "consumer": "quiz64/public/assets/genii-glass-stage.webp",
+    "source": "/Users/jerryzhang/Workspace-Draft/projects/mirrormii-genie-survey/runs/20260917T223619Z-836745ec1fb6/output/graphics/genii-ribbon-stage-v2.png",
+    "original_source": "/Users/jerryzhang/Workspace-Draft/projects/mirrormii-genie-survey/runs/20260917T223619Z-836745ec1fb6/output/graphics/genii-ribbon-stage-source.png",
+    "consumer": "quiz64/public/assets/genii-ribbon-stage.webp",
     "dimensions": [
       1536,
       1024
     ],
-    "derivative": "WebP quality 86 delivery encoding from generated JPEG; no crop or semantic change",
-    "sha256": "9e10edc19f0ef166f2cff65d507b31b0fdc57deb759d5fb0610cee15daba82b8",
-    "bytes": 47674,
-    "character_policy": "Empty environment only; canonical Genii and brand art unchanged",
-    "prompt": "Premium Genii hero environment: photoreal translucent frosted glass loop and satin pearl platform, pale lilac/periwinkle/ice-blue reflections, silver-white studio, asymmetric right-weighted sculpture and generous negative space, blank center for canonical mascot compositing in code. No text/logos/characters/UI/confetti/neon; image_gen generated at 1536x1024."
+    "derivative": "WebP quality 88 delivery encoding; no programmatic artwork edits",
+    "sha256": "6f73df07e01aa2cd5fd0bdcf6e31fc51fc62ebcd61d95fa42d0466e5dfb1c78f",
+    "bytes": 110250,
+    "character_policy": "Empty supporting stage; canonical Genii rendered separately and unchanged",
+    "prompt": "Use case: stylized-concept. Asset type: Genii survey premium consumer website sculptural environment, landscape 1536x1024. Create a beautifully lit high-end 3D product campaign still life on a clean pure-white studio background. This is an EMPTY SUPPORTING STAGE for an existing lilac mascot to be composited later by code. Scene: a low, very wide lavender transparent glass plinth near the bottom center, a large organically folded translucent violet glass ribbon curling around the sides but leaving the entire middle upper half empty, one small polished chrome sphere on the lower left, a small inflated translucent lilac five-petal flower object on the right edge, and subtle refracted sunlight caustics across the white floor. The palette is white and confident lilac/violet with silver highlights, not a washed-out gray fog. Give glass edges crisp rich violet refraction, bright clear highlights, real material thickness and contact shadows. The shapes feel joyful, touchable and contemporary. Camera frontal at slight elevated angle. Center 45% wide by upper 60% high of image remains plain white, empty for the existing character and with no object covering that area. Ribbon can enter from lower-left and arc up the right edge, not a generic complete circle or glass donut. Full composition at generous margins, nothing cropped on sides. Premium art direction, beautiful physical materials, clean contours, high definition, no mist, no blur, no grain. Absolutely no text, no UI, no symbols, no eyes, no faces, no mascot, no logos, no watermark, no dark background. The result must feel like a cheerful sculptural set for a refined white-and-purple consumer survey.",
+    "edit_prompt": "Use case: precise-object-edit. Edit target Image 1 is the supplied existing stage art.\nScale the entire existing scene down about 25% and recenter it on a landscape 3:2 transparent canvas. Preserve its same pale pearl plinth, looping translucent violet optical-glass ribbon, chrome sphere, and violet glass flower; preserve design, colors, materials, relative arrangement, and soft studio lighting. The plinth remains centered low, the loop frames the composition, sphere and flower remain fully visible, and the center above the plinth stays open for a separate mascot overlay.\nEvery object must fit entirely inside the frame with clear transparent breathing room on all four edges. No edge may crop, flatten, or touch an object. Request genuine transparency in the margins. Change only scale and placement. Add and remove nothing. No opaque background, text, logos, people, characters, or Genii artwork."
   },
   "delivery_encodings": [
     {
@@ -139,6 +156,45 @@
       "source_sha256": "3011a29392be7c3f357c4b78915b74ab8d2cb27ce63f70e71ce6107f06b4ef3a",
       "destination_sha256": "ccdb21ccf1b0be6a019bbd3a3a4086cc9d04d7bc71c02d10d343f4881d338bd2",
       "verification": "612x582 decoded browser RGBA matches exactly; zero RGB or alpha mismatch. See run logs/asset-oxipng-fallback.json. No resize, crop or artwork change."
+    },
+    {
+      "source": "public/assets/genii-alert.png",
+      "destination": "public/assets/genii-alert-delivery.png",
+      "tool": "@jsquash/oxipng 2.3.0",
+      "options": {
+        "level": 6,
+        "optimiseAlpha": false
+      },
+      "bytes": 187444,
+      "source_sha256": "8251689c7662d37a8a36c4742a6ec1389e55a290434fada5940cc85e3a660556",
+      "destination_sha256": "c5dfca3bd6f31009ac85632d289e6f48bd68210a9ce5dee6d22e06664725a6bc",
+      "verification": "612x582 browser sRGB RGBA equality: zero RGB or alpha mismatches; see logs/alert-oxipng-equality.json. No artwork change."
     }
-  ]
+  ],
+  "fonts": [
+    {
+      "family": "Satoshi",
+      "file": "public/fonts/Satoshi-Variable.woff2",
+      "source": "https://api.fontshare.com/v2/fonts/download/satoshi",
+      "archive_member": "Satoshi_Complete/Fonts/WEB/fonts/Satoshi-Variable.woff2",
+      "license": "public/fonts/FFL.txt",
+      "bytes": 42588,
+      "sha256": "e739aff9b4d02c264341d6d4872edcda28e79373aeda936f659566a1cd3eb47f"
+    }
+  ],
+  "previous_generated_environment": {
+    "kind": "generated project environment; non-canon",
+    "tool": "built-in image_gen",
+    "source": "output/graphics/genii-glass-stage-source.png",
+    "consumer": "quiz64/public/assets/genii-glass-stage.webp",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "derivative": "WebP quality 86 delivery encoding from generated JPEG; no crop or semantic change",
+    "sha256": "9e10edc19f0ef166f2cff65d507b31b0fdc57deb759d5fb0610cee15daba82b8",
+    "bytes": 47674,
+    "character_policy": "Empty environment only; canonical Genii and brand art unchanged",
+    "prompt": "Premium Genii hero environment: photoreal translucent frosted glass loop and satin pearl platform, pale lilac/periwinkle/ice-blue reflections, silver-white studio, asymmetric right-weighted sculpture and generous negative space, blank center for canonical mascot compositing in code. No text/logos/characters/UI/confetti/neon; image_gen generated at 1536x1024."
+  }
 }

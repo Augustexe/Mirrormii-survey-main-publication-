@@ -1,5 +1,10 @@
 # Genii survey implementation review
 
+## Current launch visual refinement
+
+The 2026-09-17 `codex/genii-launch-visuals` pass preserves the five questionnaire and engine source files byte-for-byte from `4c7b4f87`. Its [visual contract](LAUNCH-VISUALS.md) and [asset provenance](ASSETS.json) document the implementation. The review handoff is `runs/20260917T223619Z-836745ec1fb6/output/HANDOFF.md`; the earlier review below is retained as history.
+
+
 ## Current voice and visibility pass
 
 `codex/genii-voice-polish`, 2026-09-17: all 76 candidate prompts rewritten in natural English, stronger situation hooks, selective conversational replies, white theme with purple accents, result icons and linked routine navigation, aligned usual/recent bars. The engine is unchanged. A structural comparison confirms identical option IDs, tags, measures, facts, signals, windows and route slots. The existing 26 tests pass. Focused browser review covers landing, questions and results on desktop/mobile, the white theme under dark OS preference, Other, claim feedback and routine navigation.

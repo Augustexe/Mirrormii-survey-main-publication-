@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef, useContext } from "react";
+import { motion, MotionConfigContext, useReducedMotion } from "motion/react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -29,6 +30,9 @@ export function QuestionCard({
   error = "",
 }) {
   const heading = useRef(null);
+  const reduced = useReducedMotion();
+  const { reducedMotion } = useContext(MotionConfigContext);
+  const staticMotion = reduced || reducedMotion === "always";
   const qApplicable = applicable(q, state);
   const committed = state.answers?.[q.id];
   const committedOther = state.other?.[q.id] || "";
@@ -97,7 +101,11 @@ export function QuestionCard({
       >
         <legend className="sr-only">Choose one answer</legend>
         {responseOptions.map((o, i) => (
-          <label
+          <motion.label
+            initial={staticMotion ? false : { opacity: 0, y: 7 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.22, delay: staticMotion ? 0 : i * 0.035 }}
+            whileTap={staticMotion ? undefined : { scale: 0.994 }}
             key={o.id}
             className={`answer-option ${draft === o.id ? "answer-option--selected" : ""}`}
           >
@@ -122,7 +130,7 @@ export function QuestionCard({
               strokeWidth={2.5}
               aria-hidden="true"
             />
-          </label>
+          </motion.label>
         ))}
       </fieldset>
       {draft === "other" && qApplicable && !readOnly && (

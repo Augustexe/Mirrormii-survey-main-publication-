@@ -14,6 +14,12 @@ The implementation contract is [`docs/IMPLEMENTATION-CONTRACT.md`](docs/IMPLEMEN
 
 The build uses a relative base path and local assets. It has no runtime data requests, account, analytics, backend, messaging, or survey API. Answers stay in the browser unless the respondent explicitly downloads the private JSON export.
 
+## Developer result preview
+
+Open `preview.html` beside the survey entry to inspect complete, mixed, sparse, or fully skipped synthetic answers immediately. The preview invokes the same engine and result component, uses independently authored heldout answers, marks exports synthetic, and never writes survey localStorage. The development landing page links to it. It is a local review surface, not an authenticated admin page; remove the separate preview entry from a public build if it should not be discoverable.
+
+The current visual contract and scope are in [`docs/LAUNCH-VISUALS.md`](docs/LAUNCH-VISUALS.md).
+
 ## Evidence behavior
 
 `src/engine.js` owns routing, validation, evidence rows, profile groups, descriptive domain bars, emotion layers, heldout predictions, statistics, restore, and export. `src/survey.js` exposes route-aware helpers to the UI. The current route is derived from the answers and records omitted candidates with reasons. Context changes clear dependent answers, notes, and Other text, as well as all frozen checks; prior frozen results and claim feedback remain in separate history snapshots.

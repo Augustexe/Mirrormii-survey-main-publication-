@@ -8,6 +8,7 @@ import {
   ThumbsUp,
 } from "lucide-react";
 import { PortraitIcon } from "./PortraitIcon.jsx";
+import { GeniiStage } from "./GeniiStage.jsx";
 import * as Survey from "../survey.js";
 import * as Engine from "../engine.js";
 
@@ -116,7 +117,7 @@ export function EvidenceSummary({
 
   const hasEvidence = claims.length > 0;
   return (
-    <main className="completion-shell">
+    <main className="completion-shell result-experience">
       {error && (
         <p className="save-error" role="alert">
           {error}
@@ -165,16 +166,11 @@ export function EvidenceSummary({
           </div>
         </div>
         <div className="completion-orb">
-          <img
-            src={
-              Survey.asset?.("genii-attentive.png") ||
-              `${import.meta.env.BASE_URL}assets/genii-attentive.png`
-            }
-            width="612"
-            height="582"
-            alt="Genii looking attentive"
+          <GeniiStage
+            mood="curious"
+            compact={false}
+            bubble="“You brought the lore. I brought notes.”"
           />
-          <span>“You brought the lore. I brought notes.”</span>
         </div>
       </section>
       {domains.length > 0 && (
@@ -188,7 +184,7 @@ export function EvidenceSummary({
         </nav>
       )}
       {domains.length > 0 && (
-        <section className="domain-section">
+        <section className="domain-section result-domain-section">
           <div className="section-intro">
             <span className="eyebrow">The everyday you</span>
             <h2>Your everyday rhythm.</h2>
@@ -211,7 +207,7 @@ export function EvidenceSummary({
               </span>
             </div>
           </div>
-          <div className="domain-list">
+          <div className="domain-list result-domain-list">
             {domains.map((domain) => (
               <Domain
                 key={domain.id}
@@ -523,7 +519,11 @@ function EvidenceGroup({ group, state }) {
 
 function Domain({ domain, state, observations = [] }) {
   return (
-    <article className="domain-item" id={`rhythm-${domain.id}`} tabIndex="-1">
+    <article
+      className={`domain-item result-domain-item result-domain-item--${domain.id}`}
+      id={`rhythm-${domain.id}`}
+      tabIndex="-1"
+    >
       <div className="domain-head">
         <PortraitIcon kind={domain.id} />
         <div>

@@ -1,6 +1,6 @@
 # Genii conversation design
 
-2026-09-17. Current presentation pass: `codex/genii-voice-polish`, based on `codex/genii-taste-survey`.
+2026-09-17. Current presentation pass: `codex/genii-launch-visuals`, based on `codex/genii-voice-polish`. The [launch visual refinement](LAUNCH-VISUALS.md) supersedes presentation details below; questionnaire and evidence requirements remain unchanged.
 
 ## Design read
 
