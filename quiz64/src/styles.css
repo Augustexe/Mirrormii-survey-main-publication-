@@ -222,7 +222,7 @@ h1 em, h2 em { color: var(--iris-text); font-style: normal; }
 .pattern-item p { color: var(--muted); font-size: 11px; margin: 0; }
 .evidence-status { padding: 5px 8px; border-radius: 999px; font-size: 12px; white-space: nowrap; }
 .evidence-status--strong { color: #246e69; background: #ddf2ee; }
-.evidence-status--mixed { color: #8a6b4b; background: #fff1dd; }
+.evidence-status--mixed { color: #74583b; background: #fff1dd; }
 .receipt-toggle { border: 0; background: transparent; display: inline-flex; gap: 5px; align-items: center; padding: 12px 0 0; color: var(--iris-text); font-size: 11px; }
 .receipt-toggle svg { transition: transform .16s; }
 .receipt-toggle svg.rotated { transform: rotate(180deg); }
