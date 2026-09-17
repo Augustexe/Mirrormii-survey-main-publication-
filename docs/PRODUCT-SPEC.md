@@ -1,10 +1,12 @@
 # Genii Personality and Health Survey — Product Spec
 
-Version 0.4 · 2026-09-17 · Owner: Jerry Zhang · Status: specification refinement; next implementation pending shared understanding
+Version 0.5 · 2026-09-17 · Owner: Jerry Zhang · Status: specification refinement; next implementation pending shared understanding
 
 **A funny conversation that reveals how you feel, respond, and handle everyday health routines.**
 
 The root survey blends personality, emotional context and health-related habits. Questions remain recognizable, surprising and affectionate; traceable evidence makes the interpretation useful. The existing bank is broadly good. Repair coverage, repetition and routing rather than replace it wholesale.
+
+The primary first-session outcome is recognition and earned trust: “You ask about things that matter to me, and I want to keep talking.” Genii should act as an attentive, playful host. The first portrait is provisional; label accuracy is secondary to the conversation's ability to create a credible reason to return. The audience direction is North America, all genders, with English first. Earlier age/gender/life-event examples are illustrative rather than a fixed target segment. The accepted return value is understanding yourself better and gradually finding small habits that work for you. The [host experience contract](HOST-EXPERIENCE.md) translates this direction into flow and authoring rules.
 
 The active detailed contract is [PERSONALITY-HEALTH-SPEC.md](PERSONALITY-HEALTH-SPEC.md). Jerry's latest decisions govern over earlier documents. The [founder brief](FOUNDER-BRIEF.md) remains creative and historical source material; its personality-only framing, correction-based rescoring and example percentages are superseded where they conflict with the active contract. Original v0.3 documents are preserved in this specification run's output/reference directory.
 
@@ -12,7 +14,7 @@ The active detailed contract is [PERSONALITY-HEALTH-SPEC.md](PERSONALITY-HEALTH-
 
 The review baseline is the React quiz64 app at commit ec89aa7: 64 authored questions, comprising 56 context/training questions and eight internal heldout checks. It has deterministic evidence mappings, separate unscored notes, missing-evidence handling and conservative prediction abstention. Technical verification does not establish personality accuracy.
 
-This revision concerns the root survey, evidence semantics and private result. It does not reactivate the earlier 12/30/96-depth implementation or require final Genii family names, one-liners or character matching. Each route should stay around 60 questions using relevant replacements from an expanded bank when questions are omitted. Broader health coverage beyond sleep, eating, movement and rest/energy is confirmed; the additional domains remain open.
+This revision concerns the root survey, evidence semantics and private result. It does not reactivate the earlier 12/30/96-depth implementation or require final Genii family names, one-liners or character matching. Each route should stay around 60 questions using relevant replacements from an expanded bank. Confirmed health scope includes habits plus body/skin experience and optional relevant context such as allergies, existing conditions or cycles. Hydration, toilet routines and stress-related eating are illustrative everyday examples, not a mandatory checklist. Optional context remains reported fact, not a personality score.
 
 Backend integration belongs to Desmond. Production accounts, Lark writes, payments, publication and remote integration remain separate work. This document records requirements; it does not claim that Other, full adaptive bypass, emotional measurements, domain bars or True/False review are implemented.
 
@@ -22,7 +24,7 @@ Backend integration belongs to Desmond. Production accounts, Lark writes, paymen
 | --- | --- |
 | Start | Explain the playful personality-and-health-habit purpose plainly; retain the brand assets and established visual direction |
 | Answer | One coherent situation and response frame; short, distinct choices whose literal meaning matches the question |
-| Express a different answer | Offer Other, distinct from Skip or no recalled experience; keep custom text separate from authored categorical scoring |
+| Express a different answer | Offer Other, distinct from Skip or no recalled experience; save written text unscored, as confirmed in Q13 |
 | Adapt | Omit known irrelevant questions entirely and use relevant replacements; solo households must not encounter shared-household chores or an N/A screen |
 | Build a portrait | Separate usual patterns from recent state, and internal feelings from outward action and recovery |
 | Read the result | One integrated portrait with routine/behavior bars, separate confidence and accessible evidence |
@@ -36,6 +38,8 @@ Preserve the approved Simplified Chinese voice and semantic parity when localiza
 Keep direct self-reports, actual-event accounts, hypothetical intentions, inferences, comparisons and respondent endorsements distinct. Actual-event accounts remain self-reports, not externally observed behavior. Question scenery alone does not support an additional dimension.
 
 Each observation needs stable question/option IDs, version, role, context/relationship target, explicit recall window where relevant, and its literal measurements or authored tags. Each inference needs source IDs, contrary evidence, role composition and method/version. Unknown, skipped, omitted and custom responses must not become neutral or negative trait evidence.
+
+Confirmed default windows: usual patterns over the past month; recent state over the last seven days; actual-event questions use the latest instance within the month with a no-example option. Cycle and other exceptional domains need their own stated period. Ask once and carry answers forward. Distinguish a self-description, an aspirational identity, a reported action and repeated observations over time; reflecting someone's answer is not an independently correct prediction.
 
 The emotional contract separates **internal feelings, outward response and recovery**. Someone can feel intense anger and speak calmly. Silence alone does not establish calmness; directness alone does not establish aggression. Emotional recovery, relationship repair and physical rest are not interchangeable measures.
 
@@ -53,7 +57,7 @@ Include all three layers:
 2. **Recent changes:** directly reported disruption and restfulness, separate from usual patterns.
 3. **Contextual behavior:** evidence-backed interpretations and predictions about protecting or delaying sleep when work, stress or a need for personal downtime interferes.
 
-Do not guess exact clock times or duration from unrelated personality answers. An interpretation such as “you delay sleep to decompress when overwhelmed” needs observations supporting both the action and the stated reason. Exact windows, units and response formats are still to be specified.
+Do not guess exact clock times or duration from unrelated personality answers. An interpretation such as “you delay sleep to decompress when overwhelmed” needs observations supporting both the action and the stated reason. Use the confirmed default windows; exact units and response formats remain to be specified.
 
 ## Result and confidence
 
@@ -64,6 +68,8 @@ A bar's position must not double as confidence or an overall health score. Numer
 True/False means “this interpretation fits me / does not fit me.” Preserve the exact statement, result version and evidence snapshot, then log the response separately. Neither answer changes the profile or counts as another supporting observation, a prediction hit, or a reason to force clarification. Unanswered review is neither agreement nor disagreement.
 
 ## Selected benchmarks
+
+Recognition, willingness to continue and expected ongoing usefulness are now the primary product questions. Actual return behavior and reported benefit require a later pilot; the first-session feeling of being understood is not proof that the app improves health. Prediction checks support trust and remain technically honest, but should not dominate the visible experience. Their final count/placement is open; the founder's reference to 20 does not silently add 20 questions to the route.
 
 Jerry delegated benchmark selection. Use two separate comparisons:
 
@@ -106,8 +112,8 @@ Fresh native reads on 2026-09-17 verified MirrorMii OS Base revision 201 and rel
 
 The protected aggregate packet remains incomplete. Targeted reads succeeded; do not describe Lark as generally inaccessible or treat drafts as approved capabilities. Source links, revisions and states are in output/COMPANY-CONTEXT.md; exact implementation gaps are in output/SPEC-GAP-AUDIT.md.
 
-Specification run: runs/20260917T193810Z-a886d9810122.
+Foundational specification/source-audit run: runs/20260917T193810Z-a886d9810122. Host-direction update run: runs/20260917T201408Z-a40d4b34db0c. This update changes founder requirements; it does not promote the earlier company drafts to approved capability claims.
 
 ## Open decisions
 
-Round 3 confirmed broader health coverage, all seven feeling families, claim-level True/False and relevant replacements to maintain roughly 60 questions. Additional health domains, recall windows, scales, detailed Other behavior and unknown-context routing remain open. Q7's request for broader coverage did not confirm the suggested past-month/last-seven-days windows. The [core specification's decision tree](PERSONALITY-HEALTH-SPEC.md#11-interview-decision-tree) records status. Recommendations are not accepted decisions; record answers before implementing dependent behavior.
+Q11–Q13 are settled: habits/body/skin with optional health context; past-month/last-seven-days default windows; written Other saved unscored. Q14–Q15 confirm North America, all genders, English first, and understanding self plus gradually finding suitable small habits. Exact bar/emotion scales, domain exceptions, unknown-context routing and prediction-check placement remain open. The [core specification's decision tree](PERSONALITY-HEALTH-SPEC.md#11-interview-decision-tree) records status. Recommendations are not accepted decisions; record answers before dependent implementation.

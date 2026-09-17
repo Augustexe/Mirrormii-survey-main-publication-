@@ -13,14 +13,22 @@ Updated 2026-09-17 · Owner: Jerry · Authority: latest conversation and [active
 | D-019 | True/False preserves the original result and records feedback only. Supersedes any D-010/D-011 or founder-brief rule that changes evidence, confidence or the portrait from endorsement. Explicit survey-answer edits remain separate. |
 | D-020 | Include Other, fully bypass known-inapplicable prompts, distinguish custom/no-experience/skip/omission, and retain versioned provenance. Exact Other scope and unknown-context behavior remain open. |
 | D-021 | Jerry delegated Q4. Selected benchmarks: frozen unseen-choice predictions versus a no-profile baseline, and reported usual-versus-pressure behavior. Keep evaluation, contextual contrast and endorsement separate. No peer ranking or health-quality score selected. |
-| D-022 | Q5 confirmed: usual patterns and recent state are shown separately. Exact recall windows are open. |
+| D-022 | Q5 confirmed: usual patterns and recent state are shown separately. D-029 subsequently settles default recall windows. |
 | D-023 | After an expanded explanation, Q6 confirmed all three sleep layers: direct usual routine, directly reported recent changes, and contextual sleep behavior/prediction. No exact timing/duration inferred from unrelated personality choices. |
-| D-024 | Q7 requests health coverage broader than sleep, eating, movement and rest/energy. Additional areas and proposed recall windows remain open. |
+| D-024 | Q7 requests health coverage broader than sleep, eating, movement and rest/energy. D-028/D-029 subsequently settle scope and default windows. |
 | D-025 | Q8 confirms all seven feeling families: frustration/anger, worry, disappointment/sadness, embarrassment, guilt, joy/excitement and relief. |
 | D-026 | Q9 places feedback-only True/False beside each individual interpretation. |
 | D-027 | Q10 selects relevant replacements to maintain roughly 60 questions per route. Supersedes the recommendation to default to a shorter route; requires a larger bank of applicable alternatives. |
+| D-028 | “Yes to all” confirms Q11's recommended scope: habits plus body/skin experience, with optional relevant health context. It does not select the entire company health schema. |
+| D-029 | Q12 confirmed: past month for usual patterns, last seven days for recent state; latest actual example within a month, with no-example available; domain-specific periods for cycles and similar exceptions. Settles D-022/D-024's window question. |
+| D-030 | Q13 confirmed: preserve written Other text unscored in this MVP. No automatic interpretation or forced authored category. |
+| D-031 | First-session priority is a skillful, engaging host: recognition, trust and a credible desire to continue. Final label accuracy is secondary; reflection, prediction and demonstrated benefit remain distinct. |
+| D-032 | Q14 correction: North America, all genders, English first. Earlier age/gender/life-event references were examples, not a fixed audience or demographic finding. Exact age eligibility is unselected. |
+| D-033 | Everyday health examples include hydration, toilet routines and stress-related eating; these are illustrative, not a mandatory checklist. Ask once and carry answers forward. Job/relationship events are relevance branches, not demographic assumptions. |
+| D-034 | First portrait is provisional and can develop through future interaction. This does not change D-019: True/False alone still preserves the original result. Longitudinal implementation is outside this spec checkpoint. |
+| D-035 | Q15 accepts the recommended return value: understand yourself better and gradually find small habits that work for you. This is intended value, not measured benefit or an already implemented service. |
 
-The active [Product Spec v0.4](PRODUCT-SPEC.md) and [core specification](PERSONALITY-HEALTH-SPEC.md) govern this revision. Approximately 60 questions remains the working scale; do not reinstate old 12/30/96 tiers as current requirements. Backend remains Desmond's scope. Record unresolved choices during the grilling interview before dependent runtime changes.
+The active [Product Spec v0.5](PRODUCT-SPEC.md), [core specification](PERSONALITY-HEALTH-SPEC.md) and [host experience](HOST-EXPERIENCE.md) govern this revision. Approximately 60 questions remains the working scale; do not reinstate old 12/30/96 tiers. Backend remains Desmond's scope. Q11–Q15 are settled; retain unresolved axis/scale/routing contracts separately. User-facing discussion continues in English. The historical 20-item benchmark and latest “20 accuracy” reference do not settle the respondent-visible count/placement.
 
 Fresh native Lark reads succeeded on 2026-09-17. Relevant schema/vision/emotion sources include drafts, and the aggregate packet remains incomplete. See runs/20260917T193810Z-a886d9810122/output/COMPANY-CONTEXT.md for sources/states. Historical access failures below do not describe current native access.
 
@@ -66,7 +74,7 @@ These choices make the prototype concrete. They do not claim psychological valid
 
 | ID | Open decision | When needed |
 | --- | --- | --- |
-| Q-004 | First distribution cohort, markets, languages and age range | Before a public pilot |
+| Q-004 | First distribution cohort, age eligibility and finer regional localization; North America/all genders/English settled under D-032 | Before a public pilot |
 | Q-007 | Final family/visual mapping, copy intensity, voice/audio and expanded motion | After reviewing the working reveal and existing character fit |
 | Q-008 | Question/weight tuning, evidence thresholds, confidence calibration and held-out validation | Before claims of accuracy or improvement; refine through prototype tests |
 | Q-009 | Account value, timing, minimum information and recovery | Before cross-device saving or account launch |
