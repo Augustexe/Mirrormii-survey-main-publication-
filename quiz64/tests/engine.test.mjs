@@ -42,9 +42,9 @@ test('each dimension has two independent training questions and selected-close c
     const ids = new Set(training.flatMap(q => q.options.flatMap(o => o.tags.filter(t => t.d === d).map(() => q.id))));
     assert.ok(ids.size >= 2, `${d} has ${ids.size} opportunities`);
   }
-  const closeCounts = Object.fromEntries(['D5', 'D6', 'D7', 'D8'].map(d => [d, 0]));
-  for (const q of training) for (const o of q.options) for (const t of o.tags) if (t.target === 'close' && closeCounts[t.d] !== undefined) closeCounts[t.d]++;
-  for (const [d, count] of Object.entries(closeCounts)) assert.ok(count >= 2, `${d} selected close has ${count}`);
+  const closeQuestions = Object.fromEntries(['D5', 'D6', 'D7', 'D8'].map(d => [d, new Set()]));
+  for (const q of training) for (const o of q.options) for (const t of o.tags) if (t.target === 'close' && closeQuestions[t.d]) closeQuestions[t.d].add(q.id);
+  for (const [d, ids] of Object.entries(closeQuestions)) assert.ok(ids.size >= 2, `${d} selected close has ${ids.size} distinct questions`);
   assert.equal(new Set(training.filter(q => q.chapter === 1 && q.role === 'actual').map(q => q.id)).size >= 1, true);
   for (let chapter = 1; chapter <= 7; chapter++) assert.ok(training.some(q => q.chapter === chapter && q.role === 'actual'));
 });
@@ -142,6 +142,36 @@ test('restore rejects tampering and drops mismatched context bindings', () => {
   assert.deepEqual(restore('broken'), fresh());
 });
 
+test('restore drops notes when an old dependent answer is normalized to an inapplicable skip', () => {
+  const s = fresh();
+  setAnswer(s, 'q01', 'c'); setAnswer(s, 'q02', 'b'); setAnswer(s, 'q18', 'a');
+  s.notes.q18 = 'old selected-person note';
+  const raw = JSON.parse(JSON.stringify(s));
+  raw.answers.q01 = 'e';
+  const restored = restore(raw);
+  assert.equal(restored.answers.q18, 'skip');
+  assert.equal(restored.notes.q18, undefined);
+});
+
+test('restore preserves notes and bindings for explicit skips in the same context', () => {
+  const partner = fresh();
+  setAnswer(partner, 'q01', 'c'); setAnswer(partner, 'q02', 'a'); setAnswer(partner, 'q18', 'skip');
+  partner.notes.q18 = 'does not happen for partner';
+  const once = restore(JSON.parse(JSON.stringify(partner)));
+  const twice = restore(JSON.parse(JSON.stringify(once)));
+  assert.equal(twice.answers.q18, 'skip');
+  assert.equal(twice.notes.q18, 'does not happen for partner');
+  assert.deepEqual(twice.bindings.q18, {close: 'partner'});
+
+  const none = fresh();
+  setAnswer(none, 'q01', 'e'); setAnswer(none, 'q02', 'a'); setAnswer(none, 'q18', 'skip');
+  none.notes.q18 = 'does not happen without a selected person';
+  const restoredNone = restore(JSON.parse(JSON.stringify(none)));
+  assert.equal(restoredNone.answers.q18, 'skip');
+  assert.equal(restoredNone.notes.q18, 'does not happen without a selected person');
+  assert.deepEqual(restoredNone.bindings.q18, {close: 'none'});
+});
+
 test('none and solo completed attempts preserve normalized inapplicable skips through restore', () => {
   const s = filled('e', 'a');
   s.locked = freeze(s.answers);
@@ -155,10 +185,17 @@ test('none and solo completed attempts preserve normalized inapplicable skips th
 
 test('stats separates skips, abstentions and same-subset baseline', () => {
   const s = filled(); s.locked = freeze(s.answers);
+  const before = stats(s);
+  assert.equal(before.answered, 0); assert.equal(before.skipped, 0); assert.equal(before.unresolved, 8);
   for (const q of heldouts) setAnswer(s, q.id, 'skip');
   const zero = stats(s);
   assert.equal(zero.answered, 0); assert.equal(zero.skipped, 8); assert.equal(zero.predicted, 0);
   assert.equal(zero.hits, 0); assert.equal(zero.baselineAll, 0);
+});
+
+test('support tags describe seeking/disclosure and do not create false D6 patterns', () => {
+  const rows = evidence({q01: 'd', q02: 'b', q33: 'a', q38: 'b'});
+  assert.equal(rows.filter(row => row.d === 'D6').length, 0);
 });
 
 test('export includes private answers/evidence and hides all prediction scores until terminal', () => {

@@ -67,23 +67,23 @@ export const QUESTIONS = [
     opt('Ask someone else to cover it.', [tag('D1', 'self'), tag('D11', 'autonomy')], 'You protect the trip and redistribute the request.'),
     opt('Work out the smallest useful fix, then return.', [tag('D1', 'task'), tag('D3', 'plan')], 'You reduce the interruption to a bounded task.')
   ]),
-  q(7, 1, 'A surprise cost appears on the trip. Your group of friends wants to split it evenly.', 'Nobody has behaved badly; the numbers are simply wearing a tiny hat.', [
-    opt('Split it by what each of us used.', [tag('D8', 'proportional', 'friend'), tag('D7', 'direct', 'friend')], 'You request a consumption-based split directly.'),
-    opt('Split it evenly. It is worth avoiding public arithmetic.', [tag('D8', 'absorb', 'friend'), tag('D4', 'convenience')], 'You accept an extra cost for simplicity.'),
-    opt('Quietly explain my share and ask to adjust it.', [tag('D8', 'proportional', 'friend'), tag('D7', 'soften', 'friend')], 'You request a fair split privately.'),
-    opt('Pay, say nothing, remember the exact amount.', [tag('D8', 'absorb', 'friend'), tag('D7', 'hint', 'friend')], 'You absorb the cost without raising it.')
+  q(7, 1, 'A surprise cost appears on a trip with your group of friends.', 'You ordered the salad; someone else added expensive extras you did not use, then suggests an even split.', [
+    opt('Split it by what each of us used.', [tag('D8', 'proportional', 'friends'), tag('D7', 'direct', 'friends')], 'You request a consumption-based split directly.'),
+    opt('Pay evenly to avoid public arithmetic.', [tag('D8', 'absorb', 'friends')], 'You knowingly accept the extra cost for simplicity.'),
+    opt('Quietly explain my share and ask to adjust it.', [tag('D8', 'proportional', 'friends'), tag('D7', 'soften', 'friends')], 'You request a fair split privately.'),
+    opt('Pay the extra and say nothing.', [tag('D8', 'absorb', 'friends'), tag('D7', 'hint', 'friends')], 'You knowingly absorb the extra cost without raising it.')
   ]),
   q(8, 1, 'What did you actually do the last time a plan went sideways?', 'Choose a recent real response; skip if there is no useful example.', [
     opt('I changed course immediately.', [tag('D3', 'improvise')], 'You report acting quickly when the plan failed.'),
     opt('I made a new plan before moving.', [tag('D3', 'plan')], 'You report pausing to organize a new plan.'),
-    opt('I asked somebody else what they wanted to do.', [tag('D1', 'people')], 'You report checking the group before deciding.'),
+    opt('I asked somebody else what they wanted to do.', [tag('D1', 'people'), tag('D3', 'consult')], 'You report consulting the group before deciding.'),
     opt('I carried on and hoped the problem got bored.', [tag('D3', 'avoid')], 'You report leaving the problem alone for the moment.')
   ], {role: 'actual'}),
 
   q(9, 2, 'A windfall equal to one month of costs lands today.', 'It is yours to use, save, or give a job later.', [
     opt('Put it somewhere safe first.', [tag('D4', 'security'), tag('D3', 'plan')], 'You prioritize financial safety and delay spending.'),
     opt('Use it for a new experience I have been postponing.', [tag('D4', 'enjoyment'), tag('D2', 'novel')], 'You use the money for a new experience and enjoyment.'),
-    opt('Buy the thing that gives me time back.', [tag('D4', 'freedom'), tag('D3', 'plan')], 'You spend to preserve time and independence.'),
+    opt('Buy the thing that gives me time back.', [tag('D4', 'freedom')], 'You spend to preserve time and independence.'),
     opt('Buy the recognizable version. The logo may have a point.', [tag('D4', 'status'), tag('D9', 'recognition')], 'You identify recognition or status as part of the appeal.')
   ]),
   q(10, 2, 'You and {close} planned an outing. They ordered extras and suggest splitting everything evenly.', 'The extra dessert has entered the shared spreadsheet.', [
@@ -99,22 +99,22 @@ export const QUESTIONS = [
     opt('Close the app. My feelings can remain unlit.', [tag('D10', 'wait'), tag('D4', 'security')], 'You decline the mood-related purchase.')
   ]),
   q(12, 2, 'Friends made fast money on a tip and invite you in.', 'You have only ten minutes to decide whether to join the uncertain move.', [
-    opt('Join. Ten minutes is plenty of plot.', [tag('D2', 'novel'), tag('D10', 'act')], 'You accept a new and uncertain opportunity quickly.'),
+    opt('Join. Ten minutes is plenty of plot.', [tag('D2', 'novel')], 'You accept a new and uncertain opportunity quickly.'),
     opt('Look up the downside before deciding.', [tag('D2', 'conditional'), tag('D3', 'plan')], 'You investigate uncertainty before committing.'),
     opt('Decline. I would rather keep the money I have.', [tag('D2', 'familiar'), tag('D4', 'security')], 'You prefer the known financial position.'),
     opt('Join only with a small amount I can lose.', [tag('D2', 'conditional'), tag('D4', 'security')], 'You limit risk before trying the opportunity.')
   ]),
   q(13, 2, 'A family member asks to borrow money while your month is tight.', 'They promise to repay you, with the confidence of a person who has not seen your spreadsheet.', [
-    opt('Say what I can afford and lend that amount.', [tag('D8', 'proportional', 'family'), tag('D7', 'direct', 'family')], 'You state a capacity limit and set a bounded contribution.'),
-    opt('Ask what happened and work out another kind of help.', [tag('D8', 'proportional', 'family'), tag('D11', 'duty', 'family')], 'You explore a fair way to help without promising cash.'),
+    opt('Say what I can afford and lend that amount.', [tag('D8', 'limit', 'family'), tag('D7', 'direct', 'family')], 'You state a capacity limit and set a bounded contribution.'),
+    opt('Ask what happened and work out another kind of help.', [tag('D8', 'limit', 'family'), tag('D11', 'duty', 'family')], 'You explore a bounded way to help without promising cash.'),
     opt('Lend it; family should not be stranded.', [tag('D8', 'absorb', 'family'), tag('D11', 'duty', 'family')], 'You carry the financial cost because of family duty.'),
-    opt('Decline. My own bills are already doing theatre.', [tag('D8', 'proportional', 'family'), tag('D11', 'autonomy', 'family')], 'You protect your own financial capacity.')
+    opt('Decline. My own bills are already doing theatre.', [tag('D8', 'limit', 'family'), tag('D11', 'autonomy', 'family')], 'You protect your own financial capacity.')
   ]),
-  q(14, 2, 'A group trip costs more than you can afford; everyone else said yes.', 'The group is excited and the cancellation policy is a villain.', [
-    opt('Say I cannot afford it and suggest a cheaper version.', [tag('D4', 'security'), tag('D7', 'direct', 'friend')], 'You state the budget constraint and propose an alternative.'),
-    opt('Go anyway and solve the money problem later.', [tag('D4', 'enjoyment'), tag('D10', 'act')], 'You choose the experience despite the immediate budget problem.'),
+  q(14, 2, 'Your friends plan a group trip that costs more than you can afford.', 'Your friends are excited and the cancellation policy is a villain.', [
+    opt('Say I cannot afford this trip and suggest a cheaper version.', [tag('D4', 'security'), tag('D7', 'direct', 'friends')], 'You state the budget constraint to the group and propose an alternative.'),
+    opt('Go anyway and solve the money problem later.', [tag('D4', 'enjoyment')], 'You choose the experience despite the immediate budget problem.'),
     opt('Join for one night within a fixed amount.', [tag('D4', 'security'), tag('D3', 'plan')], 'You make participation fit a planned limit.'),
-    opt('Decline with a vague excuse. The budget remains private.', [tag('D4', 'security'), tag('D7', 'avoid', 'friend')], 'You protect the budget without explaining the reason.')
+    opt('Decline with a vague excuse. The budget remains private.', [tag('D4', 'security'), tag('D7', 'avoid', 'friends')], 'You protect the budget without explaining the reason.')
   ]),
   q(15, 2, 'The people you live with think the house cleans itself.', 'You are the house. The sponge has entered negotiations.', [
     opt('Suggest we split the chores by task.', [tag('D8', 'proportional', 'household'), tag('D7', 'direct', 'household')], 'You explicitly renegotiate the division of labor.'),
@@ -123,10 +123,10 @@ export const QUESTIONS = [
     opt('Stop doing their share and wait for the magic to end.', [tag('D8', 'limit', 'household')], 'You stop covering the others’ share.')
   ], {applicable: 'shared'}),
   q(16, 2, 'What did you actually do the last time a money split with friends got awkward?', 'Think of a real friends’ bill or shared cost; skip if none comes to mind.', [
-    opt('Named the amount plainly.', [tag('D8', 'proportional', 'friend'), tag('D7', 'direct', 'friend')], 'You report stating the financial issue directly.'),
-    opt('Sent a careful message privately.', [tag('D8', 'proportional', 'friend'), tag('D7', 'soften', 'friend')], 'You report raising the issue privately and gently.'),
-    opt('Paid or lent it and moved on.', [tag('D8', 'absorb', 'friend'), tag('D7', 'avoid', 'friend')], 'You report carrying the cost without reopening it.'),
-    opt('Kept my share and let someone else handle the rest.', [tag('D8', 'proportional', 'friend'), tag('D11', 'autonomy', 'friend')], 'You report limiting your contribution.')
+    opt('Named the amount plainly.', [tag('D8', 'proportional', 'friends'), tag('D7', 'direct', 'friends')], 'You report stating the financial issue directly.'),
+    opt('Sent a careful message privately.', [tag('D8', 'proportional', 'friends'), tag('D7', 'soften', 'friends')], 'You report raising the issue privately and gently.'),
+    opt('Paid or lent it and moved on.', [tag('D8', 'absorb', 'friends'), tag('D7', 'avoid', 'friends')], 'You report carrying the cost without reopening it.'),
+    opt('Kept my share and let someone else handle the rest.', [tag('D8', 'proportional', 'friends')], 'You report limiting your contribution.')
   ], {role: 'actual'}),
 
   q(17, 3, 'What time do you usually stop being available to consciousness?', 'Report your usual pattern; shifts and variation are valid answers.', [
@@ -208,27 +208,27 @@ export const QUESTIONS = [
     opt('Covered it and kept the peace.', [tag('D8', 'absorb', 'close')], 'You report carrying the extra cost or effort.'),
     opt('Stopped covering it without discussing why.', [tag('D8', 'limit', 'close'), tag('D7', 'avoid', 'close')], 'You report withdrawing your extra contribution without a discussion.')
   ], {role: 'actual', applicable: 'close'}),
-  q(30, 4, 'What did you actually do the last time a setback happened to {close}?', 'Choose how you disclosed it, or skip if there is no useful example.', [
+  q(30, 4, 'What did you actually do the last time a setback happened to you?', 'Choose what you told {close}, or skip if there is no useful example.', [
     opt('Told {close} quickly and asked them to stay with me in it.', [tag('D6', 'support', 'close')], 'You report disclosing promptly and seeking connection.'),
     opt('Told {close} a small version first.', [tag('D6', 'selective', 'close')], 'You report selective disclosure to the selected person.'),
     opt('Worked it out privately before saying anything.', [tag('D6', 'private', 'close')], 'You report processing the setback privately.'),
     opt('Talked to someone else before {close}.', [tag('D6', 'selective', 'general')], 'You report seeking another support person first.')
   ], {role: 'actual', applicable: 'close'}),
   q(31, 4, 'You lose your job. Who in the family hears it, and when?', 'Imagine the news arriving today; skip if this scene does not fit.', [
-    opt('Tell the family quickly; I need people around me.', [tag('D6', 'support', 'family'), tag('D11', 'duty', 'family')], 'You disclose quickly and seek family support.'),
-    opt('Tell one person privately first.', [tag('D6', 'selective', 'family'), tag('D11', 'autonomy', 'family')], 'You choose a limited, private disclosure.'),
+    opt('Tell the family quickly; I need people around me.', [tag('D6', 'support', 'family')], 'You disclose quickly and seek family support.'),
+    opt('Tell one person privately first.', [tag('D6', 'selective', 'family')], 'You choose a limited, private disclosure.'),
     opt('Wait until I have a plan.', [tag('D6', 'private', 'family'), tag('D3', 'plan')], 'You delay disclosure while organizing next steps.'),
-    opt('Handle it alone for a while.', [tag('D6', 'distance', 'family'), tag('D11', 'autonomy', 'family')], 'You keep the setback private at first.')
+    opt('Handle it alone for a while.', [tag('D6', 'distance', 'family')], 'You keep the setback private at first.')
   ]),
   q(32, 4, 'What did you actually do the last time family wanted something different from you?', 'A recent disagreement is useful; family history is not a required reading list.', [
     opt('Said no and kept my plan.', [tag('D11', 'autonomy', 'family'), tag('D7', 'direct', 'family')], 'You report protecting your choice directly.'),
-    opt('Found a compromise.', [tag('D11', 'conditional', 'family'), tag('D8', 'proportional', 'family')], 'You report negotiating a workable split.'),
+    opt('Found a compromise.', [tag('D11', 'conditional', 'family')], 'You report negotiating a workable agreement.'),
     opt('Went along with them.', [tag('D11', 'duty', 'family'), tag('D1', 'people')], 'You report prioritizing the family request.'),
     opt('Avoided the conversation for now.', [tag('D7', 'avoid', 'family')], 'You report deferring the disagreement.')
   ], {role: 'actual'}),
 
   q(33, 5, 'The friend you brought becomes the centre of the party.', 'Everyone is delighted. Your ego would like a small private meeting.', [
-    opt('Introduce them to more people and enjoy it.', [tag('D9', 'noncompetitive'), tag('D6', 'support', 'friend')], 'You connect the friend despite losing attention.'),
+    opt('Introduce them to more people and enjoy it.', [tag('D9', 'noncompetitive')], 'You connect the friend despite losing attention.'),
     opt('Stay close and make sure I am not forgotten.', [tag('D9', 'recognition')], 'You seek recognition in the group.'),
     opt('Turn it into a joint bit. We can be famous together.', [tag('D9', 'competitive'), tag('D1', 'people')], 'You convert comparison into shared performance.'),
     opt('Leave early; the social battery has become a witness.', [tag('D14d', 'rest')], 'You protect capacity by leaving early.')
@@ -246,28 +246,28 @@ export const QUESTIONS = [
     opt('Wait until I can reply warmly.', [tag('D9', 'comparison'), tag('D10', 'wait')], 'You delay contact while emotions settle.')
   ]),
   q(36, 5, 'A friend asks to borrow money after a rough week.', 'You care about them and your budget has also had a rough week.', [
-    opt('State what I can lend and when I need it back.', [tag('D8', 'proportional', 'friend'), tag('D7', 'direct', 'friend')], 'You set a bounded loan and repayment expectation.'),
-    opt('Offer a smaller amount or practical help.', [tag('D8', 'proportional', 'friend')], 'You help within a defined limit.'),
+    opt('State what I can lend and when I need it back.', [tag('D8', 'limit', 'friend'), tag('D7', 'direct', 'friend')], 'You set a bounded loan and repayment expectation.'),
+    opt('Offer a smaller amount or practical help.', [tag('D8', 'limit', 'friend')], 'You help within a defined limit.'),
     opt('Lend it without making the friendship an invoice.', [tag('D8', 'absorb', 'friend'), tag('D11', 'duty', 'friend')], 'You accept the financial cost for the friendship.'),
     opt('Decline; I cannot add this cost.', [tag('D8', 'limit', 'friend'), tag('D11', 'autonomy', 'friend')], 'You protect your own financial capacity.')
   ]),
   q(37, 5, 'Your mistake got the team blamed, and nobody knows it was you.', 'The correction would be embarrassing. The silence is also doing a lot.', [
     opt('Own it and tell the team how I will fix it.', [tag('D12', 'repair', 'colleague')], 'You take responsibility and propose a repair.'),
-    opt('Tell the lead privately first.', [tag('D12', 'explain', 'colleague'), tag('D7', 'soften', 'colleague')], 'You disclose the mistake in a private conversation.'),
+    opt('Apologize to the lead privately and explain what led to it.', [tag('D12', 'explain', 'colleague'), tag('D7', 'soften', 'colleague')], 'You apologize and disclose the mistake in a private conversation.'),
     opt('Fix the work quietly and hope the blame evaporates.', [tag('D12', 'action', 'colleague'), tag('D7', 'avoid', 'colleague')], 'You repair the output without owning it publicly.'),
     opt('Leave the project if the damage is too large.', [tag('D12', 'exit', 'colleague'), tag('D11', 'autonomy', 'colleague')], 'You choose to exit rather than continue the repair.')
   ]),
   q(38, 5, 'A group of friends hid something and asks you to pick a side.', 'The hidden thing is theirs to tell; your role is not a courtroom.', [
     opt('Ask what happened before choosing.', [tag('D1', 'people'), tag('D3', 'plan')], 'You gather context before taking a side.'),
-    opt('Stand with my friend immediately.', [tag('D6', 'support', 'friend'), tag('D11', 'duty', 'friend')], 'You prioritize loyalty to the friend.'),
-    opt('Say I will not carry a secret that harms someone.', [tag('D13', 'limit'), tag('D7', 'direct', 'friend')], 'You set a direct care and responsibility limit.'),
-    opt('Stay out until the people involved talk themselves.', [tag('D6', 'distance', 'friend'), tag('D7', 'avoid', 'friend')], 'You keep distance from the conflict.')
+    opt('Stand with the group immediately.', [tag('D11', 'duty', 'friends')], 'You prioritize loyalty to the group.'),
+    opt('Say I will not carry a secret that harms someone.', [tag('D13', 'limit'), tag('D7', 'direct', 'friends')], 'You set a direct care and responsibility limit.'),
+    opt('Stay out until the people involved talk themselves.', [tag('D7', 'avoid', 'friends')], 'You stay out of the group conflict.')
   ]),
-  q(39, 5, 'The group wants you to take credit for a win you only partly made.', 'The applause is available. So is the awkward footnote.', [
+  q(39, 5, 'Your colleagues want you to take credit for a win you only partly made.', 'The applause is available. So is the awkward footnote.', [
     opt('Name everyone’s contribution.', [tag('D9', 'noncompetitive'), tag('D8', 'proportional', 'colleague')], 'You distribute recognition according to contribution.'),
     opt('Accept the credit and share it later.', [tag('D9', 'recognition'), tag('D3', 'plan')], 'You accept recognition while planning a later share.'),
     opt('Correct the record immediately.', [tag('D7', 'direct', 'colleague')], 'You clarify the credit directly.'),
-    opt('Let it pass; the result matters more than the names.', [tag('D9', 'noncompetitive'), tag('D8', 'absorb', 'colleague')], 'You accept an uneven recognition outcome.')
+    opt('Let it pass; the result matters more than the names.', [tag('D9', 'noncompetitive')], 'You accept an uneven recognition outcome.')
   ]),
   q(40, 5, 'What did you actually do the last time a colleague took the spotlight?', 'Choose a real workplace, school, or project example; skip if none comes to mind.', [
     opt('Congratulated them and stayed involved.', [tag('D9', 'noncompetitive')], 'You report staying involved despite comparison.'),
@@ -286,7 +286,7 @@ export const QUESTIONS = [
     opt('Stay and help. The bus and I will meet again.', [tag('D13', 'direct'), tag('D1', 'people')], 'You accept a personal cost to provide direct help.'),
     opt('Give quick directions, then catch my bus.', [tag('D13', 'bounded')], 'You provide limited help while protecting capacity.'),
     opt('Point them to staff before I go.', [tag('D13', 'coordinate'), tag('D1', 'task')], 'You connect them to another source of help.'),
-    opt('Apologize and catch my bus.', [tag('D13', 'limit'), tag('D14d', 'rest')], 'You prioritize current capacity.')
+    opt('Apologize, protect my remaining energy, and catch my bus.', [tag('D13', 'limit'), tag('D14d', 'rest')], 'You explicitly prioritize recovery capacity.')
   ]),
   q(43, 6, 'Your planned movement meets an appealing alternative.', 'You have one hour, and the alternative has excellent snacks.', [
     opt('Keep the movement plan.', [tag('D14c', 'planned'), tag('D3', 'plan')], 'You follow the planned movement.'),
@@ -303,7 +303,7 @@ export const QUESTIONS = [
   q(45, 6, 'You are about to sleep when an optional extra task appears.', 'It would help, but it can wait until morning.', [
     opt('Go to bed and move the task.', [tag('D14a', 'protect'), tag('D14d', 'rest')], 'You protect sleep and recovery.'),
     opt('Do the task, then sleep later.', [tag('D14a', 'delay'), tag('D14d', 'obligation')], 'You delay sleep for the optional obligation.'),
-    opt('Adjust tomorrow to make room for it.', [tag('D14a', 'adjust'), tag('D3', 'plan')], 'You change the next plan to fit the task.'),
+    opt('Move tomorrow’s wake-up later so I can finish this and still sleep.', [tag('D14a', 'adjust'), tag('D3', 'plan')], 'You change tomorrow’s sleep timing to fit the task while preserving sleep.'),
     opt('Decline the task; tonight is closed.', [tag('D14a', 'protect'), tag('D14d', 'rest')], 'You decline the task to protect sleep.')
   ]),
   q(46, 6, 'In the last seven days, on how many days did you deliberately get some movement?', 'Walks, wheelchair exercise, and movement that works for your body all count.', [
@@ -328,8 +328,8 @@ export const QUESTIONS = [
   q(49, 7, 'Your day has one free hour and three unfinished tasks.', 'The tasks are all mildly urgent, which is their favourite disguise.', [
     opt('Do the task affecting someone else first.', [tag('D1', 'people'), tag('D11', 'duty')], 'You prioritize the other person’s need.'),
     opt('Do the task with the nearest deadline.', [tag('D1', 'task'), tag('D3', 'plan')], 'You prioritize the immediate task.'),
-    opt('Take the hour for myself.', [tag('D1', 'self'), tag('D14d', 'rest')], 'You protect personal recovery.'),
-    opt('Make a quick order and start the smallest piece.', [tag('D1', 'task'), tag('D3', 'plan')], 'You organize the tasks before acting.')
+    opt('Take the hour to recover.', [tag('D1', 'self'), tag('D14d', 'rest')], 'You explicitly protect personal recovery.'),
+    opt('Take one small task, then stop.', [tag('D1', 'task'), tag('D14d', 'bounded')], 'You make a bounded contribution and stop.')
   ]),
   q(50, 7, 'What did you actually want the last time you made an optional purchase?', 'Choose the literal motive that best describes a recent decision; no income estimate is wanted.', [
     opt('Safety. I wanted the sensible, reliable choice.', [tag('D4', 'security')], 'You report prioritizing safety or reliability.'),
@@ -341,28 +341,28 @@ export const QUESTIONS = [
     opt('Buy now; the deal may fix the evening.', [tag('D10', 'act'), tag('D4', 'enjoyment')], 'You act on an emotional purchase prompt.'),
     opt('Wait until tomorrow.', [tag('D10', 'wait'), tag('D3', 'plan')], 'You delay a mood-linked purchase.'),
     opt('Compare the deal with the normal price.', [tag('D3', 'plan'), tag('D4', 'security')], 'You verify the offer before acting.'),
-    opt('Close it; tomorrow can make the decision.', [tag('D10', 'wait'), tag('D2', 'familiar')], 'You reject the pressured purchase.')
+    opt('Close it; tomorrow can make the decision.', [tag('D10', 'wait')], 'You reject the pressured purchase without choosing a familiar alternative.'),
   ]),
   q(52, 7, 'A plan you made carefully is suddenly impossible.', 'The plan has left a note saying it will not be back.', [
-    opt('Improvise from whatever is available.', [tag('D3', 'improvise'), tag('D2', 'novel')], 'You act with an incomplete plan.'),
-    opt('Pause and make a replacement plan.', [tag('D3', 'plan'), tag('D10', 'wait')], 'You reorganize before acting.'),
+    opt('Improvise from whatever is available.', [tag('D3', 'improvise')], 'You act with an incomplete plan.'),
+    opt('Pause and make a replacement plan.', [tag('D3', 'plan')], 'You reorganize before acting.'),
     opt('Ask the people affected what they prefer.', [tag('D1', 'people'), tag('D3', 'consult')], 'You involve affected people before choosing a new plan.'),
     opt('Drop it; I no longer have the energy.', [tag('D3', 'stop'), tag('D14d', 'rest')], 'You end the plan to protect capacity.')
   ]),
-  q(53, 7, 'Someone close says you hurt them, and you think they have part of it wrong.', 'Being right and repairing things have both requested a speaking slot.', [
+  q(53, 7, '{close} says you hurt them, and you think they have part of it wrong.', 'Being right and repairing things have both requested a speaking slot.', [
     opt('Ask what landed badly before explaining my view.', [tag('D12', 'repair', 'close'), tag('D7', 'soften', 'close')], 'You listen before adding your explanation.'),
-    opt('Explain my intent immediately.', [tag('D12', 'explain', 'close'), tag('D7', 'direct', 'close')], 'You lead with context about your intent.'),
+    opt('Apologize, then explain my intent immediately.', [tag('D12', 'explain', 'close'), tag('D7', 'direct', 'close')], 'You apologize and lead with context about your intent.'),
     opt('Apologize for the impact and discuss the facts later.', [tag('D12', 'repair', 'close'), tag('D7', 'pause', 'close')], 'You prioritize repair while pausing the factual dispute.'),
     opt('Say I cannot discuss it right now.', [tag('D12', 'pause', 'close'), tag('D6', 'private', 'close')], 'You request space before engaging.')
   ], {applicable: 'close'}),
   q(54, 7, 'Your usual sleep plan meets an unexpectedly late night.', 'Tomorrow still exists, annoyingly.', [
     opt('Stop and sleep as soon as I reasonably can.', [tag('D14a', 'protect'), tag('D14d', 'rest')], 'You protect sleep and recovery.'),
     opt('Finish the important thing, then sleep.', [tag('D14a', 'delay'), tag('D14d', 'obligation')], 'You accept later sleep for an obligation.'),
-    opt('Keep going; the night has momentum.', [tag('D14a', 'delay'), tag('D14d', 'obligation')], 'You continue despite the late hour.'),
+    opt('Keep going; the night has momentum.', [tag('D14a', 'delay')], 'You continue despite the late hour.'),
     opt('Change tomorrow’s plan to make room for sleep.', [tag('D14a', 'adjust'), tag('D3', 'plan')], 'You adjust the next plan to protect recovery.')
   ]),
   q(55, 7, 'You are hungry, stressed, and the fastest option is not your usual dinner.', 'The fastest option has already opened the door.', [
-    opt('Eat it; hungry is a current fact.', [tag('D14b', 'comfort'), tag('D10', 'act')], 'You respond immediately with comfort food.'),
+    opt('Eat the comfort food; hungry is a current fact.', [tag('D14b', 'comfort'), tag('D10', 'act')], 'You respond immediately with explicitly comforting food.'),
     opt('Wait and make the meal I intended.', [tag('D14b', 'planned'), tag('D3', 'plan')], 'You follow the planned meal despite the stress.'),
     opt('Choose a quick version that still works for me.', [tag('D14b', 'bounded'), tag('D3', 'plan')], 'You adapt the meal within a boundary.'),
     opt('Skip it until I can think clearly.', [tag('D14b', 'delay'), tag('D10', 'wait')], 'You delay eating while stressed.')
@@ -370,8 +370,8 @@ export const QUESTIONS = [
   q(56, 7, 'What did you actually do the last time your energy and obligation disagreed?', 'Choose a real recent pattern or skip.', [
     opt('Finished the obligation first.', [tag('D14d', 'obligation'), tag('D1', 'task')], 'You report prioritizing the obligation.'),
     opt('Protected rest and moved the task.', [tag('D14d', 'rest'), tag('D1', 'self')], 'You report protecting recovery.'),
-    opt('Asked someone to share or move it.', [tag('D14d', 'connection'), tag('D3', 'plan')], 'You report coordinating a different workload.'),
-    opt('Did a small part and stopped.', [tag('D14d', 'bounded'), tag('D3', 'plan')], 'You report making the obligation manageable.')
+    opt('Asked someone to share or move it.', [tag('D14d', 'connection')], 'You report coordinating a different workload.'),
+    opt('Did a small part and stopped.', [tag('D14d', 'bounded')], 'You report making the obligation manageable.')
   ], {role: 'actual'}),
 
   q(57, 8, 'A friend offers a last-minute trip to a place you have never visited.', 'You have the time, but only one evening to decide.', [
@@ -386,11 +386,11 @@ export const QUESTIONS = [
     opt('Ask for a day, then set a time to talk.', [tag('D7', 'pause', 'close')], 'You request space with a return.'),
     opt('Accept the new plan and say nothing about it.', [tag('D7', 'avoid', 'close')], 'You leave the cancellation unaddressed.')
   ], {role: 'holdout', test: true, applicable: 'close', baseline: 'a'}),
-  q(59, 8, 'The bill includes a shared item you did not use.', 'The group wants one clean split and your calculator wants a union representative.', [
-    opt('Ask to remove my share of that item.', [tag('D8', 'proportional', 'friend'), tag('D7', 'direct', 'friend')], 'You request a consumption-based split.'),
-    opt('Message the organizer privately.', [tag('D8', 'proportional', 'friend'), tag('D7', 'soften', 'friend')], 'You request a fair adjustment privately.'),
-    opt('Tell them it is okay and pay it for simplicity.', [tag('D8', 'absorb', 'friend'), tag('D7', 'direct', 'friend')], 'You accept the extra cost and state that choice directly.'),
-    opt('Pay and keep the irritation to yourself.', [tag('D8', 'absorb', 'friend'), tag('D7', 'hint', 'friend')], 'You absorb the cost without raising it.')
+  q(59, 8, 'Your friends’ bill includes a shared item you did not use.', 'Your friends want one clean split and your calculator wants a union representative.', [
+    opt('Ask to remove my share of that item.', [tag('D8', 'proportional', 'friends'), tag('D7', 'direct', 'friends')], 'You request a consumption-based split.'),
+    opt('Message the organizer privately.', [tag('D8', 'proportional', 'friends'), tag('D7', 'soften', 'friends')], 'You request a fair adjustment privately.'),
+    opt('Tell them it is okay and pay it for simplicity.', [tag('D8', 'absorb', 'friends'), tag('D7', 'direct', 'friends')], 'You accept the extra cost and state that choice directly.'),
+    opt('Pay and keep the irritation to yourself.', [tag('D8', 'absorb', 'friends'), tag('D7', 'hint', 'friends')], 'You absorb the cost without raising it.')
   ], {role: 'holdout', test: true, baseline: 'a'}),
   q(60, 8, 'A surprise gift leaves you with one optional purchase.', 'The gift is yours; the category motive is the question.', [
     opt('Choose the reliable version and keep the rest safe.', [tag('D4', 'security')], 'You prioritize safety or reliability.'),
@@ -411,10 +411,10 @@ export const QUESTIONS = [
     opt('Agree on space and a time to reconnect.', [tag('D12', 'pause', 'close')], 'You coordinate space and a return.')
   ], {role: 'holdout', test: true, applicable: 'close', baseline: 'a'}),
   q(63, 8, 'You want to help someone, but you have one hour and no spare money.', 'The need is genuine; your capacity is also genuine.', [
-    opt('Offer the direct help I can fit in.', [tag('D13', 'direct')], 'You provide direct care within the hour.'),
+    opt('Use the hour to do the task myself.', [tag('D13', 'direct')], 'You provide direct care within the hour.'),
     opt('Find someone or a service better placed to help.', [tag('D13', 'coordinate')], 'You coordinate appropriate support.'),
     opt('Say I cannot take this on today.', [tag('D13', 'limit')], 'You state a capacity limit.'),
-    opt('Help briefly, then leave on time.', [tag('D13', 'bounded')], 'You provide bounded help.')
+    opt('Offer ten minutes, then hand it back.', [tag('D13', 'bounded')], 'You provide a clearly bounded amount of help.')
   ], {role: 'holdout', test: true, baseline: 'b'}),
   q(64, 8, 'A plan fails at the last minute and someone asks what happens next.', 'The plot has finally admitted it was improvising.', [
     opt('Choose a workable next step immediately.', [tag('D3', 'improvise')], 'You act quickly on a replacement step.'),

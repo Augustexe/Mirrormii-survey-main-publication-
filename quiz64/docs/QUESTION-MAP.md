@@ -1,6 +1,6 @@
 # QUESTION MAP — genii-64.v1
 
-Generated from `src/data.js`; tags are authored evidence categories, and `@close` resolves to the selected close person. `@friend` means group friends. A skip is missing evidence.
+Generated from `src/data.js`; tags are authored evidence categories. `@close` resolves to the selected close person; `@friend` is an individual friend; `@friends` is the explicitly named friend group. A skip is missing evidence.
 
 ### q01 — Who gets the unfiltered version of you? (chapter 1; context)
 
@@ -51,20 +51,20 @@ It is important, but not literally on fire.
 - **c** “Ask someone else to cover it.” — D1:self@general, D11:autonomy@general. You protect the trip and redistribute the request.
 - **d** “Work out the smallest useful fix, then return.” — D1:task@general, D3:plan@general. You reduce the interruption to a bounded task.
 
-### q07 — A surprise cost appears on the trip. Your group of friends wants to split it evenly. (chapter 1; hypothetical)
+### q07 — A surprise cost appears on a trip with your group of friends. (chapter 1; hypothetical)
 
-Nobody has behaved badly; the numbers are simply wearing a tiny hat.
-- **a** “Split it by what each of us used.” — D8:proportional@friend, D7:direct@friend. You request a consumption-based split directly.
-- **b** “Split it evenly. It is worth avoiding public arithmetic.” — D8:absorb@friend, D4:convenience@general. You accept an extra cost for simplicity.
-- **c** “Quietly explain my share and ask to adjust it.” — D8:proportional@friend, D7:soften@friend. You request a fair split privately.
-- **d** “Pay, say nothing, remember the exact amount.” — D8:absorb@friend, D7:hint@friend. You absorb the cost without raising it.
+You ordered the salad; someone else added expensive extras you did not use, then suggests an even split.
+- **a** “Split it by what each of us used.” — D8:proportional@friends, D7:direct@friends. You request a consumption-based split directly.
+- **b** “Pay evenly to avoid public arithmetic.” — D8:absorb@friends. You knowingly accept the extra cost for simplicity.
+- **c** “Quietly explain my share and ask to adjust it.” — D8:proportional@friends, D7:soften@friends. You request a fair split privately.
+- **d** “Pay the extra and say nothing.” — D8:absorb@friends, D7:hint@friends. You knowingly absorb the extra cost without raising it.
 
 ### q08 — What did you actually do the last time a plan went sideways? (chapter 1; actual)
 
 Choose a recent real response; skip if there is no useful example.
 - **a** “I changed course immediately.” — D3:improvise@general. You report acting quickly when the plan failed.
 - **b** “I made a new plan before moving.” — D3:plan@general. You report pausing to organize a new plan.
-- **c** “I asked somebody else what they wanted to do.” — D1:people@general. You report checking the group before deciding.
+- **c** “I asked somebody else what they wanted to do.” — D1:people@general, D3:consult@general. You report consulting the group before deciding.
 - **d** “I carried on and hoped the problem got bored.” — D3:avoid@general. You report leaving the problem alone for the moment.
 
 ### q09 — A windfall equal to one month of costs lands today. (chapter 2; hypothetical)
@@ -72,10 +72,10 @@ Choose a recent real response; skip if there is no useful example.
 It is yours to use, save, or give a job later.
 - **a** “Put it somewhere safe first.” — D4:security@general, D3:plan@general. You prioritize financial safety and delay spending.
 - **b** “Use it for a new experience I have been postponing.” — D4:enjoyment@general, D2:novel@general. You use the money for a new experience and enjoyment.
-- **c** “Buy the thing that gives me time back.” — D4:freedom@general, D3:plan@general. You spend to preserve time and independence.
+- **c** “Buy the thing that gives me time back.” — D4:freedom@general. You spend to preserve time and independence.
 - **d** “Buy the recognizable version. The logo may have a point.” — D4:status@general, D9:recognition@general. You identify recognition or status as part of the appeal.
 
-### q10 — You and {close} planned an outing. They ordered extras and suggest splitting everything evenly. (chapter 2; hypothetical; applicable: close)
+### q10 — You and {close} planned an outing. They ordered extras and suggest splitting everything evenly. (chapter 2; hypothetical / applicable: close)
 
 The extra dessert has entered the shared spreadsheet.
 - **a** “Ask to split the extras by who ordered them.” — D8:proportional@close, D7:direct@close. You request a consumption-based split directly.
@@ -94,7 +94,7 @@ The cart contains one lamp shaped like a duck.
 ### q12 — Friends made fast money on a tip and invite you in. (chapter 2; hypothetical)
 
 You have only ten minutes to decide whether to join the uncertain move.
-- **a** “Join. Ten minutes is plenty of plot.” — D2:novel@general, D10:act@general. You accept a new and uncertain opportunity quickly.
+- **a** “Join. Ten minutes is plenty of plot.” — D2:novel@general. You accept a new and uncertain opportunity quickly.
 - **b** “Look up the downside before deciding.” — D2:conditional@general, D3:plan@general. You investigate uncertainty before committing.
 - **c** “Decline. I would rather keep the money I have.” — D2:familiar@general, D4:security@general. You prefer the known financial position.
 - **d** “Join only with a small amount I can lose.” — D2:conditional@general, D4:security@general. You limit risk before trying the opportunity.
@@ -102,20 +102,20 @@ You have only ten minutes to decide whether to join the uncertain move.
 ### q13 — A family member asks to borrow money while your month is tight. (chapter 2; hypothetical)
 
 They promise to repay you, with the confidence of a person who has not seen your spreadsheet.
-- **a** “Say what I can afford and lend that amount.” — D8:proportional@family, D7:direct@family. You state a capacity limit and set a bounded contribution.
-- **b** “Ask what happened and work out another kind of help.” — D8:proportional@family, D11:duty@family. You explore a fair way to help without promising cash.
+- **a** “Say what I can afford and lend that amount.” — D8:limit@family, D7:direct@family. You state a capacity limit and set a bounded contribution.
+- **b** “Ask what happened and work out another kind of help.” — D8:limit@family, D11:duty@family. You explore a bounded way to help without promising cash.
 - **c** “Lend it; family should not be stranded.” — D8:absorb@family, D11:duty@family. You carry the financial cost because of family duty.
-- **d** “Decline. My own bills are already doing theatre.” — D8:proportional@family, D11:autonomy@family. You protect your own financial capacity.
+- **d** “Decline. My own bills are already doing theatre.” — D8:limit@family, D11:autonomy@family. You protect your own financial capacity.
 
-### q14 — A group trip costs more than you can afford; everyone else said yes. (chapter 2; hypothetical)
+### q14 — Your friends plan a group trip that costs more than you can afford. (chapter 2; hypothetical)
 
-The group is excited and the cancellation policy is a villain.
-- **a** “Say I cannot afford it and suggest a cheaper version.” — D4:security@general, D7:direct@friend. You state the budget constraint and propose an alternative.
-- **b** “Go anyway and solve the money problem later.” — D4:enjoyment@general, D10:act@general. You choose the experience despite the immediate budget problem.
+Your friends are excited and the cancellation policy is a villain.
+- **a** “Say I cannot afford this trip and suggest a cheaper version.” — D4:security@general, D7:direct@friends. You state the budget constraint to the group and propose an alternative.
+- **b** “Go anyway and solve the money problem later.” — D4:enjoyment@general. You choose the experience despite the immediate budget problem.
 - **c** “Join for one night within a fixed amount.” — D4:security@general, D3:plan@general. You make participation fit a planned limit.
-- **d** “Decline with a vague excuse. The budget remains private.” — D4:security@general, D7:avoid@friend. You protect the budget without explaining the reason.
+- **d** “Decline with a vague excuse. The budget remains private.” — D4:security@general, D7:avoid@friends. You protect the budget without explaining the reason.
 
-### q15 — The people you live with think the house cleans itself. (chapter 2; hypothetical; applicable: shared)
+### q15 — The people you live with think the house cleans itself. (chapter 2; hypothetical / applicable: shared)
 
 You are the house. The sponge has entered negotiations.
 - **a** “Suggest we split the chores by task.” — D8:proportional@household, D7:direct@household. You explicitly renegotiate the division of labor.
@@ -126,10 +126,10 @@ You are the house. The sponge has entered negotiations.
 ### q16 — What did you actually do the last time a money split with friends got awkward? (chapter 2; actual)
 
 Think of a real friends’ bill or shared cost; skip if none comes to mind.
-- **a** “Named the amount plainly.” — D8:proportional@friend, D7:direct@friend. You report stating the financial issue directly.
-- **b** “Sent a careful message privately.” — D8:proportional@friend, D7:soften@friend. You report raising the issue privately and gently.
-- **c** “Paid or lent it and moved on.” — D8:absorb@friend, D7:avoid@friend. You report carrying the cost without reopening it.
-- **d** “Kept my share and let someone else handle the rest.” — D8:proportional@friend, D11:autonomy@friend. You report limiting your contribution.
+- **a** “Named the amount plainly.” — D8:proportional@friends, D7:direct@friends. You report stating the financial issue directly.
+- **b** “Sent a careful message privately.” — D8:proportional@friends, D7:soften@friends. You report raising the issue privately and gently.
+- **c** “Paid or lent it and moved on.” — D8:absorb@friends, D7:avoid@friends. You report carrying the cost without reopening it.
+- **d** “Kept my share and let someone else handle the rest.” — D8:proportional@friends. You report limiting your contribution.
 
 ### q17 — What time do you usually stop being available to consciousness? (chapter 3; context)
 
@@ -139,7 +139,7 @@ Report your usual pattern; shifts and variation are valid answers.
 - **c** “After 1 a.m. The internet becomes important at midnight.” — facts only; facts=bedtime=after 01:00. You explicitly report a later sleep rhythm.
 - **d** “It varies or I work shifts. Time and I have an arrangement.” — facts only; facts=bedtime=variable-or-shifts. You explicitly report a variable rhythm.
 
-### q18 — When {close} goes quiet after a hard day, what is your first story? (chapter 3; hypothetical; applicable: close)
+### q18 — When {close} goes quiet after a hard day, what is your first story? (chapter 3; hypothetical / applicable: close)
 
 Use the selected close person if you have one; skip if this does not fit.
 - **a** “They are probably busy. The silence and I can coexist.” — D5:secure@close. You describe a benign explanation for the silence.
@@ -147,7 +147,7 @@ Use the selected close person if you have one; skip if this does not fit.
 - **c** “I reread my message and look for what I did wrong.” — D5:reassurance@close, D6:private@close. You question the relationship and process the uncertainty privately.
 - **d** “I ask directly whether we are okay.” — D5:reassurance@close, D7:direct@close. You seek explicit reassurance through a direct question.
 
-### q19 — It is 11 p.m. after a cursed day. Who gets the first version? (chapter 3; hypothetical; applicable: close)
+### q19 — It is 11 p.m. after a cursed day. Who gets the first version? (chapter 3; hypothetical / applicable: close)
 
 The day has already filed its paperwork; choose how much to share.
 - **a** “I tell {close} the whole story and ask them to listen.” — D6:support@close. You disclose fully and seek connection from the selected person.
@@ -163,7 +163,7 @@ Count meals, not virtue. The delivery app is not a moral authority.
 - **c** “Three or four. We are becoming close.” — facts only; facts=takeaway=3-4 days / last 7. You explicitly report frequent takeaway dinners.
 - **d** “Five to seven. The doorbell is my dinner bell.” — facts only; facts=takeaway=5-7 days / last 7. You explicitly report takeaway as the usual dinner source.
 
-### q21 — The last time you felt ignored by {close}, what did you actually do? (chapter 3; actual; applicable: close)
+### q21 — The last time you felt ignored by {close}, what did you actually do? (chapter 3; actual / applicable: close)
 
 Choose a close-person response; skip if there is no safe or useful example.
 - **a** “Said what was bothering me.” — D7:direct@close. You report naming the issue directly.
@@ -171,7 +171,7 @@ Choose a close-person response; skip if there is no safe or useful example.
 - **c** “Asked for time and came back to talk.” — D7:pause@close, D6:private@close. You report an explicit pause with a return.
 - **d** “Avoided the conversation and let it pass.” — D7:avoid@close, D6:private@close. You report leaving the issue unaddressed.
 
-### q22 — After a fight, {close} sends a raccoon eating grapes. No explanation. (chapter 3; hypothetical; applicable: close)
+### q22 — After a fight, {close} sends a raccoon eating grapes. No explanation. (chapter 3; hypothetical / applicable: close)
 
 The raccoon is excellent at conflict avoidance. What do you do?
 - **a** ““He is incredible. Can we talk about yesterday?”” — D7:direct@close, D12:repair@close. You maintain contact and reopen repair directly.
@@ -179,7 +179,7 @@ The raccoon is excellent at conflict avoidance. What do you do?
 - **c** “Send one back and leave it there.” — D7:avoid@close. You resume contact without addressing the disagreement.
 - **d** “Say I need a day before we talk.” — D7:pause@close, D6:private@close. You request space and keep the conversation possible.
 
-### q23 — You forgot something important to {close}. What comes next? (chapter 3; hypothetical; applicable: close)
+### q23 — You forgot something important to {close}. What comes next? (chapter 3; hypothetical / applicable: close)
 
 The full stop in “it’s fine” has entered the room.
 - **a** “Apologize and ask how to make it right.” — D12:repair@close, D7:direct@close. You own the mistake and ask about repair.
@@ -187,7 +187,7 @@ The full stop in “it’s fine” has entered the room.
 - **c** “Arrange something thoughtful to make up for it.” — D12:action@close, D3:plan@general. You initiate a concrete repair gesture.
 - **d** “Ask for space, then agree when to talk.” — D12:pause@close, D7:pause@close. You coordinate a pause and a return.
 
-### q24 — When {close} cancels a catch-up and suggests no new date, what do you assume first? (chapter 3; hypothetical; applicable: close)
+### q24 — When {close} cancels a catch-up and suggests no new date, what do you assume first? (chapter 3; hypothetical / applicable: close)
 
 Choose the closest first interpretation; skip if this scene does not fit.
 - **a** “They are busy; we will find another time.” — D5:secure@close. You choose a benign explanation for the cancellation.
@@ -227,7 +227,7 @@ They send a recipe video as if the disagreement was a minor seasoning issue.
 - **c** “Reply about the recipe and leave the disagreement alone.” — D7:avoid@family, D12:avoid@family. You resume ordinary contact without repair.
 - **d** “Ask for a day and name a time to return.” — D7:pause@family, D12:pause@family. You coordinate a pause with a return.
 
-### q29 — What did you actually do the last time an outing with {close} became uneven? (chapter 4; actual; applicable: close)
+### q29 — What did you actually do the last time an outing with {close} became uneven? (chapter 4; actual / applicable: close)
 
 The bill or effort stopped matching; choose a real response or skip.
 - **a** “Named the imbalance and asked to split it fairly.” — D8:proportional@close, D7:direct@close. You report naming the uneven cost or effort directly.
@@ -235,9 +235,9 @@ The bill or effort stopped matching; choose a real response or skip.
 - **c** “Covered it and kept the peace.” — D8:absorb@close. You report carrying the extra cost or effort.
 - **d** “Stopped covering it without discussing why.” — D8:limit@close, D7:avoid@close. You report withdrawing your extra contribution without a discussion.
 
-### q30 — What did you actually do the last time a setback happened to {close}? (chapter 4; actual; applicable: close)
+### q30 — What did you actually do the last time a setback happened to you? (chapter 4; actual / applicable: close)
 
-Choose how you disclosed it, or skip if there is no useful example.
+Choose what you told {close}, or skip if there is no useful example.
 - **a** “Told {close} quickly and asked them to stay with me in it.” — D6:support@close. You report disclosing promptly and seeking connection.
 - **b** “Told {close} a small version first.” — D6:selective@close. You report selective disclosure to the selected person.
 - **c** “Worked it out privately before saying anything.” — D6:private@close. You report processing the setback privately.
@@ -246,23 +246,23 @@ Choose how you disclosed it, or skip if there is no useful example.
 ### q31 — You lose your job. Who in the family hears it, and when? (chapter 4; hypothetical)
 
 Imagine the news arriving today; skip if this scene does not fit.
-- **a** “Tell the family quickly; I need people around me.” — D6:support@family, D11:duty@family. You disclose quickly and seek family support.
-- **b** “Tell one person privately first.” — D6:selective@family, D11:autonomy@family. You choose a limited, private disclosure.
+- **a** “Tell the family quickly; I need people around me.” — D6:support@family. You disclose quickly and seek family support.
+- **b** “Tell one person privately first.” — D6:selective@family. You choose a limited, private disclosure.
 - **c** “Wait until I have a plan.” — D6:private@family, D3:plan@general. You delay disclosure while organizing next steps.
-- **d** “Handle it alone for a while.” — D6:distance@family, D11:autonomy@family. You keep the setback private at first.
+- **d** “Handle it alone for a while.” — D6:distance@family. You keep the setback private at first.
 
 ### q32 — What did you actually do the last time family wanted something different from you? (chapter 4; actual)
 
 A recent disagreement is useful; family history is not a required reading list.
 - **a** “Said no and kept my plan.” — D11:autonomy@family, D7:direct@family. You report protecting your choice directly.
-- **b** “Found a compromise.” — D11:conditional@family, D8:proportional@family. You report negotiating a workable split.
+- **b** “Found a compromise.” — D11:conditional@family. You report negotiating a workable agreement.
 - **c** “Went along with them.” — D11:duty@family, D1:people@general. You report prioritizing the family request.
 - **d** “Avoided the conversation for now.” — D7:avoid@family. You report deferring the disagreement.
 
 ### q33 — The friend you brought becomes the centre of the party. (chapter 5; hypothetical)
 
 Everyone is delighted. Your ego would like a small private meeting.
-- **a** “Introduce them to more people and enjoy it.” — D9:noncompetitive@general, D6:support@friend. You connect the friend despite losing attention.
+- **a** “Introduce them to more people and enjoy it.” — D9:noncompetitive@general. You connect the friend despite losing attention.
 - **b** “Stay close and make sure I am not forgotten.” — D9:recognition@general. You seek recognition in the group.
 - **c** “Turn it into a joint bit. We can be famous together.” — D9:competitive@general, D1:people@general. You convert comparison into shared performance.
 - **d** “Leave early; the social battery has become a witness.” — D14d:rest@general. You protect capacity by leaving early.
@@ -286,8 +286,8 @@ Your ego would prefer to lie face down for ten minutes.
 ### q36 — A friend asks to borrow money after a rough week. (chapter 5; hypothetical)
 
 You care about them and your budget has also had a rough week.
-- **a** “State what I can lend and when I need it back.” — D8:proportional@friend, D7:direct@friend. You set a bounded loan and repayment expectation.
-- **b** “Offer a smaller amount or practical help.” — D8:proportional@friend. You help within a defined limit.
+- **a** “State what I can lend and when I need it back.” — D8:limit@friend, D7:direct@friend. You set a bounded loan and repayment expectation.
+- **b** “Offer a smaller amount or practical help.” — D8:limit@friend. You help within a defined limit.
 - **c** “Lend it without making the friendship an invoice.” — D8:absorb@friend, D11:duty@friend. You accept the financial cost for the friendship.
 - **d** “Decline; I cannot add this cost.” — D8:limit@friend, D11:autonomy@friend. You protect your own financial capacity.
 
@@ -295,7 +295,7 @@ You care about them and your budget has also had a rough week.
 
 The correction would be embarrassing. The silence is also doing a lot.
 - **a** “Own it and tell the team how I will fix it.” — D12:repair@colleague. You take responsibility and propose a repair.
-- **b** “Tell the lead privately first.” — D12:explain@colleague, D7:soften@colleague. You disclose the mistake in a private conversation.
+- **b** “Apologize to the lead privately and explain what led to it.” — D12:explain@colleague, D7:soften@colleague. You apologize and disclose the mistake in a private conversation.
 - **c** “Fix the work quietly and hope the blame evaporates.” — D12:action@colleague, D7:avoid@colleague. You repair the output without owning it publicly.
 - **d** “Leave the project if the damage is too large.” — D12:exit@colleague, D11:autonomy@colleague. You choose to exit rather than continue the repair.
 
@@ -303,17 +303,17 @@ The correction would be embarrassing. The silence is also doing a lot.
 
 The hidden thing is theirs to tell; your role is not a courtroom.
 - **a** “Ask what happened before choosing.” — D1:people@general, D3:plan@general. You gather context before taking a side.
-- **b** “Stand with my friend immediately.” — D6:support@friend, D11:duty@friend. You prioritize loyalty to the friend.
-- **c** “Say I will not carry a secret that harms someone.” — D13:limit@general, D7:direct@friend. You set a direct care and responsibility limit.
-- **d** “Stay out until the people involved talk themselves.” — D6:distance@friend, D7:avoid@friend. You keep distance from the conflict.
+- **b** “Stand with the group immediately.” — D11:duty@friends. You prioritize loyalty to the group.
+- **c** “Say I will not carry a secret that harms someone.” — D13:limit@general, D7:direct@friends. You set a direct care and responsibility limit.
+- **d** “Stay out until the people involved talk themselves.” — D7:avoid@friends. You stay out of the group conflict.
 
-### q39 — The group wants you to take credit for a win you only partly made. (chapter 5; hypothetical)
+### q39 — Your colleagues want you to take credit for a win you only partly made. (chapter 5; hypothetical)
 
 The applause is available. So is the awkward footnote.
 - **a** “Name everyone’s contribution.” — D9:noncompetitive@general, D8:proportional@colleague. You distribute recognition according to contribution.
 - **b** “Accept the credit and share it later.” — D9:recognition@general, D3:plan@general. You accept recognition while planning a later share.
 - **c** “Correct the record immediately.” — D7:direct@colleague. You clarify the credit directly.
-- **d** “Let it pass; the result matters more than the names.” — D9:noncompetitive@general, D8:absorb@colleague. You accept an uneven recognition outcome.
+- **d** “Let it pass; the result matters more than the names.” — D9:noncompetitive@general. You accept an uneven recognition outcome.
 
 ### q40 — What did you actually do the last time a colleague took the spotlight? (chapter 5; actual)
 
@@ -337,7 +337,7 @@ Your own bus is arriving in two minutes.
 - **a** “Stay and help. The bus and I will meet again.” — D13:direct@general, D1:people@general. You accept a personal cost to provide direct help.
 - **b** “Give quick directions, then catch my bus.” — D13:bounded@general. You provide limited help while protecting capacity.
 - **c** “Point them to staff before I go.” — D13:coordinate@general, D1:task@general. You connect them to another source of help.
-- **d** “Apologize and catch my bus.” — D13:limit@general, D14d:rest@general. You prioritize current capacity.
+- **d** “Apologize, protect my remaining energy, and catch my bus.” — D13:limit@general, D14d:rest@general. You explicitly prioritize recovery capacity.
 
 ### q43 — Your planned movement meets an appealing alternative. (chapter 6; hypothetical)
 
@@ -360,7 +360,7 @@ Choose a real recent response; skip if you have no useful example.
 It would help, but it can wait until morning.
 - **a** “Go to bed and move the task.” — D14a:protect@general, D14d:rest@general. You protect sleep and recovery.
 - **b** “Do the task, then sleep later.” — D14a:delay@general, D14d:obligation@general. You delay sleep for the optional obligation.
-- **c** “Adjust tomorrow to make room for it.” — D14a:adjust@general, D3:plan@general. You change the next plan to fit the task.
+- **c** “Move tomorrow’s wake-up later so I can finish this and still sleep.” — D14a:adjust@general, D3:plan@general. You change tomorrow’s sleep timing to fit the task while preserving sleep.
 - **d** “Decline the task; tonight is closed.” — D14a:protect@general, D14d:rest@general. You decline the task to protect sleep.
 
 ### q46 — In the last seven days, on how many days did you deliberately get some movement? (chapter 6; context)
@@ -392,8 +392,8 @@ Choose a real response or skip.
 The tasks are all mildly urgent, which is their favourite disguise.
 - **a** “Do the task affecting someone else first.” — D1:people@general, D11:duty@general. You prioritize the other person’s need.
 - **b** “Do the task with the nearest deadline.” — D1:task@general, D3:plan@general. You prioritize the immediate task.
-- **c** “Take the hour for myself.” — D1:self@general, D14d:rest@general. You protect personal recovery.
-- **d** “Make a quick order and start the smallest piece.” — D1:task@general, D3:plan@general. You organize the tasks before acting.
+- **c** “Take the hour to recover.” — D1:self@general, D14d:rest@general. You explicitly protect personal recovery.
+- **d** “Take one small task, then stop.” — D1:task@general, D14d:bounded@general. You make a bounded contribution and stop.
 
 ### q50 — What did you actually want the last time you made an optional purchase? (chapter 7; actual)
 
@@ -409,21 +409,21 @@ The countdown timer has the confidence of a tiny auctioneer.
 - **a** “Buy now; the deal may fix the evening.” — D10:act@general, D4:enjoyment@general. You act on an emotional purchase prompt.
 - **b** “Wait until tomorrow.” — D10:wait@general, D3:plan@general. You delay a mood-linked purchase.
 - **c** “Compare the deal with the normal price.” — D3:plan@general, D4:security@general. You verify the offer before acting.
-- **d** “Close it; tomorrow can make the decision.” — D10:wait@general, D2:familiar@general. You reject the pressured purchase.
+- **d** “Close it; tomorrow can make the decision.” — D10:wait@general. You reject the pressured purchase without choosing a familiar alternative.
 
 ### q52 — A plan you made carefully is suddenly impossible. (chapter 7; hypothetical)
 
 The plan has left a note saying it will not be back.
-- **a** “Improvise from whatever is available.” — D3:improvise@general, D2:novel@general. You act with an incomplete plan.
-- **b** “Pause and make a replacement plan.” — D3:plan@general, D10:wait@general. You reorganize before acting.
+- **a** “Improvise from whatever is available.” — D3:improvise@general. You act with an incomplete plan.
+- **b** “Pause and make a replacement plan.” — D3:plan@general. You reorganize before acting.
 - **c** “Ask the people affected what they prefer.” — D1:people@general, D3:consult@general. You involve affected people before choosing a new plan.
 - **d** “Drop it; I no longer have the energy.” — D3:stop@general, D14d:rest@general. You end the plan to protect capacity.
 
-### q53 — Someone close says you hurt them, and you think they have part of it wrong. (chapter 7; hypothetical; applicable: close)
+### q53 — {close} says you hurt them, and you think they have part of it wrong. (chapter 7; hypothetical / applicable: close)
 
 Being right and repairing things have both requested a speaking slot.
 - **a** “Ask what landed badly before explaining my view.” — D12:repair@close, D7:soften@close. You listen before adding your explanation.
-- **b** “Explain my intent immediately.” — D12:explain@close, D7:direct@close. You lead with context about your intent.
+- **b** “Apologize, then explain my intent immediately.” — D12:explain@close, D7:direct@close. You apologize and lead with context about your intent.
 - **c** “Apologize for the impact and discuss the facts later.” — D12:repair@close, D7:pause@close. You prioritize repair while pausing the factual dispute.
 - **d** “Say I cannot discuss it right now.” — D12:pause@close, D6:private@close. You request space before engaging.
 
@@ -432,13 +432,13 @@ Being right and repairing things have both requested a speaking slot.
 Tomorrow still exists, annoyingly.
 - **a** “Stop and sleep as soon as I reasonably can.” — D14a:protect@general, D14d:rest@general. You protect sleep and recovery.
 - **b** “Finish the important thing, then sleep.” — D14a:delay@general, D14d:obligation@general. You accept later sleep for an obligation.
-- **c** “Keep going; the night has momentum.” — D14a:delay@general, D14d:obligation@general. You continue despite the late hour.
+- **c** “Keep going; the night has momentum.” — D14a:delay@general. You continue despite the late hour.
 - **d** “Change tomorrow’s plan to make room for sleep.” — D14a:adjust@general, D3:plan@general. You adjust the next plan to protect recovery.
 
 ### q55 — You are hungry, stressed, and the fastest option is not your usual dinner. (chapter 7; hypothetical)
 
 The fastest option has already opened the door.
-- **a** “Eat it; hungry is a current fact.” — D14b:comfort@general, D10:act@general. You respond immediately with comfort food.
+- **a** “Eat the comfort food; hungry is a current fact.” — D14b:comfort@general, D10:act@general. You respond immediately with explicitly comforting food.
 - **b** “Wait and make the meal I intended.” — D14b:planned@general, D3:plan@general. You follow the planned meal despite the stress.
 - **c** “Choose a quick version that still works for me.” — D14b:bounded@general, D3:plan@general. You adapt the meal within a boundary.
 - **d** “Skip it until I can think clearly.” — D14b:delay@general, D10:wait@general. You delay eating while stressed.
@@ -448,8 +448,8 @@ The fastest option has already opened the door.
 Choose a real recent pattern or skip.
 - **a** “Finished the obligation first.” — D14d:obligation@general, D1:task@general. You report prioritizing the obligation.
 - **b** “Protected rest and moved the task.” — D14d:rest@general, D1:self@general. You report protecting recovery.
-- **c** “Asked someone to share or move it.” — D14d:connection@general, D3:plan@general. You report coordinating a different workload.
-- **d** “Did a small part and stopped.” — D14d:bounded@general, D3:plan@general. You report making the obligation manageable.
+- **c** “Asked someone to share or move it.” — D14d:connection@general. You report coordinating a different workload.
+- **d** “Did a small part and stopped.” — D14d:bounded@general. You report making the obligation manageable.
 
 ### q57 — A friend offers a last-minute trip to a place you have never visited. (chapter 8; holdout / heldout)
 
@@ -459,7 +459,7 @@ You have the time, but only one evening to decide.
 - **c** “Choose a familiar plan instead.” — D2:familiar@general. You choose the known option.
 - **d** “Go only if someone I know joins.” — D2:conditional@general. You condition novelty on familiar company.
 
-### q58 — {close} cancels a plan that mattered to you. (chapter 8; holdout / heldout; applicable: close)
+### q58 — {close} cancels a plan that mattered to you. (chapter 8; holdout / heldout / applicable: close)
 
 They offer a replacement without mentioning the cancellation.
 - **a** “Rebook, and say why the cancellation hurt.” — D7:direct@close. You reopen the issue directly.
@@ -467,13 +467,13 @@ They offer a replacement without mentioning the cancellation.
 - **c** “Ask for a day, then set a time to talk.” — D7:pause@close. You request space with a return.
 - **d** “Accept the new plan and say nothing about it.” — D7:avoid@close. You leave the cancellation unaddressed.
 
-### q59 — The bill includes a shared item you did not use. (chapter 8; holdout / heldout)
+### q59 — Your friends’ bill includes a shared item you did not use. (chapter 8; holdout / heldout)
 
-The group wants one clean split and your calculator wants a union representative.
-- **a** “Ask to remove my share of that item.” — D8:proportional@friend, D7:direct@friend. You request a consumption-based split.
-- **b** “Message the organizer privately.” — D8:proportional@friend, D7:soften@friend. You request a fair adjustment privately.
-- **c** “Tell them it is okay and pay it for simplicity.” — D8:absorb@friend, D7:direct@friend. You accept the extra cost and state that choice directly.
-- **d** “Pay and keep the irritation to yourself.” — D8:absorb@friend, D7:hint@friend. You absorb the cost without raising it.
+Your friends want one clean split and your calculator wants a union representative.
+- **a** “Ask to remove my share of that item.” — D8:proportional@friends, D7:direct@friends. You request a consumption-based split.
+- **b** “Message the organizer privately.” — D8:proportional@friends, D7:soften@friends. You request a fair adjustment privately.
+- **c** “Tell them it is okay and pay it for simplicity.” — D8:absorb@friends, D7:direct@friends. You accept the extra cost and state that choice directly.
+- **d** “Pay and keep the irritation to yourself.” — D8:absorb@friends, D7:hint@friends. You absorb the cost without raising it.
 
 ### q60 — A surprise gift leaves you with one optional purchase. (chapter 8; holdout / heldout)
 
@@ -491,7 +491,7 @@ It is optional, and the team will survive a conversation.
 - **c** “Find someone with capacity to share it.” — D14d:connection@general. You coordinate a shared way to complete it.
 - **d** “Offer a smaller piece and protect the rest of the evening.” — D14d:bounded@general. You make a bounded contribution.
 
-### q62 — You let {close} down again, in a different situation. (chapter 8; holdout / heldout; applicable: close)
+### q62 — You let {close} down again, in a different situation. (chapter 8; holdout / heldout / applicable: close)
 
 The repair starts with one sentence, not a courtroom.
 - **a** “Apologize directly and ask what would help.” — D12:repair@close. You own the mistake and ask about repair.
@@ -502,10 +502,10 @@ The repair starts with one sentence, not a courtroom.
 ### q63 — You want to help someone, but you have one hour and no spare money. (chapter 8; holdout / heldout)
 
 The need is genuine; your capacity is also genuine.
-- **a** “Offer the direct help I can fit in.” — D13:direct@general. You provide direct care within the hour.
+- **a** “Use the hour to do the task myself.” — D13:direct@general. You provide direct care within the hour.
 - **b** “Find someone or a service better placed to help.” — D13:coordinate@general. You coordinate appropriate support.
 - **c** “Say I cannot take this on today.” — D13:limit@general. You state a capacity limit.
-- **d** “Help briefly, then leave on time.” — D13:bounded@general. You provide bounded help.
+- **d** “Offer ten minutes, then hand it back.” — D13:bounded@general. You provide a clearly bounded amount of help.
 
 ### q64 — A plan fails at the last minute and someone asks what happens next. (chapter 8; holdout / heldout)
 
@@ -517,23 +517,24 @@ The plot has finally admitted it was improvising.
 
 ## Coverage
 
-- **D1 — First move:** 14 unique training questions; authored targets: general. Questions: q03, q05, q06, q08, q25, q32, q33, q38, q41, q42, q48, q49, q52, q56.
-- **D2 — Risk & novelty:** 5 unique training questions; authored targets: general. Questions: q04, q09, q12, q51, q52.
-- **D3 — Planning:** 29 unique training questions; authored targets: general. Questions: q03, q04, q05, q06, q08, q09, q11, q12, q14, q15, q23, q25, q26, q31, q34, q35, q38, q39, q41, q43, q45, q47, q48, q49, q51, q52, q54, q55, q56.
-- **D4 — Money motive:** 7 unique training questions; authored targets: general. Questions: q07, q09, q11, q12, q14, q50, q51.
-- **D5 — Closeness worry:** 2 unique training questions; authored targets: close. Questions: q18, q24.
-- **D6 — Closeness distance:** 11 unique training questions; authored targets: close, general, family, friend. Questions: q18, q19, q21, q22, q24, q30, q31, q33, q35, q38, q53.
-- **D7 — Conflict style:** 23 unique training questions; authored targets: friend, close, family, household, colleague. Questions: q07, q10, q13, q14, q15, q16, q18, q21, q22, q23, q24, q25, q26, q27, q28, q29, q32, q34, q36, q37, q38, q39, q53.
-- **D8 — Fairness & effort:** 10 unique training questions; authored targets: friend, close, family, household, colleague. Questions: q07, q10, q13, q15, q16, q29, q32, q34, q36, q39.
-- **D9 — Recognition & rivalry:** 6 unique training questions; authored targets: general. Questions: q09, q33, q34, q35, q39, q40.
-- **D10 — Mood-driven urgency:** 8 unique training questions; authored targets: general. Questions: q11, q12, q14, q35, q44, q51, q52, q55.
-- **D11 — Duty & autonomy:** 12 unique training questions; authored targets: general, family, friend, colleague. Questions: q06, q13, q16, q25, q26, q27, q31, q32, q36, q37, q38, q49.
-- **D12 — Repair after mistakes:** 5 unique training questions; authored targets: close, family, colleague. Questions: q22, q23, q28, q37, q53.
-- **D13 — Care & its limits:** 4 unique training questions; authored targets: general. Questions: q38, q41, q42, q48.
-- **D14a — Sleep rhythm:** 2 unique training questions; authored targets: general. Questions: q45, q54.
-- **D14b — Eating habits:** 2 unique training questions; authored targets: general. Questions: q44, q55.
-- **D14c — Movement:** 2 unique training questions; authored targets: general. Questions: q43, q47.
-- **D14d — Recovery:** 7 unique training questions; authored targets: general. Questions: q33, q42, q45, q49, q52, q54, q56.
+Counts below use distinct training question IDs, with a target breakdown so repeated tags in one option do not inflate coverage.
+- **D1 — First move:** 14 unique training questions; unique questions by authored target: general: 14. Questions: q03, q05, q06, q08, q25, q32, q33, q38, q41, q42, q48, q49, q52, q56.
+- **D2 — Risk & novelty:** 3 unique training questions; unique questions by authored target: general: 3. Questions: q04, q09, q12.
+- **D3 — Planning:** 28 unique training questions; unique questions by authored target: general: 28. Questions: q03, q04, q05, q06, q08, q09, q11, q12, q14, q15, q23, q25, q26, q31, q34, q35, q38, q39, q41, q43, q45, q47, q48, q49, q51, q52, q54, q55.
+- **D4 — Money motive:** 6 unique training questions; unique questions by authored target: general: 6. Questions: q09, q11, q12, q14, q50, q51.
+- **D5 — Closeness worry:** 2 unique training questions; unique questions by authored target: close: 2. Questions: q18, q24.
+- **D6 — Closeness distance:** 9 unique training questions; unique questions by authored target: close: 7, general: 2, family: 1, friend: 1. Questions: q18, q19, q21, q22, q24, q30, q31, q35, q53.
+- **D7 — Conflict style:** 23 unique training questions; unique questions by authored target: friends: 4, close: 8, family: 6, household: 1, colleague: 3, friend: 1. Questions: q07, q10, q13, q14, q15, q16, q18, q21, q22, q23, q24, q25, q26, q27, q28, q29, q32, q34, q36, q37, q38, q39, q53.
+- **D8 — Fairness & effort:** 9 unique training questions; unique questions by authored target: friends: 2, close: 2, family: 1, household: 1, colleague: 2, friend: 1. Questions: q07, q10, q13, q15, q16, q29, q34, q36, q39.
+- **D9 — Recognition & rivalry:** 6 unique training questions; unique questions by authored target: general: 6. Questions: q09, q33, q34, q35, q39, q40.
+- **D10 — Mood-driven urgency:** 5 unique training questions; unique questions by authored target: general: 5. Questions: q11, q35, q44, q51, q55.
+- **D11 — Duty & autonomy:** 10 unique training questions; unique questions by authored target: general: 2, family: 5, friend: 1, colleague: 1, friends: 1. Questions: q06, q13, q25, q26, q27, q32, q36, q37, q38, q49.
+- **D12 — Repair after mistakes:** 5 unique training questions; unique questions by authored target: close: 3, family: 1, colleague: 1. Questions: q22, q23, q28, q37, q53.
+- **D13 — Care & its limits:** 4 unique training questions; unique questions by authored target: general: 4. Questions: q38, q41, q42, q48.
+- **D14a — Sleep rhythm:** 2 unique training questions; unique questions by authored target: general: 2. Questions: q45, q54.
+- **D14b — Eating habits:** 2 unique training questions; unique questions by authored target: general: 2. Questions: q44, q55.
+- **D14c — Movement:** 2 unique training questions; unique questions by authored target: general: 2. Questions: q43, q47.
+- **D14d — Recovery:** 7 unique training questions; unique questions by authored target: general: 7. Questions: q33, q42, q45, q49, q52, q54, q56.
 
 ## Counterpart and cross-check audit
 
@@ -543,7 +544,7 @@ The plot has finally admitted it was improvising.
 | q07 ↔ q16 | Friend-group cost split hypothetical ↔ actual awkward money split with friends. |
 | q10 ↔ q29 | Selected-close cost/effort split hypothetical ↔ actual uneven outing with selected close person. |
 | q18 ↔ q24 | Selected-close uncertainty after silence ↔ cancellation with no replacement date. |
-| q19 ↔ q30 | Selected-close disclosure after a hard day ↔ actual setback disclosure. |
+| q19 ↔ q30 | Selected-close disclosure after a hard day ↔ actual own-setback disclosure. |
 | q22 ↔ q28 | Conflict/repair scene with selected close ↔ same mechanism with family. |
 | q33 ↔ q40 | Recognition/comparison with friends ↔ actual colleague spotlight response. |
 | q43 ↔ q47 | Movement plan under appeal ↔ actual movement plan on a hard day. |
@@ -552,5 +553,6 @@ The plot has finally admitted it was improvising.
 | q50 ↔ q60 | Actual optional-purchase motive ↔ new surprise-gift purchase motive. |
 | q52 ↔ q64 | Plan failure hypothetical in training ↔ new terminal plan-failure scene. |
 
-The original handoff target of eight items across three chapters per dimension, and the separate 20-item independent evaluation, are deferred. This MVP reports authored coverage and participant evidence separately; it does not establish generalization. Lifestyle answers are self-reported facts and never imply income, health, or diagnosis. Context-only prompts are q01, q02, q17, q20, and q46.
+## Known limitations
 
+The original handoff target of eight items across three chapters per dimension, and the separate 20-item independent evaluation, are deferred. Heldouts use the same set of (dimension, target) slots across options wherever that comparison is semantically valid, while preserving literal option actions. q57b/q57d share the same D2 conditional signature and correctly tie/abstain; q64d has only one matching authored training question and therefore cannot pass the two-source forecast threshold. q61c has one matching source (q56c), while q61d has two matching sources (q49d and q56d); q62c has one matching source (q23c), and q64c has two (q08c and q52c). q07/q59 and q52/q64 are authored situation counterparts, so they support an internal consistency check rather than substantive generalization. D5 has two selected-close hypothetical questions only; selected-close D12 has no actual counterpart. This internal authored check does not establish generalization. Lifestyle answers are self-reported facts and never imply income, health, or diagnosis. Context-only prompts are q01, q02, q17, q20, and q46.

@@ -211,7 +211,7 @@ export function stats(state) {
       baselineHit: !!usable && prediction.baseline === answer.id
     };
   });
-  const attempted = trials.filter(trial => !trial.skipped);
+  const attempted = trials.filter(trial => !trial.skipped && !trial.unresolved);
   const predicted = attempted.filter(trial => trial.option);
   return {
     trials, answered: attempted.length, skipped: trials.filter(trial => trial.skipped).length,
@@ -238,19 +238,6 @@ function clearDependents(state, kind) {
     delete state.answers[question.id];
     delete state.notes[question.id];
     delete state.bindings[question.id];
-  }
-}
-
-function preserveInapplicableSkips(state, kind) {
-  for (const question of QUESTIONS) {
-    if (question.applicable !== kind || state.answers[question.id] === undefined) continue;
-    if (state.answers[question.id] === 'skip') {
-      delete state.bindings[question.id];
-    } else {
-      delete state.answers[question.id];
-      delete state.notes[question.id];
-      delete state.bindings[question.id];
-    }
   }
 }
 
@@ -293,6 +280,11 @@ function validSnapshotObject(raw) {
   return true;
 }
 
+function sameBinding(actual, expected) {
+  if (!actual || !expected || typeof actual !== 'object' || Array.isArray(actual)) return false;
+  return actual.close === expected.close && actual.household === expected.household;
+}
+
 export function restore(raw) {
   let parsed;
   try { parsed = typeof raw === 'string' ? JSON.parse(raw) : raw; } catch { return fresh(); }
@@ -307,23 +299,34 @@ export function restore(raw) {
     if (Object.hasOwn(rawAnswers, question.id)) state.answers[question.id] = rawAnswers[question.id];
   }
   const rawBindings = parsed.bindings && typeof parsed.bindings === 'object' ? parsed.bindings : {};
-  const f = facts(state.answers);
+  const rawNotes = parsed.notes && typeof parsed.notes === 'object' && !Array.isArray(parsed.notes) ? parsed.notes : {};
+  const discardNotes = new Set();
   for (const question of QUESTIONS) {
     if (!Object.hasOwn(state.answers, question.id)) continue;
+    const rawAnswer = state.answers[question.id];
+    const expected = question.applicable ? bindingFor(question, state.answers) : undefined;
+    const actual = rawBindings[question.id];
     if (question.applicable && !applicable(question, state.answers)) {
       state.answers[question.id] = 'skip';
+      if (rawAnswer === 'skip' && sameBinding(actual, expected)) state.bindings[question.id] = expected;
+      else {
+        if (Object.hasOwn(rawNotes, question.id)) discardNotes.add(question.id);
+        delete state.bindings[question.id];
+      }
       continue;
     }
     if (question.applicable) {
-      if (state.answers[question.id] === 'skip') {
-        delete state.bindings[question.id];
+      if (rawAnswer === 'skip') {
+        if (sameBinding(actual, expected)) state.bindings[question.id] = expected;
+        else {
+          if (Object.hasOwn(rawNotes, question.id)) discardNotes.add(question.id);
+          delete state.bindings[question.id];
+        }
         continue;
       }
-      const expected = bindingFor(question, state.answers);
-      const actual = rawBindings[question.id];
       // A binding from a prior close person/household is evidence that the answer
       // belongs to the old context. Drop it rather than silently relabelling it.
-      if (!actual || actual.close !== expected?.close || actual.household !== expected?.household) {
+      if (!sameBinding(actual, expected)) {
         delete state.answers[question.id];
         delete state.notes[question.id];
         continue;
@@ -331,11 +334,9 @@ export function restore(raw) {
       state.bindings[question.id] = expected;
     }
   }
-  if (!CLOSE_VALUES.has(f.close) || f.close === 'none') preserveInapplicableSkips(state, 'close');
-  if (f.household !== 'shared' && f.household !== 'family') preserveInapplicableSkips(state, 'shared');
-  if (parsed.notes && typeof parsed.notes === 'object' && !Array.isArray(parsed.notes)) {
-    for (const [id, note] of Object.entries(parsed.notes)) {
-      if (Object.hasOwn(state.answers, id) && typeof note === 'string') state.notes[id] = note.slice(0, 1200);
+  if (rawNotes) {
+    for (const [id, note] of Object.entries(rawNotes)) {
+      if (!discardNotes.has(id) && Object.hasOwn(state.answers, id) && typeof note === 'string') state.notes[id] = note.slice(0, 1200);
     }
   }
   const complete = TRAINING.every(question => Object.hasOwn(state.answers, question.id));
@@ -356,7 +357,10 @@ export function label(value, dimension) {
     D14a: {early: 'Earlier sleep rhythm', middle: 'Middle sleep rhythm', late: 'Later sleep rhythm', variable: 'Variable sleep rhythm', protect: 'Protect sleep', delay: 'Delay sleep', adjust: 'Adjust the sleep plan'},
     D14b: {home: 'Eat from home', occasional: 'Occasional takeaway', frequent: 'Frequent takeaway', default: 'Takeaway as the default', responsive: 'Respond to immediate hunger', planned: 'Follow the meal plan', bounded: 'Adapt within a food boundary', delay: 'Delay eating'},
     D14c: {none: 'No movement days', occasional: 'Occasional movement', regular: 'Regular movement', frequent: 'Frequent movement', planned: 'Planned movement', adjust: 'Adjust the movement plan', skip: 'Skip the movement plan'},
-    D14d: {rest: 'Prioritize recovery', obligation: 'Prioritize obligations', connection: 'Recover through connection', distraction: 'Use distraction to recover', bounded: 'Make recovery manageable'}
+    D14d: {rest: 'Prioritize recovery', obligation: 'Prioritize obligations', connection: 'Coordinate shared workload', distraction: 'Use distraction to recover', bounded: 'Make recovery manageable'},
+    D6: {support: 'Seek connection or support', private: 'Process privately', selective: 'Disclose selectively', distance: 'Keep distance', reassurance: 'Seek reassurance'},
+    D11: {duty: 'Give weight to role expectations', autonomy: 'Prioritize own choice', conditional: 'Negotiate the conditions'},
+    D12: {explain: 'Apologize with context', repair: 'Own it and discuss repair', action: 'Repair through action', pause: 'Pause before repair', avoid: 'Leave repair unaddressed'}
   };
   if (dimensionLabels[dimension]?.[value]) return dimensionLabels[dimension][value];
   return ({
@@ -364,7 +368,7 @@ export function label(value, dimension) {
     enjoyment: 'Pay for enjoyment', convenience: 'Pay for convenience', status: 'Value recognizable status',
     direct: 'Direct action', soften: 'A softer opening', avoid: 'Leave it unaddressed', pause: 'Explicit pause',
     hint: 'Unspoken dissatisfaction', support: 'Seek connection or support', private: 'Process privately',
-    selective: 'Choose another support person', secure: 'Benign interpretation', worry: 'Seek reassurance',
+    selective: 'Disclose selectively', secure: 'Benign interpretation', worry: 'Seek reassurance',
     reassurance: 'Question the relationship or message', repair: 'Own it and discuss repair', explain: 'Apologize with context',
     action: 'Repair through action', exit: 'Leave the situation', proportional: 'Match contributions to costs',
     absorb: 'Carry the extra cost', limit: 'State a capacity limit', novel: 'Try something new',
