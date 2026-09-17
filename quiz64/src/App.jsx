@@ -73,7 +73,7 @@ export default function App() {
       const message = dependentCount ? `Changing this context clears ${dependentCount} earlier answer${dependentCount === 1 ? '' : 's'} that depend${dependentCount === 1 ? 's' : ''} on it${hadSealedTests ? ' and the sealed checks' : ''}. Continue?` : hadSealedTests ? 'Changing this training answer clears the sealed checks so the reading can be rebuilt. Continue?' : null;
       if (message && !window.confirm(message)) return;
     }
-    const next = { ...state, answers: { ...(state.answers || {}) }, notes: { ...(state.notes || {}) } };
+    const next = { ...state, answers: { ...(state.answers || {}) }, notes: { ...(state.notes || {}) }, bindings: { ...(state.bindings || {}) } };
     if (note) next.notes[currentQuestion.id] = note; else delete next.notes[currentQuestion.id];
     try { setAnswer(next, currentQuestion.id, value); } catch { return; }
     const nextIndex = state.cursor + 1;

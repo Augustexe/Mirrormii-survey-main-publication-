@@ -1,7 +1,7 @@
 {
   "schema": "genii-quiz64-asset-provenance/v1",
   "library": "/Users/jerryzhang/Workspace-Draft/assets/Genomii AI.library",
-  "selection_source": "../output/asset-selection.json",
+  "selection_source": "/Users/jerryzhang/Workspace-Draft/projects/mirrormii-genie-survey/runs/20260917T180136Z-a9822b1a90a1/output/asset-selection.json",
   "selection_checked_at": "2026-09-17T18:05:36.914264+00:00",
   "policy": "Supplied artwork is copied byte-for-byte; UI only controls compositing and layout.",
   "assets": [
