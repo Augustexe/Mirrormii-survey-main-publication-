@@ -11,3 +11,5 @@ The shipped app uses the following open source packages. Versions are locked in 
 | @fontsource/manrope | Bundled Manrope fallback font files | SIL Open Font License 1.1; Manrope copyright The Manrope Project |
 
 The app does not call a remote font, analytics, account, survey, or model service at runtime. Avenir Next/Avenir is used when installed on the host; it is not copied into this project. Full package notices remain available in the installed dependency tree for local distribution review.
+
+The exact applicable upstream license texts are shipped with the static app at `public/THIRD-PARTY-NOTICES.txt` and therefore are also present in the built `output/site/` delivery.
