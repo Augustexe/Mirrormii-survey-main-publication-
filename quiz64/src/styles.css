@@ -309,6 +309,7 @@ body[data-motion="off"] .landing-stage .genii-sprite, body[data-motion="off"] .i
 
 @media (max-width: 1000px) {
   .site-header { padding: 0 30px; }
+  .header-saved { display: none; }
   .landing-page { padding-left: 30px; padding-right: 30px; }
   .landing-hero { gap: 10px; }
   .hero-copy { padding-left: 0; }
