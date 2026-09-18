@@ -2,7 +2,7 @@ name: Deploy Genii survey to GitHub Pages
 
 on:
   push:
-    branches: [codex/genii-prismatic-cards]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
