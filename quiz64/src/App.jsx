@@ -35,6 +35,7 @@ import "./living-world.css";
 import "./question-surfaces.css";
 import "./result-details.css";
 import "./micro-details.css";
+import "./domain-surfaces.css";
 import { ChapterRibbon } from "./components/ChapterRibbon.jsx";
 import { ChapterObject } from "./components/ChapterObject.jsx";
 

@@ -20,6 +20,7 @@ import "./jewels.css";
 import "./living-world.css";
 import "./result-details.css";
 import "./micro-details.css";
+import "./domain-surfaces.css";
 
 function Preview() {
   const [fixture, setFixture] = useState("complete");

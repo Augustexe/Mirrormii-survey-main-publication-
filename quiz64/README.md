@@ -18,7 +18,7 @@ The build uses a relative base path and local assets. It has no runtime data req
 
 Open `preview.html` beside the survey entry to inspect complete, mixed, sparse, or fully skipped synthetic answers immediately. The preview invokes the same engine and result component, uses independently authored heldout answers, marks exports synthetic, and never writes survey localStorage. The development landing page links to it. It is a local review surface, not an authenticated admin page; remove the separate preview entry from a public build if it should not be discoverable.
 
-The current visual detail contract is in [`docs/LUMINOUS-DETAILS.md`](docs/LUMINOUS-DETAILS.md), building on [`docs/LIVING-WORLD.md`](docs/LIVING-WORLD.md) and [`docs/LAUNCH-VISUALS.md`](docs/LAUNCH-VISUALS.md).
+The current card-surface direction is in [`docs/CARD-MATERIALS.md`](docs/CARD-MATERIALS.md), building on [`docs/LUMINOUS-DETAILS.md`](docs/LUMINOUS-DETAILS.md), [`docs/LIVING-WORLD.md`](docs/LIVING-WORLD.md) and [`docs/LAUNCH-VISUALS.md`](docs/LAUNCH-VISUALS.md).
 
 ## Evidence behavior
 
