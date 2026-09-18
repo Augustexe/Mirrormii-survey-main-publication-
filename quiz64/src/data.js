@@ -1,3324 +1,3100 @@
-import { applyEnglishCopy } from "./english-copy.js";
 import { HOST_REACTIONS } from "./host-reactions.js";
 
-export const VERSION = "genii-root.v2";
+// Genii Switch Modes v3 — question/evidence implementation test.
+// Derived from the frozen experimental-40 v2 bank plus the reviewed narrow patches.
+// The UI/layout is unchanged; this module owns question meaning, evidence mappings, and route order.
 
+export const VERSION = "genii-switch-modes.v3";
 export const DIMS = {
-  D1: "First move",
-  D2: "Risk & novelty",
-  D3: "Planning",
-  D4: "Money motive",
-  D5: "Closeness worry",
-  D6: "Closeness distance",
-  D7: "Conflict style",
-  D8: "Fairness & effort",
-  D9: "Recognition & rivalry",
-  D10: "Mood-driven urgency",
-  D11: "Duty & autonomy",
-  D12: "Repair after mistakes",
-  D13: "Care & its limits",
-  D14a: "Sleep rhythm",
-  D14b: "Eating habits",
-  D14c: "Movement",
-  D14d: "Recovery",
+  "D_MODE": "Mode switches",
+  "D_MOTIVE": "What mattered",
+  "D_SUPPORT": "Support by relationship",
+  "D_RECOGNITION": "Recognition and credit",
+  "D_CRITICISM": "First response to criticism",
+  "D_REPAIR": "Repair after impact",
+  "D_REPLY": "Waiting for a reply",
+  "D_NEED": "Expressing a need",
+  "D_RECEIVE": "Receiving help",
+  "D_RECOVERY": "After an awkward conversation",
+  "D_BOUNDARY": "Help and capacity",
+  "D_HELP_MOTIVE": "Why you helped or declined",
+  "D_ROLE": "Role in a shared plan",
+  "D_CHANGE": "When plans change",
+  "D_EXPRESSION": "What showed outside",
+  "D_INTENSITY": "What happened inside",
+  "D_UNCERTAINTY": "Reversible uncertainty",
+  "D_GOAL": "When a goal slips"
 };
-
 export const CHAPTERS = [
   {
-    id: 1,
-    title: "The opening lore",
-    subtitle:
-      "A trip, a group bill, and a few choices that say more than a bio.",
-    kicker: "THE OPENING LORE",
+    "id": 1,
+    "title": "Start where you are",
+    "subtitle": "The current chapter, the kind of help you want, and how Genii should talk to you.",
+    "kicker": "START WHERE YOU ARE"
   },
   {
-    id: 2,
-    title: "Small choices",
-    subtitle:
-      "Your time, your money, and the people asking for a tiny bit of both.",
-    kicker: "SMALL CHOICES",
+    "id": 2,
+    "title": "Who changes the answer?",
+    "subtitle": "The same invitation can feel different depending on the person, purpose, and cost.",
+    "kicker": "WHO CHANGES THE ANSWER?"
   },
   {
-    id: 3,
-    title: "Close to home",
-    subtitle: "The people who know the unedited version.",
-    kicker: "CLOSE TO HOME",
+    "id": 3,
+    "title": "When people matter",
+    "subtitle": "Credit, criticism, replies, needs, and the choices that happen around them.",
+    "kicker": "WHEN PEOPLE MATTER"
   },
   {
-    id: 4,
-    title: "Family plot",
-    subtitle: "Expectations, care costs, and the family group chat.",
-    kicker: "FAMILY PLOT",
+    "id": 4,
+    "title": "Capacity has a vote",
+    "subtitle": "Helping, changing plans, inner feelings, and what happens when the calendar objects.",
+    "kicker": "CAPACITY HAS A VOTE"
   },
   {
-    id: 5,
-    title: "Inside voice, outside face",
-    subtitle: "What you felt, what you showed, and what helped it pass.",
-    kicker: "INSIDE VOICE, OUTSIDE FACE",
+    "id": 5,
+    "title": "Your everyday rhythm",
+    "subtitle": "Three direct routine pairs: usual month beside the week you actually had.",
+    "kicker": "YOUR EVERYDAY RHYTHM"
   },
   {
-    id: 6,
-    title: "A body with opinions",
-    subtitle: "Drink breaks, dinner plans, and a body that would like a word.",
-    kicker: "A BODY WITH OPINIONS",
-  },
-  {
-    id: 7,
-    title: "Rhythms and recovery",
-    subtitle: "Your usual rhythm, your actual week, and the gap between them.",
-    kicker: "RHYTHMS AND RECOVERY",
-  },
-  {
-    id: 8,
-    title: "One last thing",
-    subtitle: "New scenes for the final reading.",
-    kicker: "ONE LAST THING",
-  },
+    "id": 6,
+    "title": "The sealed what-ifs",
+    "subtitle": "New scenes. Predictions freeze before your answers appear.",
+    "kicker": "THE SEALED WHAT-IFS"
+  }
 ];
-const tag = (d, v, target = "general") => ({ d, v, target });
-const opt = (text, tags = [], why = "", facts) => ({
-  text,
-  tags,
-  why,
-  ...(facts ? { facts } : {}),
-});
-const q = (n, chapter, title, setup, options, extra = {}) => ({
-  id: `q${String(n).padStart(2, "0")}`,
-  chapter,
-  title,
-  setup,
-  role: extra.role || "hypothetical",
-  test: extra.test === true,
-  ...(extra.applicable ? { applicable: extra.applicable } : {}),
-  options: options.map((o, i) => ({ id: String.fromCharCode(97 + i), ...o })),
-  ...(extra.baseline ? { baseline: extra.baseline } : {}),
-});
-
-export const QUESTIONS = [
-  q(
-    1,
-    1,
-    "Who gets the unfiltered version of you?",
-    "Before the story starts, choose the recurring close person who may appear later.",
-    [
-      opt(
-        "My mother. She has the complete chat history.",
-        [],
-        "You explicitly chose your mother.",
-        { close: "mother" },
-      ),
-      opt(
-        "My father. An unexpected but strong contender.",
-        [],
-        "You explicitly chose your father.",
-        { close: "father" },
-      ),
-      opt(
-        "My partner. They have seen the extended cut.",
-        [],
-        "You explicitly chose your partner.",
-        { close: "partner" },
-      ),
-      opt(
-        "A close friend. Unfortunately, they know the lore.",
-        [],
-        "You explicitly chose a close friend.",
-        { close: "friend" },
-      ),
-      opt(
-        "No recurring close person for this survey.",
-        [],
-        "You explicitly chose not to use a close-person target.",
-        { close: "none" },
-      ),
-    ],
-    { role: "context" },
-  ),
-  q(
-    2,
-    1,
-    "Who lives with you and the collection of useful cables?",
-    "Pick the closest living arrangement; a mixed answer is welcome.",
-    [
-      opt(
-        "Just me. Every mysterious noise is my problem.",
-        [],
-        "You explicitly reported living alone.",
-        { household: "alone" },
-      ),
-      opt(
-        "People I share a home with. The sponge has a rota.",
-        [],
-        "You explicitly reported a shared household.",
-        { household: "shared" },
-      ),
-      opt(
-        "Family. Privacy is more of a suggestion.",
-        [],
-        "You explicitly reported living with family.",
-        { household: "family" },
-      ),
-      opt(
-        "I would rather leave the household unspecified.",
-        [],
-        "You chose not to specify your household.",
-        { household: "unspecified" },
-      ),
-    ],
-    { role: "context" },
-  ),
-  q(
-    3,
-    1,
-    "Three free days and enough money for one small trip. Who comes to mind first?",
-    "A light opener: the tickets are not bought yet.",
-    [
-      opt(
-        "The person who would make the story funniest.",
-        [tag("D1", "people")],
-        "You put a person first and begin imagining the trip.",
-      ),
-      opt(
-        "The place. I need a destination before a companion.",
-        [tag("D1", "task")],
-        "You start with the practical trip decision.",
-      ),
-      opt(
-        "Me. I am taking the free days and negotiating later.",
-        [tag("D1", "self")],
-        "You put your own capacity or desire first.",
-      ),
-      opt(
-        "Nobody yet. I open a map and see what happens.",
-        [tag("D1", "task"), tag("D3", "improvise")],
-        "You start by exploring without choosing a companion.",
-      ),
-    ],
-  ),
-  q(
-    4,
-    1,
-    "A local suggests a detour nobody has reviewed online. Your move?",
-    "The detour is safe enough, strange enough, and inconvenient enough.",
-    [
-      opt(
-        "Absolutely. The review section can meet us there.",
-        [tag("D2", "novel"), tag("D3", "improvise")],
-        "You accept novelty without waiting for more information.",
-      ),
-      opt(
-        "Ask a few questions, then decide.",
-        [tag("D2", "conditional"), tag("D3", "plan")],
-        "You add information before accepting uncertainty.",
-      ),
-      opt(
-        "Keep the original route. Reliable is a beautiful word.",
-        [tag("D2", "familiar"), tag("D3", "plan")],
-        "You choose the known route.",
-      ),
-      opt(
-        "Try it only if the person with me is keen too.",
-        [tag("D2", "conditional")],
-        "You make novelty depend on a companion’s agreement.",
-      ),
-    ],
-  ),
-  q(
-    5,
-    1,
-    "The saved restaurant has a 90-minute queue and your companion is starving.",
-    "The famous place is still famous. Your companion is now mostly stomach.",
-    [
-      opt(
-        "Find food now. The queue can write its memoir.",
-        [tag("D1", "people")],
-        "You respond first to the companion’s immediate need.",
-      ),
-      opt(
-        "Stay; we came for this and planned around it.",
-        [tag("D1", "task"), tag("D3", "plan")],
-        "You prioritize the existing plan.",
-      ),
-      opt(
-        "Ask what they want and choose together.",
-        [tag("D1", "people")],
-        "You involve the companion before changing course.",
-      ),
-      opt(
-        "I grab something small and let them decide.",
-        [tag("D1", "self")],
-        "You protect your own immediate need first.",
-      ),
-    ],
-  ),
-  q(
-    6,
-    1,
-    "Mid-trip, work or family asks you to handle something right now.",
-    "It is important, but not literally on fire.",
-    [
-      opt(
-        "Handle it. The trip can pause.",
-        [tag("D1", "people"), tag("D11", "duty")],
-        "You put the request and its people first.",
-      ),
-      opt(
-        "Say I can do it later and finish the current plan.",
-        [tag("D1", "task"), tag("D11", "autonomy")],
-        "You protect the plan while setting a boundary.",
-      ),
-      opt(
-        "Ask someone else to cover it.",
-        [tag("D1", "self"), tag("D11", "autonomy")],
-        "You protect the trip and redistribute the request.",
-      ),
-      opt(
-        "Work out the smallest useful fix, then return.",
-        [tag("D1", "task"), tag("D3", "plan")],
-        "You reduce the interruption to a bounded task.",
-      ),
-    ],
-  ),
-  q(
-    7,
-    1,
-    "A surprise cost appears on a trip with your group of friends.",
-    "You ordered the salad; someone else added expensive extras you did not use, then suggests an even split.",
-    [
-      opt(
-        "Split it by what each of us used.",
-        [tag("D8", "proportional", "friends"), tag("D7", "direct", "friends")],
-        "You request a consumption-based split directly.",
-      ),
-      opt(
-        "Pay evenly to avoid public arithmetic.",
-        [tag("D8", "absorb", "friends")],
-        "You knowingly accept the extra cost for simplicity.",
-      ),
-      opt(
-        "Quietly explain my share and ask to adjust it.",
-        [tag("D8", "proportional", "friends"), tag("D7", "soften", "friends")],
-        "You request a fair split privately.",
-      ),
-      opt(
-        "Pay the extra and say nothing.",
-        [tag("D8", "absorb", "friends"), tag("D7", "hint", "friends")],
-        "You knowingly absorb the extra cost without raising it.",
-      ),
-    ],
-  ),
-  q(
-    8,
-    1,
-    "What did you actually do the last time a plan went sideways?",
-    "Choose a recent real response; skip if there is no useful example.",
-    [
-      opt(
-        "I changed course immediately.",
-        [tag("D3", "improvise")],
-        "You report acting quickly when the plan failed.",
-      ),
-      opt(
-        "I made a new plan before moving.",
-        [tag("D3", "plan")],
-        "You report pausing to organize a new plan.",
-      ),
-      opt(
-        "I asked somebody else what they wanted to do.",
-        [tag("D1", "people"), tag("D3", "consult")],
-        "You report consulting the group before deciding.",
-      ),
-      opt(
-        "I carried on and hoped the problem got bored.",
-        [tag("D3", "avoid")],
-        "You report leaving the problem alone for the moment.",
-      ),
-    ],
-    { role: "actual" },
-  ),
-
-  q(
-    9,
-    2,
-    "A windfall equal to one month of costs lands today.",
-    "It is yours to use, save, or give a job later.",
-    [
-      opt(
-        "Put it somewhere safe first.",
-        [tag("D4", "security"), tag("D3", "plan")],
-        "You prioritize financial safety and delay spending.",
-      ),
-      opt(
-        "Use it for a new experience I have been postponing.",
-        [tag("D4", "enjoyment"), tag("D2", "novel")],
-        "You use the money for a new experience and enjoyment.",
-      ),
-      opt(
-        "Buy the thing that gives me time back.",
-        [tag("D4", "freedom")],
-        "You spend to preserve time and independence.",
-      ),
-      opt(
-        "Buy the recognizable version. The logo may have a point.",
-        [tag("D4", "status"), tag("D9", "recognition")],
-        "You identify recognition or status as part of the appeal.",
-      ),
-    ],
-  ),
-  q(
-    10,
-    2,
-    "You and {close} planned an outing. They ordered extras and suggest splitting everything evenly.",
-    "The extra dessert has entered the shared spreadsheet.",
-    [
-      opt(
-        "Ask to split the extras by who ordered them.",
-        [tag("D8", "proportional", "close"), tag("D7", "direct", "close")],
-        "You request a consumption-based split directly.",
-      ),
-      opt(
-        "Explain my share privately and adjust the total.",
-        [tag("D8", "proportional", "close"), tag("D7", "soften", "close")],
-        "You request a fair split with a softer opening.",
-      ),
-      opt(
-        "Pay evenly; it is easier than doing arithmetic together.",
-        [tag("D8", "absorb", "close")],
-        "You accept the extra cost for simplicity.",
-      ),
-      opt(
-        "Pay and leave the dessert unmentioned.",
-        [tag("D8", "absorb", "close"), tag("D7", "avoid", "close")],
-        "You absorb the extra cost without raising it.",
-      ),
-    ],
-    { applicable: "close" },
-  ),
-  q(
-    11,
-    2,
-    "A rough day, midnight, and a cart full of tiny solutions.",
-    "The cart contains one lamp shaped like a duck.",
-    [
-      opt(
-        "Buy the duck. It has never personally disappointed me.",
-        [tag("D10", "act"), tag("D4", "enjoyment")],
-        "You make an immediate mood-related purchase.",
-      ),
-      opt(
-        "Sleep on it. The duck will still be a duck tomorrow.",
-        [tag("D10", "wait"), tag("D3", "plan")],
-        "You delay the purchase while emotions settle.",
-      ),
-      opt(
-        "Read reviews and compare prices.",
-        [tag("D3", "plan"), tag("D4", "security")],
-        "You gather information before spending.",
-      ),
-      opt(
-        "Close the app. My feelings can remain unlit.",
-        [tag("D10", "wait"), tag("D4", "security")],
-        "You decline the mood-related purchase.",
-      ),
-    ],
-  ),
-  q(
-    12,
-    2,
-    "Friends made fast money on a tip and invite you in.",
-    "You have only ten minutes to decide whether to join the uncertain move.",
-    [
-      opt(
-        "Join. Ten minutes is plenty of plot.",
-        [tag("D2", "novel")],
-        "You accept a new and uncertain opportunity quickly.",
-      ),
-      opt(
-        "Look up the downside before deciding.",
-        [tag("D2", "conditional"), tag("D3", "plan")],
-        "You investigate uncertainty before committing.",
-      ),
-      opt(
-        "Decline. I would rather keep the money I have.",
-        [tag("D2", "familiar"), tag("D4", "security")],
-        "You prefer the known financial position.",
-      ),
-      opt(
-        "Join only with a small amount I can lose.",
-        [tag("D2", "conditional"), tag("D4", "security")],
-        "You limit risk before trying the opportunity.",
-      ),
-    ],
-  ),
-  q(
-    13,
-    2,
-    "A family member asks to borrow money while your month is tight.",
-    "They promise to repay you, with the confidence of a person who has not seen your spreadsheet.",
-    [
-      opt(
-        "Say what I can afford and lend that amount.",
-        [tag("D8", "limit", "family"), tag("D7", "direct", "family")],
-        "You state a capacity limit and set a bounded contribution.",
-      ),
-      opt(
-        "Ask what happened and work out another kind of help.",
-        [tag("D8", "limit", "family"), tag("D11", "duty", "family")],
-        "You explore a bounded way to help without promising cash.",
-      ),
-      opt(
-        "Lend it; family should not be stranded.",
-        [tag("D8", "absorb", "family"), tag("D11", "duty", "family")],
-        "You carry the financial cost because of family duty.",
-      ),
-      opt(
-        "Decline. My own bills are already doing theatre.",
-        [tag("D8", "limit", "family"), tag("D11", "autonomy", "family")],
-        "You protect your own financial capacity.",
-      ),
-    ],
-  ),
-  q(
-    14,
-    2,
-    "Your friends plan a group trip that costs more than you can afford.",
-    "Your friends are excited and the cancellation policy is a villain.",
-    [
-      opt(
-        "Say I cannot afford this trip and suggest a cheaper version.",
-        [tag("D4", "security"), tag("D7", "direct", "friends")],
-        "You state the budget constraint to the group and propose an alternative.",
-      ),
-      opt(
-        "Go anyway and solve the money problem later.",
-        [tag("D4", "enjoyment")],
-        "You choose the experience despite the immediate budget problem.",
-      ),
-      opt(
-        "Join for one night within a fixed amount.",
-        [tag("D4", "security"), tag("D3", "plan")],
-        "You make participation fit a planned limit.",
-      ),
-      opt(
-        "Decline with a vague excuse. The budget remains private.",
-        [tag("D4", "security"), tag("D7", "avoid", "friends")],
-        "You protect the budget without explaining the reason.",
-      ),
-    ],
-  ),
-  q(
-    15,
-    2,
-    "The people you live with think the house cleans itself.",
-    "You are the house. The sponge has entered negotiations.",
-    [
-      opt(
-        "Suggest we split the chores by task.",
-        [
-          tag("D8", "proportional", "household"),
-          tag("D7", "direct", "household"),
-        ],
-        "You explicitly renegotiate the division of labor.",
-      ),
-      opt(
-        "Make a rota; the bin needs a custody agreement.",
-        [tag("D8", "proportional", "household"), tag("D3", "plan")],
-        "You organize an explicit division of labor.",
-      ),
-      opt(
-        "Do it myself; discussing the dish takes longer.",
-        [tag("D8", "absorb", "household"), tag("D7", "avoid", "household")],
-        "You absorb the labor to avoid a discussion.",
-      ),
-      opt(
-        "Stop doing their share and wait for the magic to end.",
-        [tag("D8", "limit", "household")],
-        "You stop covering the others’ share.",
-      ),
-    ],
-    { applicable: "shared" },
-  ),
-  q(
-    16,
-    2,
-    "What did you actually do the last time a money split with friends got awkward?",
-    "Think of a real friends’ bill or shared cost; skip if none comes to mind.",
-    [
-      opt(
-        "Named the amount plainly.",
-        [tag("D8", "proportional", "friends"), tag("D7", "direct", "friends")],
-        "You report stating the financial issue directly.",
-      ),
-      opt(
-        "Sent a careful message privately.",
-        [tag("D8", "proportional", "friends"), tag("D7", "soften", "friends")],
-        "You report raising the issue privately and gently.",
-      ),
-      opt(
-        "Paid or lent it and moved on.",
-        [tag("D8", "absorb", "friends"), tag("D7", "avoid", "friends")],
-        "You report carrying the cost without reopening it.",
-      ),
-      opt(
-        "Kept my share and let someone else handle the rest.",
-        [tag("D8", "proportional", "friends")],
-        "You report limiting your contribution.",
-      ),
-    ],
-    { role: "actual" },
-  ),
-
-  q(
-    17,
-    3,
-    "What time do you usually stop being available to consciousness?",
-    "Report your usual pattern; shifts and variation are valid answers.",
-    [
-      opt(
-        "Before 11 p.m. Tomorrow me has excellent representation.",
-        [],
-        "You explicitly report an earlier sleep rhythm.",
-        { bedtime: "before 23:00" },
-      ),
-      opt(
-        "Between 11 p.m. and 1 a.m. One more episode is a reasonable proposal.",
-        [],
-        "You explicitly report a middle sleep rhythm.",
-        { bedtime: "23:00-01:00" },
-      ),
-      opt(
-        "After 1 a.m. The internet becomes important at midnight.",
-        [],
-        "You explicitly report a later sleep rhythm.",
-        { bedtime: "after 01:00" },
-      ),
-      opt(
-        "It varies or I work shifts. Time and I have an arrangement.",
-        [],
-        "You explicitly report a variable rhythm.",
-        { bedtime: "variable-or-shifts" },
-      ),
-    ],
-    { role: "context" },
-  ),
-  q(
-    18,
-    3,
-    "When {close} goes quiet after a hard day, what is your first story?",
-    "Use the selected close person if you have one; skip if this does not fit.",
-    [
-      opt(
-        "They are probably busy. The silence and I can coexist.",
-        [tag("D5", "secure", "close")],
-        "You describe a benign explanation for the silence.",
-      ),
-      opt(
-        "I worry they are upset with me and send a check-in.",
-        [tag("D5", "worry", "close"), tag("D6", "support", "close")],
-        "You explicitly fear the silence means they are upset with you and seek contact.",
-      ),
-      opt(
-        "I reread my message and look for what I did wrong.",
-        [tag("D5", "reassurance", "close"), tag("D6", "private", "close")],
-        "You question the relationship and process the uncertainty privately.",
-      ),
-      opt(
-        "I ask directly whether we are okay.",
-        [tag("D5", "reassurance", "close"), tag("D7", "direct", "close")],
-        "You seek explicit reassurance through a direct question.",
-      ),
-    ],
-    { applicable: "close" },
-  ),
-  q(
-    19,
-    3,
-    "It is 11 p.m. after a cursed day. Who gets the first version?",
-    "The day has already filed its paperwork; choose how much to share.",
-    [
-      opt(
-        "I tell {close} the whole story and ask them to listen.",
-        [tag("D6", "support", "close")],
-        "You disclose fully and seek connection from the selected person.",
-      ),
-      opt(
-        "I tell {close} a small version, then go quiet.",
-        [tag("D6", "selective", "close")],
-        "You disclose selectively to the selected person.",
-      ),
-      opt(
-        "I process it privately before telling {close} anything.",
-        [tag("D6", "private", "close")],
-        "You initially keep the experience to yourself.",
-      ),
-      opt(
-        "I talk to someone else first.",
-        [tag("D6", "selective", "general")],
-        "You seek another support person before the selected close person.",
-      ),
-    ],
-    { applicable: "close" },
-  ),
-  q(
-    20,
-    3,
-    "In the last seven days, how many dinners arrived from a restaurant or takeaway?",
-    "Count meals, not virtue. The delivery app is not a moral authority.",
-    [
-      opt(
-        "None. The kitchen has proof of life.",
-        [],
-        "You explicitly report no takeaway dinners.",
-        { takeaway: "0 days / last 7" },
-      ),
-      opt(
-        "One or two. The app knows me casually.",
-        [],
-        "You explicitly report occasional takeaway dinners.",
-        { takeaway: "1-2 days / last 7" },
-      ),
-      opt(
-        "Three or four. We are becoming close.",
-        [],
-        "You explicitly report frequent takeaway dinners.",
-        { takeaway: "3-4 days / last 7" },
-      ),
-      opt(
-        "Five to seven. The doorbell is my dinner bell.",
-        [],
-        "You explicitly report takeaway as the usual dinner source.",
-        { takeaway: "5-7 days / last 7" },
-      ),
-    ],
-    { role: "context" },
-  ),
-  q(
-    21,
-    3,
-    "The last time you felt ignored by {close}, what did you actually do?",
-    "Choose a close-person response; skip if there is no safe or useful example.",
-    [
-      opt(
-        "Said what was bothering me.",
-        [tag("D7", "direct", "close")],
-        "You report naming the issue directly.",
-      ),
-      opt(
-        "Eased into it gently.",
-        [tag("D7", "soften", "close")],
-        "You report opening the conversation gently.",
-      ),
-      opt(
-        "Asked for time and came back to talk.",
-        [tag("D7", "pause", "close"), tag("D6", "private", "close")],
-        "You report an explicit pause with a return.",
-      ),
-      opt(
-        "Avoided the conversation and let it pass.",
-        [tag("D7", "avoid", "close"), tag("D6", "private", "close")],
-        "You report leaving the issue unaddressed.",
-      ),
-    ],
-    { role: "actual", applicable: "close" },
-  ),
-  q(
-    22,
-    3,
-    "After a fight, {close} sends a raccoon eating grapes. No explanation.",
-    "The raccoon is excellent at conflict avoidance. What do you do?",
-    [
-      opt(
-        "“He is incredible. Can we talk about yesterday?”",
-        [tag("D7", "direct", "close"), tag("D12", "repair", "close")],
-        "You maintain contact and reopen repair directly.",
-      ),
-      opt(
-        "Send one back, then ask to talk tonight.",
-        [tag("D7", "soften", "close"), tag("D12", "repair", "close")],
-        "You soften the opening and arrange a conversation.",
-      ),
-      opt(
-        "Send one back and leave it there.",
-        [tag("D7", "avoid", "close")],
-        "You resume contact without addressing the disagreement.",
-      ),
-      opt(
-        "Say I need a day before we talk.",
-        [tag("D7", "pause", "close"), tag("D6", "private", "close")],
-        "You request space and keep the conversation possible.",
-      ),
-    ],
-    { applicable: "close" },
-  ),
-  q(
-    23,
-    3,
-    "You forgot something important to {close}. What comes next?",
-    "The full stop in “it’s fine” has entered the room.",
-    [
-      opt(
-        "Apologize and ask how to make it right.",
-        [tag("D12", "repair", "close"), tag("D7", "direct", "close")],
-        "You own the mistake and ask about repair.",
-      ),
-      opt(
-        "Apologize and explain what happened.",
-        [tag("D12", "explain", "close"), tag("D7", "soften", "close")],
-        "You pair an apology with context.",
-      ),
-      opt(
-        "Arrange something thoughtful to make up for it.",
-        [tag("D12", "action", "close"), tag("D3", "plan")],
-        "You initiate a concrete repair gesture.",
-      ),
-      opt(
-        "Ask for space, then agree when to talk.",
-        [tag("D12", "pause", "close"), tag("D7", "pause", "close")],
-        "You coordinate a pause and a return.",
-      ),
-    ],
-    { applicable: "close" },
-  ),
-  q(
-    24,
-    3,
-    "When {close} cancels a catch-up and suggests no new date, what do you assume first?",
-    "Choose the closest first interpretation; skip if this scene does not fit.",
-    [
-      opt(
-        "They are busy; we will find another time.",
-        [tag("D5", "secure", "close")],
-        "You choose a benign explanation for the cancellation.",
-      ),
-      opt(
-        "I worry they are pulling away and want reassurance.",
-        [tag("D5", "worry", "close"), tag("D6", "support", "close")],
-        "You fear withdrawal and seek reassurance.",
-      ),
-      opt(
-        "Ask directly whether we are okay.",
-        [tag("D5", "reassurance", "close"), tag("D7", "direct", "close")],
-        "You seek explicit reassurance with a direct question.",
-      ),
-      opt(
-        "Wait; I do not choose an explanation yet.",
-        [tag("D5", "uncertain", "close"), tag("D6", "private", "close")],
-        "You hold uncertainty without assigning a reason.",
-      ),
-    ],
-    { role: "hypothetical", applicable: "close" },
-  ),
-
-  q(
-    25,
-    4,
-    "A family holiday clashes with plans you made for yourself.",
-    "Everyone says it is only one weekend, as if weekends grow on trees.",
-    [
-      opt(
-        "Change my plans; family comes first this time.",
-        [tag("D11", "duty", "family"), tag("D1", "people")],
-        "You prioritize the family commitment.",
-      ),
-      opt(
-        "Keep my plans and explain why.",
-        [tag("D11", "autonomy", "family"), tag("D7", "direct", "family")],
-        "You protect your plan and state the choice.",
-      ),
-      opt(
-        "Split the time between both.",
-        [tag("D11", "conditional", "family"), tag("D3", "plan")],
-        "You negotiate a planned compromise.",
-      ),
-      opt(
-        "Ask what is actually needed before deciding.",
-        [tag("D11", "conditional", "family"), tag("D1", "people")],
-        "You gather the family’s concrete need first.",
-      ),
-    ],
-  ),
-  q(
-    26,
-    4,
-    "A parent or elder criticizes your choice at a family meal.",
-    "The critique arrives in front of an audience and beside the potatoes.",
-    [
-      opt(
-        "Say I am happy with my choice.",
-        [tag("D7", "direct", "family"), tag("D11", "autonomy", "family")],
-        "You state your choice directly.",
-      ),
-      opt(
-        "Explain the plan so they understand.",
-        [tag("D7", "soften", "family"), tag("D3", "plan")],
-        "You give context in an attempt to lower tension.",
-      ),
-      opt(
-        "Make a joke and change the subject.",
-        [tag("D7", "avoid", "family")],
-        "You redirect the public criticism.",
-      ),
-      opt(
-        "Reconsider it. Their opinion matters to me.",
-        [tag("D11", "duty", "family")],
-        "You give family expectations weight in the decision.",
-      ),
-    ],
-  ),
-  q(
-    27,
-    4,
-    "Family pushes a food or health habit on you.",
-    "They have brought advice, enthusiasm, and no appointment.",
-    [
-      opt(
-        "Thank them and choose my own routine.",
-        [tag("D11", "autonomy", "family"), tag("D7", "soften", "family")],
-        "You preserve autonomy while keeping the opening gentle.",
-      ),
-      opt(
-        "Tell them plainly to stop.",
-        [tag("D11", "autonomy", "family"), tag("D7", "direct", "family")],
-        "You set a direct boundary.",
-      ),
-      opt(
-        "Try it for their sake.",
-        [tag("D11", "duty", "family")],
-        "You accommodate the family request for now.",
-      ),
-      opt(
-        "Change the subject and keep doing my thing.",
-        [tag("D11", "autonomy", "family"), tag("D7", "avoid", "family")],
-        "You protect your routine without entering the argument.",
-      ),
-    ],
-  ),
-  q(
-    28,
-    4,
-    "The dinner-after-a-fight scene, this time with a family member.",
-    "They send a recipe video as if the disagreement was a minor seasoning issue.",
-    [
-      opt(
-        "Reply warmly, then ask to talk about it.",
-        [tag("D7", "direct", "family"), tag("D12", "repair", "family")],
-        "You reopen repair with the family member.",
-      ),
-      opt(
-        "Start with the recipe and bring it up gently later.",
-        [tag("D7", "soften", "family"), tag("D12", "repair", "family")],
-        "You soften the repair opening.",
-      ),
-      opt(
-        "Reply about the recipe and leave the disagreement alone.",
-        [tag("D7", "avoid", "family"), tag("D12", "avoid", "family")],
-        "You resume ordinary contact without repair.",
-      ),
-      opt(
-        "Ask for a day and name a time to return.",
-        [tag("D7", "pause", "family"), tag("D12", "pause", "family")],
-        "You coordinate a pause with a return.",
-      ),
-    ],
-  ),
-  q(
-    29,
-    4,
-    "What did you actually do the last time an outing with {close} became uneven?",
-    "The bill or effort stopped matching; choose a real response or skip.",
-    [
-      opt(
-        "Named the imbalance and asked to split it fairly.",
-        [tag("D8", "proportional", "close"), tag("D7", "direct", "close")],
-        "You report naming the uneven cost or effort directly.",
-      ),
-      opt(
-        "Sent a careful message about my share.",
-        [tag("D8", "proportional", "close"), tag("D7", "soften", "close")],
-        "You report raising the uneven share privately.",
-      ),
-      opt(
-        "Covered it and kept the peace.",
-        [tag("D8", "absorb", "close")],
-        "You report carrying the extra cost or effort.",
-      ),
-      opt(
-        "Stopped covering it without discussing why.",
-        [tag("D8", "limit", "close"), tag("D7", "avoid", "close")],
-        "You report withdrawing your extra contribution without a discussion.",
-      ),
-    ],
-    { role: "actual", applicable: "close" },
-  ),
-  q(
-    30,
-    4,
-    "What did you actually do the last time a setback happened to you?",
-    "Choose what you told {close}, or skip if there is no useful example.",
-    [
-      opt(
-        "Told {close} quickly and asked them to stay with me in it.",
-        [tag("D6", "support", "close")],
-        "You report disclosing promptly and seeking connection.",
-      ),
-      opt(
-        "Told {close} a small version first.",
-        [tag("D6", "selective", "close")],
-        "You report selective disclosure to the selected person.",
-      ),
-      opt(
-        "Worked it out privately before saying anything.",
-        [tag("D6", "private", "close")],
-        "You report processing the setback privately.",
-      ),
-      opt(
-        "Talked to someone else before {close}.",
-        [tag("D6", "selective", "general")],
-        "You report seeking another support person first.",
-      ),
-    ],
-    { role: "actual", applicable: "close" },
-  ),
-  q(
-    31,
-    4,
-    "You lose your job. Who in the family hears it, and when?",
-    "Imagine the news arriving today; skip if this scene does not fit.",
-    [
-      opt(
-        "Tell the family quickly; I need people around me.",
-        [tag("D6", "support", "family")],
-        "You disclose quickly and seek family support.",
-      ),
-      opt(
-        "Tell one person privately first.",
-        [tag("D6", "selective", "family")],
-        "You choose a limited, private disclosure.",
-      ),
-      opt(
-        "Wait until I have a plan.",
-        [tag("D6", "private", "family"), tag("D3", "plan")],
-        "You delay disclosure while organizing next steps.",
-      ),
-      opt(
-        "Handle it alone for a while.",
-        [tag("D6", "distance", "family")],
-        "You keep the setback private at first.",
-      ),
-    ],
-  ),
-  q(
-    32,
-    4,
-    "What did you actually do the last time family wanted something different from you?",
-    "Think of the latest such disagreement in the past month. Choose “No example to use” if this has not happened in the past month.",
-    [
-      opt(
-        "Said no and kept my plan.",
-        [tag("D11", "autonomy", "family"), tag("D7", "direct", "family")],
-        "You report protecting your choice directly.",
-      ),
-      opt(
-        "Found a compromise.",
-        [tag("D11", "conditional", "family")],
-        "You report negotiating a workable agreement.",
-      ),
-      opt(
-        "Went along with them.",
-        [tag("D11", "duty", "family"), tag("D1", "people")],
-        "You report prioritizing the family request.",
-      ),
-      opt(
-        "Avoided the conversation for now.",
-        [tag("D7", "avoid", "family")],
-        "You report deferring the disagreement.",
-      ),
-    ],
-    { role: "actual" },
-  ),
-
-  q(
-    33,
-    5,
-    "The friend you brought becomes the centre of the party.",
-    "Everyone is delighted. Your ego would like a small private meeting.",
-    [
-      opt(
-        "Introduce them to more people and enjoy it.",
-        [tag("D9", "noncompetitive")],
-        "You connect the friend despite losing attention.",
-      ),
-      opt(
-        "Stay close and make sure I am not forgotten.",
-        [tag("D9", "recognition")],
-        "You seek recognition in the group.",
-      ),
-      opt(
-        "Turn it into a joint bit. We can be famous together.",
-        [tag("D9", "competitive"), tag("D1", "people")],
-        "You convert comparison into shared performance.",
-      ),
-      opt(
-        "Leave early; the social battery has become a witness.",
-        [tag("D14d", "rest")],
-        "You protect capacity by leaving early.",
-      ),
-    ],
-  ),
-  q(
-    34,
-    5,
-    "A colleague presents shared work and says “I” until “we” files a missing-person report.",
-    "The credits are wrong in public.",
-    [
-      opt(
-        "Mention what I contributed right there.",
-        [tag("D9", "recognition"), tag("D7", "direct", "colleague")],
-        "You clarify your contribution publicly.",
-      ),
-      opt(
-        "Speak to them afterward.",
-        [tag("D9", "recognition"), tag("D7", "soften", "colleague")],
-        "You address attribution privately.",
-      ),
-      opt(
-        "Send the lead a record of the work.",
-        [tag("D8", "proportional", "colleague"), tag("D3", "plan")],
-        "You use documentation to seek fair attribution.",
-      ),
-      opt(
-        "Leave it this time and keep clearer records next time.",
-        [tag("D3", "plan")],
-        "You defer the conflict and plan future protection.",
-      ),
-    ],
-  ),
-  q(
-    35,
-    5,
-    "A friend gets the opportunity you wanted. You are happy for them.",
-    "Your ego would prefer to lie face down for ten minutes.",
-    [
-      opt(
-        "Call to celebrate; my floor moment can wait.",
-        [tag("D9", "noncompetitive")],
-        "You prioritize connection despite disappointment.",
-      ),
-      opt(
-        "Congratulate them, then mute updates briefly.",
-        [tag("D9", "comparison"), tag("D6", "private", "friend")],
-        "You support them while limiting painful comparison.",
-      ),
-      opt(
-        "Ask how they did it and make a plan.",
-        [tag("D9", "competitive"), tag("D3", "plan")],
-        "You turn comparison into a plan.",
-      ),
-      opt(
-        "Wait until I can reply warmly.",
-        [tag("D9", "comparison"), tag("D10", "wait")],
-        "You delay contact while emotions settle.",
-      ),
-    ],
-  ),
-  q(
-    36,
-    5,
-    "A friend asks to borrow money after a rough week.",
-    "You care about them and your budget has also had a rough week.",
-    [
-      opt(
-        "State what I can lend and when I need it back.",
-        [tag("D8", "limit", "friend"), tag("D7", "direct", "friend")],
-        "You set a bounded loan and repayment expectation.",
-      ),
-      opt(
-        "Offer a smaller amount or practical help.",
-        [tag("D8", "limit", "friend")],
-        "You help within a defined limit.",
-      ),
-      opt(
-        "Lend it without making the friendship an invoice.",
-        [tag("D8", "absorb", "friend"), tag("D11", "duty", "friend")],
-        "You accept the financial cost for the friendship.",
-      ),
-      opt(
-        "Decline; I cannot add this cost.",
-        [tag("D8", "limit", "friend"), tag("D11", "autonomy", "friend")],
-        "You protect your own financial capacity.",
-      ),
-    ],
-  ),
-  q(
-    37,
-    5,
-    "Your mistake got the team blamed, and nobody knows it was you.",
-    "The correction would be embarrassing. The silence is also doing a lot.",
-    [
-      opt(
-        "Own it and tell the team how I will fix it.",
-        [tag("D12", "repair", "colleague")],
-        "You take responsibility and propose a repair.",
-      ),
-      opt(
-        "Apologize to the lead privately and explain what led to it.",
-        [tag("D12", "explain", "colleague"), tag("D7", "soften", "colleague")],
-        "You apologize and disclose the mistake in a private conversation.",
-      ),
-      opt(
-        "Fix the work quietly and hope the blame evaporates.",
-        [tag("D12", "action", "colleague"), tag("D7", "avoid", "colleague")],
-        "You repair the output without owning it publicly.",
-      ),
-      opt(
-        "Leave the project if the damage is too large.",
-        [tag("D12", "exit", "colleague"), tag("D11", "autonomy", "colleague")],
-        "You choose to exit rather than continue the repair.",
-      ),
-    ],
-  ),
-  q(
-    38,
-    5,
-    "A group of friends hid something and asks you to pick a side.",
-    "The hidden thing is theirs to tell; your role is not a courtroom.",
-    [
-      opt(
-        "Ask what happened before choosing.",
-        [tag("D1", "people"), tag("D3", "plan")],
-        "You gather context before taking a side.",
-      ),
-      opt(
-        "Stand with the group immediately.",
-        [tag("D11", "duty", "friends")],
-        "You prioritize loyalty to the group.",
-      ),
-      opt(
-        "Say I will not carry a secret that harms someone.",
-        [tag("D13", "limit"), tag("D7", "direct", "friends")],
-        "You set a direct care and responsibility limit.",
-      ),
-      opt(
-        "Stay out until the people involved talk themselves.",
-        [tag("D7", "avoid", "friends")],
-        "You stay out of the group conflict.",
-      ),
-    ],
-  ),
-  q(
-    39,
-    5,
-    "Your colleagues want you to take credit for a win you only partly made.",
-    "The applause is available. So is the awkward footnote.",
-    [
-      opt(
-        "Name everyone’s contribution.",
-        [tag("D9", "noncompetitive"), tag("D8", "proportional", "colleague")],
-        "You distribute recognition according to contribution.",
-      ),
-      opt(
-        "Accept the credit and share it later.",
-        [tag("D9", "recognition"), tag("D3", "plan")],
-        "You accept recognition while planning a later share.",
-      ),
-      opt(
-        "Correct the record immediately.",
-        [tag("D7", "direct", "colleague")],
-        "You clarify the credit directly.",
-      ),
-      opt(
-        "Let it pass; the result matters more than the names.",
-        [tag("D9", "noncompetitive")],
-        "You accept an uneven recognition outcome.",
-      ),
-    ],
-  ),
-  q(
-    40,
-    5,
-    "What did you actually do the last time a colleague took the spotlight?",
-    "Choose a real workplace, school, or project example; skip if none comes to mind.",
-    [
-      opt(
-        "Congratulated them and stayed involved.",
-        [tag("D9", "noncompetitive")],
-        "You report staying involved despite comparison.",
-      ),
-      opt(
-        "Made sure my part was visible.",
-        [tag("D9", "recognition")],
-        "You report protecting accurate recognition.",
-      ),
-      opt(
-        "Stepped back and processed it privately.",
-        [tag("D9", "comparison")],
-        "You report reducing comparison exposure.",
-      ),
-      opt(
-        "Turned the feeling into a next move.",
-        [tag("D9", "competitive")],
-        "You report converting comparison into action.",
-      ),
-    ],
-    { role: "actual" },
-  ),
-
-  q(
-    41,
-    6,
-    "A soaked stray cat looks at you like you control the weather.",
-    "You cannot take it home. Your options are still real.",
-    [
-      opt(
-        "Bring food and water. Catering, not accommodation.",
-        [tag("D13", "bounded")],
-        "You provide immediate care within a limit.",
-      ),
-      opt(
-        "Contact a rescue with cat capacity.",
-        [tag("D13", "coordinate"), tag("D3", "plan")],
-        "You seek organized help.",
-      ),
-      opt(
-        "Ask nearby people who can help.",
-        [tag("D13", "coordinate"), tag("D1", "people")],
-        "You mobilize other people to help.",
-      ),
-      opt(
-        "Leave; I cannot safely help right now.",
-        [tag("D13", "limit"), tag("D1", "self")],
-        "You state a current capacity or safety limit.",
-      ),
-    ],
-  ),
-  q(
-    42,
-    6,
-    "You are exhausted. A stranger asks for help finding their stop.",
-    "Your own bus is arriving in two minutes.",
-    [
-      opt(
-        "Stay and help. The bus and I will meet again.",
-        [tag("D13", "direct"), tag("D1", "people")],
-        "You accept a personal cost to provide direct help.",
-      ),
-      opt(
-        "Give quick directions, then catch my bus.",
-        [tag("D13", "bounded")],
-        "You provide limited help while protecting capacity.",
-      ),
-      opt(
-        "Point them to staff before I go.",
-        [tag("D13", "coordinate"), tag("D1", "task")],
-        "You connect them to another source of help.",
-      ),
-      opt(
-        "Apologize, protect my remaining energy, and catch my bus.",
-        [tag("D13", "limit"), tag("D14d", "rest")],
-        "You explicitly prioritize recovery capacity.",
-      ),
-    ],
-  ),
-  q(
-    43,
-    6,
-    "Your planned movement meets an appealing alternative.",
-    "You have one hour, and the alternative has excellent snacks.",
-    [
-      opt(
-        "Keep the movement plan.",
-        [tag("D14c", "planned"), tag("D3", "plan")],
-        "You follow the planned movement.",
-      ),
-      opt(
-        "Move it to another time and take the alternative.",
-        [tag("D14c", "adjust"), tag("D3", "plan")],
-        "You reschedule movement around the alternative.",
-      ),
-      opt(
-        "Skip movement today.",
-        [tag("D14c", "skip")],
-        "You choose to skip the planned movement.",
-      ),
-      opt(
-        "Do a shorter version, then join the alternative.",
-        [tag("D14c", "adjust"), tag("D3", "improvise")],
-        "You adapt the movement plan to fit both.",
-      ),
-    ],
-  ),
-  q(
-    44,
-    6,
-    "What did you actually eat the last time a stressful dinner plan fell apart?",
-    "Choose a real recent response; skip if you have no useful example.",
-    [
-      opt(
-        "Made the meal I had planned.",
-        [tag("D14b", "planned")],
-        "You report following the planned meal.",
-      ),
-      opt(
-        "Adapted the plan into a quick version.",
-        [tag("D14b", "bounded")],
-        "You report adapting the meal within a boundary.",
-      ),
-      opt(
-        "Ordered comfort food immediately.",
-        [tag("D14b", "comfort"), tag("D10", "act")],
-        "You report choosing immediate comfort while stressed.",
-      ),
-      opt(
-        "Delayed eating until I could think clearly.",
-        [tag("D14b", "delay"), tag("D10", "wait")],
-        "You report delaying the meal while stressed.",
-      ),
-    ],
-    { role: "actual" },
-  ),
-  q(
-    45,
-    6,
-    "You are about to sleep when an optional extra task appears.",
-    "It would help, but it can wait until morning.",
-    [
-      opt(
-        "Go to bed and move the task.",
-        [tag("D14a", "protect"), tag("D14d", "rest")],
-        "You protect sleep and recovery.",
-      ),
-      opt(
-        "Do the task, then sleep later.",
-        [tag("D14a", "delay"), tag("D14d", "obligation")],
-        "You delay sleep for the optional obligation.",
-      ),
-      opt(
-        "Move tomorrow’s wake-up later so I can finish this and still sleep.",
-        [tag("D14a", "adjust"), tag("D3", "plan")],
-        "You change tomorrow’s sleep timing to fit the task while preserving sleep.",
-      ),
-      opt(
-        "Decline the task; tonight is closed.",
-        [tag("D14a", "protect"), tag("D14d", "rest")],
-        "You decline the task to protect sleep.",
-      ),
-    ],
-  ),
-  q(
-    46,
-    6,
-    "In the last seven days, on how many days did you deliberately get some movement?",
-    "Walks, wheelchair exercise, and movement that works for your body all count.",
-    [
-      opt(
-        "Zero. A factual answer, not a confession.",
-        [],
-        "You explicitly report no deliberate movement days.",
-        { movement: "0 days / last 7" },
-      ),
-      opt(
-        "One or two. Witnesses exist.",
-        [],
-        "You explicitly report occasional movement.",
-        { movement: "1-2 days / last 7" },
-      ),
-      opt(
-        "Three or four. A recurring event.",
-        [],
-        "You explicitly report regular movement.",
-        { movement: "3-4 days / last 7" },
-      ),
-      opt(
-        "Five to seven. My calendar has trainers on.",
-        [],
-        "You explicitly report frequent movement.",
-        { movement: "5-7 days / last 7" },
-      ),
-    ],
-    { role: "context" },
-  ),
-  q(
-    47,
-    6,
-    "What did you actually do the last time a movement plan met a hard day?",
-    "Choose a real response or skip.",
-    [
-      opt(
-        "Kept the plan.",
-        [tag("D14c", "planned")],
-        "You report following the movement plan.",
-      ),
-      opt(
-        "Adapted it to fit the day.",
-        [tag("D14c", "adjust"), tag("D3", "plan")],
-        "You report adapting the movement plan.",
-      ),
-      opt(
-        "Skipped it and did not replace it.",
-        [tag("D14c", "skip")],
-        "You report skipping the movement plan.",
-      ),
-      opt(
-        "Did a shorter version.",
-        [tag("D14c", "adjust")],
-        "You report reducing the movement plan.",
-      ),
-    ],
-    { role: "actual" },
-  ),
-  q(
-    48,
-    6,
-    "What did you actually do the last time a stranger or animal needed help?",
-    "Choose a real response or skip.",
-    [
-      opt(
-        "Helped directly.",
-        [tag("D13", "direct"), tag("D1", "people")],
-        "You report providing direct help.",
-      ),
-      opt(
-        "Connected them to someone better placed.",
-        [tag("D13", "coordinate"), tag("D3", "plan")],
-        "You report coordinating appropriate help.",
-      ),
-      opt(
-        "Helped briefly, then left.",
-        [tag("D13", "bounded")],
-        "You report bounded help.",
-      ),
-      opt(
-        "Left because I had no safe capacity.",
-        [tag("D13", "limit"), tag("D1", "self")],
-        "You report setting a capacity or safety limit.",
-      ),
-    ],
-    { role: "actual" },
-  ),
-
-  q(
-    49,
-    7,
-    "Your day has one free hour and three unfinished tasks.",
-    "The tasks are all mildly urgent, which is their favourite disguise.",
-    [
-      opt(
-        "Do the task affecting someone else first.",
-        [tag("D1", "people"), tag("D11", "duty")],
-        "You prioritize the other person’s need.",
-      ),
-      opt(
-        "Do the task with the nearest deadline.",
-        [tag("D1", "task"), tag("D3", "plan")],
-        "You prioritize the immediate task.",
-      ),
-      opt(
-        "Take the hour to recover.",
-        [tag("D1", "self"), tag("D14d", "rest")],
-        "You explicitly protect personal recovery.",
-      ),
-      opt(
-        "Take one small task, then stop.",
-        [tag("D1", "task"), tag("D14d", "bounded")],
-        "You make a bounded contribution and stop.",
-      ),
-    ],
-  ),
-  q(
-    50,
-    7,
-    "What did you actually want the last time you made an optional purchase?",
-    "Choose the literal motive that best describes a recent decision; no income estimate is wanted.",
-    [
-      opt(
-        "Safety. I wanted the sensible, reliable choice.",
-        [tag("D4", "security")],
-        "You report prioritizing safety or reliability.",
-      ),
-      opt(
-        "Freedom. I wanted to save time or keep options open.",
-        [tag("D4", "freedom")],
-        "You report prioritizing independence or saved time.",
-      ),
-      opt(
-        "Enjoyment. I wanted the thing because it pleased me.",
-        [tag("D4", "enjoyment")],
-        "You report prioritizing enjoyment.",
-      ),
-      opt(
-        "Status. I liked being seen with that version.",
-        [tag("D4", "status")],
-        "You report prioritizing visible recognition.",
-      ),
-    ],
-    { role: "actual" },
-  ),
-  q(
-    51,
-    7,
-    "Your phone offers a limited-time deal while you are upset.",
-    "The countdown timer has the confidence of a tiny auctioneer.",
-    [
-      opt(
-        "Buy now; the deal may fix the evening.",
-        [tag("D10", "act"), tag("D4", "enjoyment")],
-        "You act on an emotional purchase prompt.",
-      ),
-      opt(
-        "Wait until tomorrow.",
-        [tag("D10", "wait"), tag("D3", "plan")],
-        "You delay a mood-linked purchase.",
-      ),
-      opt(
-        "Compare the deal with the normal price.",
-        [tag("D3", "plan"), tag("D4", "security")],
-        "You verify the offer before acting.",
-      ),
-      opt(
-        "Close it; tomorrow can make the decision.",
-        [tag("D10", "wait")],
-        "You reject the pressured purchase without choosing a familiar alternative.",
-      ),
-    ],
-  ),
-  q(
-    52,
-    7,
-    "A plan you made carefully is suddenly impossible.",
-    "The plan has left a note saying it will not be back.",
-    [
-      opt(
-        "Improvise from whatever is available.",
-        [tag("D3", "improvise")],
-        "You act with an incomplete plan.",
-      ),
-      opt(
-        "Pause and make a replacement plan.",
-        [tag("D3", "plan")],
-        "You reorganize before acting.",
-      ),
-      opt(
-        "Ask the people affected what they prefer.",
-        [tag("D1", "people"), tag("D3", "consult")],
-        "You involve affected people before choosing a new plan.",
-      ),
-      opt(
-        "Drop it; I no longer have the energy.",
-        [tag("D3", "stop"), tag("D14d", "rest")],
-        "You end the plan to protect capacity.",
-      ),
-    ],
-  ),
-  q(
-    53,
-    7,
-    "{close} says you hurt them, and you think they have part of it wrong.",
-    "Being right and repairing things have both requested a speaking slot.",
-    [
-      opt(
-        "Ask what landed badly before explaining my view.",
-        [tag("D12", "repair", "close"), tag("D7", "soften", "close")],
-        "You listen before adding your explanation.",
-      ),
-      opt(
-        "Apologize, then explain my intent immediately.",
-        [tag("D12", "explain", "close"), tag("D7", "direct", "close")],
-        "You apologize and lead with context about your intent.",
-      ),
-      opt(
-        "Apologize for the impact and discuss the facts later.",
-        [tag("D12", "repair", "close"), tag("D7", "pause", "close")],
-        "You prioritize repair while pausing the factual dispute.",
-      ),
-      opt(
-        "Say I cannot discuss it right now.",
-        [tag("D12", "pause", "close"), tag("D6", "private", "close")],
-        "You request space before engaging.",
-      ),
-    ],
-    { applicable: "close" },
-  ),
-  q(
-    54,
-    7,
-    "Your usual sleep plan meets an unexpectedly late night.",
-    "Tomorrow still exists, annoyingly.",
-    [
-      opt(
-        "Stop and sleep as soon as I reasonably can.",
-        [tag("D14a", "protect"), tag("D14d", "rest")],
-        "You protect sleep and recovery.",
-      ),
-      opt(
-        "Finish the important thing, then sleep.",
-        [tag("D14a", "delay"), tag("D14d", "obligation")],
-        "You accept later sleep for an obligation.",
-      ),
-      opt(
-        "Keep going; the night has momentum.",
-        [tag("D14a", "delay")],
-        "You continue despite the late hour.",
-      ),
-      opt(
-        "Change tomorrow’s plan to make room for sleep.",
-        [tag("D14a", "adjust"), tag("D3", "plan")],
-        "You adjust the next plan to protect recovery.",
-      ),
-    ],
-  ),
-  q(
-    55,
-    7,
-    "You are hungry, stressed, and the fastest option is not your usual dinner.",
-    "The fastest option has already opened the door.",
-    [
-      opt(
-        "Eat the comfort food; hungry is a current fact.",
-        [tag("D14b", "comfort"), tag("D10", "act")],
-        "You respond immediately with explicitly comforting food.",
-      ),
-      opt(
-        "Wait and make the meal I intended.",
-        [tag("D14b", "planned"), tag("D3", "plan")],
-        "You follow the planned meal despite the stress.",
-      ),
-      opt(
-        "Choose a quick version that still works for me.",
-        [tag("D14b", "bounded"), tag("D3", "plan")],
-        "You adapt the meal within a boundary.",
-      ),
-      opt(
-        "Skip it until I can think clearly.",
-        [tag("D14b", "delay"), tag("D10", "wait")],
-        "You delay eating while stressed.",
-      ),
-    ],
-  ),
-  q(
-    56,
-    7,
-    "What did you actually do the last time your energy and obligation disagreed?",
-    "Choose a real recent pattern or skip.",
-    [
-      opt(
-        "Finished the obligation first.",
-        [tag("D14d", "obligation"), tag("D1", "task")],
-        "You report prioritizing the obligation.",
-      ),
-      opt(
-        "Protected rest and moved the task.",
-        [tag("D14d", "rest"), tag("D1", "self")],
-        "You report protecting recovery.",
-      ),
-      opt(
-        "Asked someone to share or move it.",
-        [tag("D14d", "connection")],
-        "You report coordinating a different workload.",
-      ),
-      opt(
-        "Did a small part and stopped.",
-        [tag("D14d", "bounded")],
-        "You report making the obligation manageable.",
-      ),
-    ],
-    { role: "actual" },
-  ),
-
-  q(
-    57,
-    8,
-    "A friend offers a last-minute trip to a place you have never visited.",
-    "You have the time, but only one evening to decide.",
-    [
-      opt(
-        "Go. The map can explain itself later.",
-        [tag("D2", "novel")],
-        "You choose an unplanned novel experience.",
-      ),
-      opt(
-        "Check the details before saying yes.",
-        [tag("D2", "conditional")],
-        "You gather information first.",
-      ),
-      opt(
-        "Choose a familiar plan instead.",
-        [tag("D2", "familiar")],
-        "You choose the known option.",
-      ),
-      opt(
-        "Go only if someone I know joins.",
-        [tag("D2", "conditional")],
-        "You condition novelty on familiar company.",
-      ),
-    ],
-    { role: "holdout", test: true, baseline: "b" },
-  ),
-  q(
-    58,
-    8,
-    "{close} cancels a plan that mattered to you.",
-    "They offer a replacement without mentioning the cancellation.",
-    [
-      opt(
-        "Rebook, and say why the cancellation hurt.",
-        [tag("D7", "direct", "close")],
-        "You reopen the issue directly.",
-      ),
-      opt(
-        "Start warmly, then bring it up gently.",
-        [tag("D7", "soften", "close")],
-        "You use a softer opening.",
-      ),
-      opt(
-        "Ask for a day, then set a time to talk.",
-        [tag("D7", "pause", "close")],
-        "You request space with a return.",
-      ),
-      opt(
-        "Accept the new plan and say nothing about it.",
-        [tag("D7", "avoid", "close")],
-        "You leave the cancellation unaddressed.",
-      ),
-    ],
-    { role: "holdout", test: true, applicable: "close", baseline: "a" },
-  ),
-  q(
-    59,
-    8,
-    "Your friends’ bill includes a shared item you did not use.",
-    "Your friends want one clean split and your calculator wants a union representative.",
-    [
-      opt(
-        "Ask to remove my share of that item.",
-        [tag("D8", "proportional", "friends"), tag("D7", "direct", "friends")],
-        "You request a consumption-based split.",
-      ),
-      opt(
-        "Message the organizer privately.",
-        [tag("D8", "proportional", "friends"), tag("D7", "soften", "friends")],
-        "You request a fair adjustment privately.",
-      ),
-      opt(
-        "Tell them it is okay and pay it for simplicity.",
-        [tag("D8", "absorb", "friends"), tag("D7", "direct", "friends")],
-        "You accept the extra cost and state that choice directly.",
-      ),
-      opt(
-        "Pay and keep the irritation to yourself.",
-        [tag("D8", "absorb", "friends"), tag("D7", "hint", "friends")],
-        "You absorb the cost without raising it.",
-      ),
-    ],
-    { role: "holdout", test: true, baseline: "a" },
-  ),
-  q(
-    60,
-    8,
-    "A surprise gift leaves you with one optional purchase.",
-    "The gift is yours; the category motive is the question.",
-    [
-      opt(
-        "Choose the reliable version and keep the rest safe.",
-        [tag("D4", "security")],
-        "You prioritize safety or reliability.",
-      ),
-      opt(
-        "Choose the option that saves time and opens choices.",
-        [tag("D4", "freedom")],
-        "You prioritize freedom or saved time.",
-      ),
-      opt(
-        "Choose the one that simply delights me.",
-        [tag("D4", "enjoyment")],
-        "You prioritize enjoyment.",
-      ),
-      opt(
-        "Choose the recognizable version.",
-        [tag("D4", "status")],
-        "You prioritize visible status.",
-      ),
-    ],
-    { role: "holdout", test: true, baseline: "b" },
-  ),
-  q(
-    61,
-    8,
-    "An extra task would help your team, but you are already out of battery.",
-    "It is optional, and the team will survive a conversation.",
-    [
-      opt(
-        "Decline and recover.",
-        [tag("D14d", "rest")],
-        "You protect recovery capacity.",
-      ),
-      opt(
-        "Take it on and finish the team’s need.",
-        [tag("D14d", "obligation")],
-        "You prioritize the team obligation.",
-      ),
-      opt(
-        "Find someone with capacity to share it.",
-        [tag("D14d", "connection")],
-        "You coordinate a shared way to complete it.",
-      ),
-      opt(
-        "Offer a smaller piece and protect the rest of the evening.",
-        [tag("D14d", "bounded")],
-        "You make a bounded contribution.",
-      ),
-    ],
-    { role: "holdout", test: true, baseline: "d" },
-  ),
-  q(
-    62,
-    8,
-    "You let {close} down again, in a different situation.",
-    "The repair starts with one clear sentence.",
-    [
-      opt(
-        "Apologize directly and ask what would help.",
-        [tag("D12", "repair", "close")],
-        "You own the mistake and ask about repair.",
-      ),
-      opt(
-        "Apologize and explain what led to it.",
-        [tag("D12", "explain", "close")],
-        "You combine an apology with context.",
-      ),
-      opt(
-        "Arrange a thoughtful concrete way to make up for it.",
-        [tag("D12", "action", "close")],
-        "You initiate a concrete repair action.",
-      ),
-      opt(
-        "Agree on space and a time to reconnect.",
-        [tag("D12", "pause", "close")],
-        "You coordinate space and a return.",
-      ),
-    ],
-    { role: "holdout", test: true, applicable: "close", baseline: "a" },
-  ),
-  q(
-    63,
-    8,
-    "You want to help someone, but you have one hour and no spare money.",
-    "The need is genuine; your capacity is also genuine.",
-    [
-      opt(
-        "Use the hour to do the task myself.",
-        [tag("D13", "direct")],
-        "You provide direct care within the hour.",
-      ),
-      opt(
-        "Find someone or a service better placed to help.",
-        [tag("D13", "coordinate")],
-        "You coordinate appropriate support.",
-      ),
-      opt(
-        "Say I cannot take this on today.",
-        [tag("D13", "limit")],
-        "You state a capacity limit.",
-      ),
-      opt(
-        "Offer ten minutes, then hand it back.",
-        [tag("D13", "bounded")],
-        "You provide a clearly bounded amount of help.",
-      ),
-    ],
-    { role: "holdout", test: true, baseline: "b" },
-  ),
-  q(
-    64,
-    8,
-    "A plan fails at the last minute and someone asks what happens next.",
-    "The plot has finally admitted it was improvising.",
-    [
-      opt(
-        "Choose a workable next step immediately.",
-        [tag("D3", "improvise")],
-        "You act quickly on a replacement step.",
-      ),
-      opt(
-        "Pause, gather details, and make a new plan.",
-        [tag("D3", "plan")],
-        "You organize before acting.",
-      ),
-      opt(
-        "Ask the affected people what they prefer, then plan around it.",
-        [tag("D3", "consult")],
-        "You consult before creating the next plan.",
-      ),
-      opt(
-        "Drop it; there is no capacity for a new version.",
-        [tag("D3", "stop")],
-        "You stop instead of making a replacement plan.",
-      ),
-    ],
-    { role: "holdout", test: true, baseline: "b" },
-  ),
-];
-// Root v2 authoring metadata. QUESTIONS remains the candidate bank; the
-// engine chooses one eligible candidate for each ROUTE_SLOTS entry.
-const authorSource = {
-  kind: "authorial",
-  ref: "PERSONALITY-HEALTH-SPEC.md",
-  version: VERSION,
-};
-const shortWindow = (window) =>
-  ({
-    past_month: "Usual · past month",
-    last_7_days: "Recent · last 7 days",
-    latest_instance_past_month: "Latest · past month",
-    scenario: "Scenario",
-  })[window] || "Context";
-const meta = (domain, window, evidence, extra = {}) => ({
-  domain,
-  window,
-  windowLabel: shortWindow(window),
-  evidence,
-  source: { ...authorSource },
-  ...extra,
-});
-const setMeta = (
-  id,
-  domain,
-  window = null,
-  evidence = "hypothetical",
-  extra = {},
-) => {
-  const question = QUESTIONS.find((item) => item.id === id);
-  if (question)
-    question.meta = {
-      domain,
-      window,
-      windowLabel: shortWindow(window),
-      evidence,
-      source: { ...authorSource },
-      subject: "self",
-      ...extra,
-    };
-};
-for (const question of QUESTIONS)
-  setMeta(
-    question.id,
-    question.test
-      ? "personality"
-      : question.role === "actual"
-        ? "personality"
-        : question.role === "context"
-          ? "context"
-          : "personality",
-    question.role === "actual"
-      ? "latest_instance_past_month"
-      : question.role === "context"
-        ? null
-        : "scenario",
-    question.role === "actual"
-      ? "actual_event"
-      : question.role === "context"
-        ? "self_report"
-        : "hypothetical",
-  );
-setMeta("q01", "context", null, "self_report", { subject: "close_person" });
-setMeta("q02", "context", null, "self_report", { subject: "household" });
-setMeta("q17", "health", "past_month", "self_report", {
-  subject: "self",
-  fact: "bedtime_band",
-});
-setMeta("q20", "health", "last_7_days", "self_report", {
-  measure: "takeaway_days",
-});
-setMeta("q46", "health", "last_7_days", "self_report", {
-  measure: "movement_consistency",
-});
-for (const [id, family] of [
-  ["q18", "worry"],
-  ["q19", "worry"],
-  ["q21", "frustration"],
-  ["q22", "frustration"],
-  ["q23", "guilt"],
-  ["q24", "worry"],
-  ["q28", "disappointment"],
-  ["q30", "disappointment"],
-  ["q53", "guilt"],
-  ["q58", "frustration"],
-  ["q62", "guilt"],
-])
-  setMeta(
-    id,
-    "emotion",
-    id === "q21" || id === "q30" ? "latest_instance_past_month" : "scenario",
-    id === "q21" || id === "q30" ? "actual_event" : "hypothetical",
-    {
-      emotionFamily: family,
-      subject: id === "q58" || id === "q62" ? "close" : "self",
-    },
-  );
-for (const [id, measureId, window] of [
-  ["q43", "movement_consistency", "scenario"],
-  ["q44", "meal_response", "latest_instance_past_month"],
-  ["q45", "sleep_protection", "scenario"],
-  ["q47", "movement_response", "latest_instance_past_month"],
-  ["q54", "sleep_protection", "scenario"],
-  ["q55", "meal_response", "scenario"],
-  ["q56", "felt_energy", "latest_instance_past_month"],
-  ["q61", "felt_energy", "scenario"],
-])
-  setMeta(
-    id,
-    "health",
-    window,
-    window === "latest_instance_past_month" ? "actual_event" : "hypothetical",
-    { measure: measureId },
-  );
-
 export const MEASURES = {
-  sleep_timing: {
-    domain: "sleep",
-    label: "Usual bedtime",
-    low: "before 11 p.m.",
-    high: "after 1 a.m.",
-    min: 0,
-    max: 3,
-    unit: "ordinal",
-    description: "Reported usual bedtime band.",
+  "sleep_restoration": {
+    "domain": "sleep",
+    "label": "Waking restored",
+    "low": "Not often",
+    "high": "Most mornings",
+    "min": 1,
+    "max": 3,
+    "unit": "ordinal",
+    "description": "How often sleep felt restoring, reported directly."
   },
-  sleep_restoration: {
-    domain: "sleep",
-    label: "Sleep restoration",
-    low: "rarely refreshed",
-    high: "usually refreshed",
-    min: 0,
-    max: 3,
-    unit: "ordinal",
-    description: "Reported sleep restoration across usual and recent windows.",
+  "meal_regularity": {
+    "domain": "eating",
+    "label": "Meal timing",
+    "low": "Often shifted",
+    "high": "Mostly steady",
+    "min": 1,
+    "max": 3,
+    "unit": "ordinal",
+    "description": "How steady meal timing felt, not diet quality."
   },
-  sleep_regularity: {
-    domain: "sleep",
-    label: "Sleep timing consistency",
-    low: "very irregular",
-    high: "very regular",
-    min: 0,
-    max: 3,
-    unit: "ordinal",
-    description:
-      "Reported sleep timing consistency across usual and recent windows.",
-  },
-  sleep_wake: {
-    domain: "sleep",
-    label: "Usual wake time",
-    low: "before 6 a.m.",
-    high: "after 9 a.m.",
-    min: 0,
-    max: 3,
-    unit: "ordinal",
-    description: "Reported usual wake-time band.",
-  },
-  sleep_duration: {
-    domain: "sleep",
-    label: "Usual sleep duration",
-    low: "under 6 hours",
-    high: "9 hours or more",
-    min: 0,
-    max: 3,
-    unit: "ordinal",
-    description: "Reported usual sleep-duration band.",
-  },
-  meal_regularity: {
-    domain: "eating",
-    label: "Meal timing regularity",
-    low: "very varied",
-    high: "very regular",
-    min: 0,
-    max: 3,
-    unit: "ordinal",
-    description: "Reported usual or recent meal timing pattern.",
-  },
-  takeaway_days: {
-    domain: "eating",
-    label: "Takeaway dinners",
-    low: "none in seven days",
-    high: "five to seven days",
-    min: 0,
-    max: 3,
-    unit: "ordinal",
-    description:
-      "Reported takeaway dinner count. It does not rate diet quality.",
-  },
-  movement_consistency: {
-    domain: "movement",
-    label: "Movement consistency",
-    low: "none or rare",
-    high: "most days",
-    min: 0,
-    max: 3,
-    unit: "ordinal",
-    description: "Reported movement frequency or routine.",
-  },
-  body_attention: {
-    domain: "body",
-    label: "Body cue attention",
-    low: "often postponed",
-    high: "usually noticed and addressed",
-    min: 0,
-    max: 3,
-    unit: "ordinal",
-    description: "Reported attention to body cues.",
-  },
-  skin_attention: {
-    domain: "skin",
-    label: "Skin care attention",
-    low: "rarely tracked",
-    high: "regularly tracked",
-    min: 0,
-    max: 3,
-    unit: "ordinal",
-    description: "Reported skin experience and routine attention.",
-  },
-  felt_energy: {
-    domain: "recovery",
-    label: "Felt energy",
-    low: "usually depleted",
-    high: "usually enough for the day",
-    min: 0,
-    max: 3,
-    unit: "ordinal",
-    description: "Reported energy, not a medical measurement.",
-  },
-  hydration_cues: {
-    domain: "hydration",
-    label: "Drink-break routine",
-    low: "almost never remembered",
-    high: "nearly every busy day",
-    min: 0,
-    max: 3,
-    unit: "ordinal",
-    description: "Reported drink-break recall.",
-  },
-  sleep_interference: {
-    domain: "sleep",
-    label: "Sleep and optional tasks",
-    low: "protect sleep",
-    high: "delay sleep",
-    min: 0,
-    max: 2,
-    unit: "ordinal",
-    description: "Reported response to an optional task at bedtime.",
-  },
+  "daytime_energy": {
+    "domain": "recovery",
+    "label": "Enough energy for the day",
+    "low": "Not often",
+    "high": "Most days",
+    "min": 1,
+    "max": 3,
+    "unit": "ordinal",
+    "description": "Subjective available energy, with no cause inferred."
+  }
 };
-const addMeasures = (id, measureId, labels) => {
-  const question = QUESTIONS.find((item) => item.id === id);
-  labels.forEach((label, index) => {
-    const option = question?.options[index];
-    if (option) option.measures = [{ id: measureId, value: index, label }];
-  });
-};
-addMeasures("q20", "takeaway_days", [
-  "None in the last seven days.",
-  "One or two days.",
-  "Three or four days.",
-  "Five to seven days.",
-]);
-addMeasures("q46", "movement_consistency", [
-  "Zero days.",
-  "One or two days.",
-  "Three or four days.",
-  "Five to seven days.",
-]);
-
-const emotionQuestion = (id, title, setup, rows) => {
-  const question = q(
-    id,
-    5,
-    title,
-    `Think of the latest time this happened in the past month. Choose “No example to use” if this has not happened in the past month. ${setup}`,
-    rows.map(([text, why]) => opt(text, [], why)),
-    { role: "actual" },
-  );
-  return question;
-};
-const addedEmotion = [
-  emotionQuestion(
-    65,
-    "Your plan acquires a surprise problem.",
-    "The plan has sent a tiny emergency memo. What was the inside voice?",
-    [
-      [
-        "I felt a flash of irritation and said what needed changing.",
-        "Reports frustration and a direct response.",
-      ],
-      [
-        "I felt properly angry and went quiet before deciding.",
-        "Reports anger and a pause.",
-      ],
-      [
-        "I was mildly bothered, gave myself a reset, and moved to the next step.",
-        "Reports lower frustration and recovery through a reset.",
-      ],
-      [
-        "I felt stuck and asked someone to help untangle it.",
-        "Reports frustrated uncertainty and support.",
-      ],
+export const QUESTIONS = [
+  {
+    "id": "n01",
+    "chapter": 1,
+    "title": "What has been taking up the most room in your head lately?",
+    "setup": "Pick the closest answer. This guides the conversation; it is not a diagnosis.",
+    "role": "context",
+    "test": false,
+    "options": [
+      {
+        "id": "a",
+        "text": "Friends and where I fit",
+        "why": "Friends and where I fit",
+        "tags": [],
+        "facts": {
+          "currentFriction": "friends"
+        }
+      },
+      {
+        "id": "b",
+        "text": "Work, school, or what comes next",
+        "why": "Work, school, or what comes next",
+        "tags": [],
+        "facts": {
+          "currentFriction": "work_future"
+        }
+      },
+      {
+        "id": "c",
+        "text": "Dating or family stuff",
+        "why": "Dating or family stuff",
+        "tags": [],
+        "facts": {
+          "currentFriction": "relationships"
+        }
+      },
+      {
+        "id": "d",
+        "text": "My routines, energy, or body",
+        "why": "My routines, energy, or body",
+        "tags": [],
+        "facts": {
+          "currentFriction": "routines_body"
+        }
+      },
+      {
+        "id": "e",
+        "text": "Something else, or I can't name it yet",
+        "why": "Something else, or I can't name it yet",
+        "tags": [],
+        "facts": {
+          "currentFriction": "other_unsure"
+        }
+      }
     ],
-  ),
-  emotionQuestion(
-    66,
-    "A needed message sits unread while the deadline approaches.",
-    "Your brain has opened seventeen tabs about one blue tick.",
-    [
-      [
-        "I felt uneasy and sent one clear check-in.",
-        "Reports worry and one direct response.",
-      ],
-      [
-        "I felt very worried and checked the details again.",
-        "Reports worry and a checking response.",
-      ],
-      [
-        "I did not feel especially worried. I assumed they were busy and carried on.",
-        "Reports low worry explicitly and continued.",
-      ],
-      [
-        "I felt uncertain, then put the phone away for a while.",
-        "Reports uncertainty and bounded recovery.",
-      ],
+    "meta": {
+      "domain": "conversation_route",
+      "window": "current",
+      "evidence": "self_report",
+      "target": "self",
+      "source": "experimental-40.v2#n01",
+      "claimLimit": "A selected topic is not a diagnosis, trait, or proof of a problem."
+    }
+  },
+  {
+    "id": "n02",
+    "chapter": 1,
+    "title": "Which sounds closest to your social life these days?",
+    "setup": "Pick the closest answer. This guides the conversation; it is not a diagnosis.",
+    "role": "context",
+    "test": false,
+    "options": [
+      {
+        "id": "a",
+        "text": "I see people often and feel known by at least a few",
+        "why": "I see people often and feel known by at least a few",
+        "tags": [],
+        "facts": {
+          "socialContext": "social_often_known"
+        }
+      },
+      {
+        "id": "b",
+        "text": "I see people often, but still edit parts of myself",
+        "why": "I see people often, but still edit parts of myself",
+        "tags": [],
+        "facts": {
+          "socialContext": "social_often_edit"
+        }
+      },
+      {
+        "id": "c",
+        "text": "I have a small circle and that mostly suits me",
+        "why": "I have a small circle and that mostly suits me",
+        "tags": [],
+        "facts": {
+          "socialContext": "small_circle_suits"
+        }
+      },
+      {
+        "id": "d",
+        "text": "My people-time has been changing lately",
+        "why": "My people-time has been changing lately",
+        "tags": [],
+        "facts": {
+          "socialContext": "social_changing"
+        }
+      },
+      {
+        "id": "e",
+        "text": "I don't get many local chances to connect, and I'd like more",
+        "why": "I don't get many local chances to connect, and I'd like more",
+        "tags": [],
+        "facts": {
+          "socialContext": "low_access_wants_more"
+        }
+      },
+      {
+        "id": "f",
+        "text": "None of these quite fits",
+        "why": "None of these quite fits",
+        "tags": [],
+        "facts": {
+          "socialContext": "social_other"
+        }
+      }
     ],
-  ),
-  emotionQuestion(
-    67,
-    "A plan you wanted gets canceled at the last minute.",
-    "The cancellation arrived with no useful footnotes.",
-    [
-      [
-        "I felt disappointed and said I wanted to reschedule.",
-        "Reports disappointment and a reschedule response.",
-      ],
-      [
-        "I felt sad, took the evening quietly, and revisited it later.",
-        "Reports sadness and recovery through space.",
-      ],
-      [
-        "I was barely bothered and made another plan.",
-        "Reports low disappointment and adjustment.",
-      ],
-      [
-        "I felt let down and asked what had changed.",
-        "Reports disappointment and a context request.",
-      ],
+    "meta": {
+      "domain": "social_context",
+      "window": "current",
+      "evidence": "self_report",
+      "target": "self_and_social_circle",
+      "source": "experimental-40.v2#n02",
+      "claimLimit": "Does not establish loneliness, belonging insecurity, or relationship quality."
+    }
+  },
+  {
+    "id": "n03",
+    "chapter": 1,
+    "title": "If this chat got one thing right about you, what would you want it to help with?",
+    "setup": "Pick the closest answer. This guides the conversation; it is not a diagnosis.",
+    "role": "context",
+    "test": false,
+    "options": [
+      {
+        "id": "a",
+        "text": "Help me understand a pattern I keep repeating",
+        "why": "Help me understand a pattern I keep repeating",
+        "tags": [],
+        "facts": {
+          "chosenGoal": "understand_pattern"
+        }
+      },
+      {
+        "id": "b",
+        "text": "Help me put words to what I feel",
+        "why": "Help me put words to what I feel",
+        "tags": [],
+        "facts": {
+          "chosenGoal": "name_feeling"
+        }
+      },
+      {
+        "id": "c",
+        "text": "Help me decide what to do next",
+        "why": "Help me decide what to do next",
+        "tags": [],
+        "facts": {
+          "chosenGoal": "next_step"
+        }
+      },
+      {
+        "id": "d",
+        "text": "Give me a funny, weirdly accurate read",
+        "why": "Give me a funny, weirdly accurate read",
+        "tags": [],
+        "facts": {
+          "chosenGoal": "playful_read"
+        }
+      },
+      {
+        "id": "e",
+        "text": "I don't have a specific goal",
+        "why": "I don't have a specific goal",
+        "tags": [],
+        "facts": {
+          "chosenGoal": "none_specific"
+        }
+      }
     ],
-  ),
-  emotionQuestion(
-    68,
-    "You call someone by the spectacularly wrong name in a group.",
-    "The room has noticed. Your dignity is taking a short break.",
-    [
-      [
-        "I felt embarrassed and laughed, then corrected myself.",
-        "Reports embarrassment and repair.",
-      ],
-      [
-        "I felt intensely embarrassed and went quiet for a beat.",
-        "Reports embarrassment and a pause.",
-      ],
-      [
-        "I felt a little awkward and kept the conversation moving.",
-        "Reports mild embarrassment and continued engagement.",
-      ],
-      [
-        "I felt embarrassed, apologized, and let the moment move on.",
-        "Reports embarrassment and recovery.",
-      ],
+    "meta": {
+      "domain": "chosen_goal",
+      "window": "current",
+      "evidence": "self_report",
+      "target": "self",
+      "source": "experimental-40.v2#n03",
+      "claimLimit": "A desired kind of help is not evidence that the person needs or received it."
+    }
+  },
+  {
+    "id": "n04",
+    "chapter": 1,
+    "title": "Optional, and you can keep it broad: is there something you feel a bit tender or unsure about lately?",
+    "setup": "Pick the closest answer. This guides the conversation; it is not a diagnosis.",
+    "role": "context",
+    "test": false,
+    "options": [
+      {
+        "id": "a",
+        "text": "How I come across to people",
+        "why": "How I come across to people",
+        "tags": [],
+        "facts": {
+          "tenderTopic": "tender_social_image"
+        }
+      },
+      {
+        "id": "b",
+        "text": "Whether I am doing enough or keeping up",
+        "why": "Whether I am doing enough or keeping up",
+        "tags": [],
+        "facts": {
+          "tenderTopic": "tender_comparison"
+        }
+      },
+      {
+        "id": "c",
+        "text": "A choice or goal I care about",
+        "why": "A choice or goal I care about",
+        "tags": [],
+        "facts": {
+          "tenderTopic": "tender_goal"
+        }
+      },
+      {
+        "id": "d",
+        "text": "Something else",
+        "why": "Something else",
+        "tags": [],
+        "facts": {
+          "tenderTopic": "tender_other"
+        }
+      },
+      {
+        "id": "e",
+        "text": "I'd rather not say, or nothing comes to mind",
+        "why": "I'd rather not say, or nothing comes to mind",
+        "tags": [],
+        "facts": {
+          "tenderTopic": "tender_none"
+        }
+      }
     ],
-  ),
-  emotionQuestion(
-    69,
-    "You remember a promise only after the other person has waited.",
-    "The reminder notification has chosen violence.",
-    [
-      [
-        "I felt guilty and apologized plainly.",
-        "Reports guilt and direct repair.",
-      ],
-      [
-        "I felt awful, explained the miss, and offered a fix.",
-        "Reports guilt and concrete recovery.",
-      ],
-      [
-        "I felt a little guilty and set a reminder for next time.",
-        "Reports guilt and prevention.",
-      ],
-      [
-        "I felt guilty, asked for a little time, then came back to it.",
-        "Reports guilt and a recovery pause.",
-      ],
+    "meta": {
+      "domain": "optional_tender_topic",
+      "window": "current",
+      "evidence": "self_report",
+      "target": "self",
+      "source": "experimental-40.v2#n04",
+      "claimLimit": "Do not infer universal insecurity, pathology, or a stable self-esteem trait."
+    }
+  },
+  {
+    "id": "n05",
+    "chapter": 1,
+    "title": "Would you want an optional feature where you invite one chosen friend to guess or gently challenge one of your reads? Nothing would be shared unless you chose to invite them.",
+    "setup": "Pick the closest answer. This guides the conversation; it is not a diagnosis.",
+    "role": "context",
+    "test": false,
+    "options": [
+      {
+        "id": "a",
+        "text": "Yes, that sounds fun",
+        "why": "Yes, that sounds fun",
+        "tags": [],
+        "facts": {
+          "friendChallengePreference": "friend_challenge_yes"
+        }
+      },
+      {
+        "id": "b",
+        "text": "Maybe, after I see my own read",
+        "why": "Maybe, after I see my own read",
+        "tags": [],
+        "facts": {
+          "friendChallengePreference": "friend_challenge_maybe"
+        }
+      },
+      {
+        "id": "c",
+        "text": "No, keep this just for me",
+        "why": "No, keep this just for me",
+        "tags": [],
+        "facts": {
+          "friendChallengePreference": "friend_challenge_no"
+        }
+      },
+      {
+        "id": "d",
+        "text": "Not sure yet",
+        "why": "Not sure yet",
+        "tags": [],
+        "facts": {
+          "friendChallengePreference": "friend_challenge_unsure"
+        }
+      }
     ],
-  ),
-  emotionQuestion(
-    70,
-    "Someone tells you good news you had been quietly hoping for.",
-    "The news is excellent. Your face has issued a press release.",
-    [
-      [
-        "I felt delighted and called someone to celebrate.",
-        "Reports joy and connection.",
-      ],
-      [
-        "I felt fizzing excitement and made a plan for the next step.",
-        "Reports joy and action.",
-      ],
-      [
-        "I felt happy, took it in privately, and let the moment land.",
-        "Reports joy and savoring.",
-      ],
-      [
-        "I felt pleased and said exactly how much it meant.",
-        "Reports joy and expression.",
-      ],
+    "meta": {
+      "domain": "consensual_friend_challenge",
+      "window": "current",
+      "evidence": "self_report",
+      "target": "self_and_chosen_friend",
+      "source": "experimental-40.v2#n05",
+      "claimLimit": "Does not establish relationship trust or sharing consent."
+    }
+  },
+  {
+    "id": "n06",
+    "chapter": 1,
+    "title": "If Genii checks whether a read fits, what approach would feel right to you?",
+    "setup": "Pick the closest answer. This guides the conversation; it is not a diagnosis.",
+    "role": "context",
+    "test": false,
+    "options": [
+      {
+        "id": "a",
+        "text": "Ask gently and keep it brief",
+        "why": "Ask gently and keep it brief",
+        "tags": [],
+        "facts": {
+          "feedbackTone": "feedback_gentle"
+        }
+      },
+      {
+        "id": "b",
+        "text": "Be direct; I'll tell you whether it fits",
+        "why": "Be direct; I'll tell you whether it fits",
+        "tags": [],
+        "facts": {
+          "feedbackTone": "feedback_direct"
+        }
+      },
+      {
+        "id": "c",
+        "text": "Keep it playful, but let me say what missed",
+        "why": "Keep it playful, but let me say what missed",
+        "tags": [],
+        "facts": {
+          "feedbackTone": "feedback_playful"
+        }
+      },
+      {
+        "id": "d",
+        "text": "Ask permission before opening feedback",
+        "why": "Ask permission before opening feedback",
+        "tags": [],
+        "facts": {
+          "feedbackTone": "feedback_permission_first"
+        }
+      }
     ],
-  ),
-  emotionQuestion(
-    71,
-    "The stressful thing you have been carrying finally ends.",
-    "The problem has left the building and taken its clipboard.",
-    [
-      [
-        "I felt relieved and exhaled before doing anything else.",
-        "Reports relief and recovery.",
-      ],
-      [
-        "I felt relief arrive slowly, then rested.",
-        "Reports relief and physical recovery.",
-      ],
-      [
-        "I felt relieved and told the person who had helped me.",
-        "Reports relief and connection.",
-      ],
-      [
-        "I felt relieved, then checked the next small step.",
-        "Reports relief and a bounded action.",
-      ],
+    "meta": {
+      "domain": "fit_feedback_tone_and_permission",
+      "window": "current",
+      "evidence": "self_report",
+      "target": "self",
+      "source": "experimental-40.v2#n06",
+      "claimLimit": "Does not establish agreement, disagreement, or current fit of any interpretation."
+    }
+  },
+  {
+    "id": "n07",
+    "chapter": 2,
+    "title": "A social invitation arrived, and your enthusiasm did not RSVP at the same speed. Thinking of the latest example this past month, what did you actually do?",
+    "setup": "Use the latest real example from the past month. No example, Other, and Skip stay separate.",
+    "role": "actual",
+    "test": false,
+    "options": [
+      {
+        "id": "a",
+        "text": "Attended as planned",
+        "why": "Attended as planned",
+        "tags": [
+          {
+            "d": "D_MODE",
+            "v": "join",
+            "target": "social"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "Joined for part of it",
+        "why": "Joined for part of it",
+        "tags": [
+          {
+            "d": "D_MODE",
+            "v": "partial",
+            "target": "social"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "Suggested a different way to take part",
+        "why": "Suggested a different way to take part",
+        "tags": [
+          {
+            "d": "D_MODE",
+            "v": "reshape",
+            "target": "social"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "Declined and let them know",
+        "why": "Declined and let them know",
+        "tags": [
+          {
+            "d": "D_MODE",
+            "v": "decline",
+            "target": "social"
+          }
+        ]
+      }
     ],
-  ),
+    "meta": {
+      "domain": "social_purpose_vs_enjoyment",
+      "window": "latest_instance_past_month",
+      "evidence": "actual_event",
+      "target": "friends_or_group",
+      "source": "experimental-40.v2#n07",
+      "claimLimit": "Purpose and enjoyment are separate; neither attendance nor refusal establishes sociability, selfishness, or people-pleasing."
+    }
+  },
+  {
+    "id": "n08",
+    "chapter": 2,
+    "title": "What mattered most in that choice?",
+    "setup": "Use the latest real example from the past month. No example, Other, and Skip stay separate.",
+    "role": "actual",
+    "test": false,
+    "options": [
+      {
+        "id": "a",
+        "text": "I was looking forward to it",
+        "why": "I was looking forward to it",
+        "tags": [
+          {
+            "d": "D_MOTIVE",
+            "v": "enjoyment",
+            "target": "social"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "I cared about the occasion's purpose",
+        "why": "I cared about the occasion's purpose",
+        "tags": [
+          {
+            "d": "D_MOTIVE",
+            "v": "purpose",
+            "target": "social"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "I wanted time with those people",
+        "why": "I wanted time with those people",
+        "tags": [
+          {
+            "d": "D_MOTIVE",
+            "v": "company",
+            "target": "social"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "My time, energy, or other plans decided it",
+        "why": "My time, energy, or other plans decided it",
+        "tags": [
+          {
+            "d": "D_MOTIVE",
+            "v": "capacity",
+            "target": "social"
+          }
+        ]
+      },
+      {
+        "id": "e",
+        "text": "Avoiding tension mattered most",
+        "why": "Avoiding tension mattered most",
+        "tags": [
+          {
+            "d": "D_MOTIVE",
+            "v": "avoid_tension",
+            "target": "social"
+          }
+        ]
+      },
+      {
+        "id": "f",
+        "text": "Something else",
+        "why": "Something else",
+        "tags": []
+      }
+    ],
+    "meta": {
+      "domain": "social_motive",
+      "window": "latest_instance_past_month",
+      "evidence": "actual_event",
+      "target": "same_friends_or_group",
+      "source": "experimental-40.v2#n08",
+      "claimLimit": "Direct motive report for one event, not a hidden motive diagnosis."
+    },
+    "dependsOn": {
+      "questionId": "n07",
+      "authored": true
+    }
+  },
+  {
+    "id": "n09",
+    "chapter": 2,
+    "title": "A close friend asks you to come along to a low-key thing. You like them, but the event itself is not your scene. What's your move?",
+    "setup": "Choose what you would most likely do; this is an intention, not proof of past behavior.",
+    "role": "hypothetical",
+    "test": false,
+    "options": [
+      {
+        "id": "a",
+        "text": "Go; the friend is the good part",
+        "why": "Go; the friend is the good part",
+        "tags": [
+          {
+            "d": "D_MODE",
+            "v": "join",
+            "target": "social"
+          },
+          {
+            "d": "D_SUPPORT",
+            "v": "show_up",
+            "target": "relationship"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "Suggest something we'd both enjoy",
+        "why": "Suggest something we'd both enjoy",
+        "tags": [
+          {
+            "d": "D_MODE",
+            "v": "reshape",
+            "target": "social"
+          },
+          {
+            "d": "D_SUPPORT",
+            "v": "alternative",
+            "target": "relationship"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "Pass kindly; liking them doesn't make every plan my plan",
+        "why": "Pass kindly; liking them doesn't make every plan my plan",
+        "tags": [
+          {
+            "d": "D_MODE",
+            "v": "decline",
+            "target": "social"
+          },
+          {
+            "d": "D_SUPPORT",
+            "v": "decline",
+            "target": "relationship"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "Ask what they need from me before deciding",
+        "why": "Ask what they need from me before deciding",
+        "tags": [
+          {
+            "d": "D_MODE",
+            "v": "clarify",
+            "target": "social"
+          },
+          {
+            "d": "D_SUPPORT",
+            "v": "clarify",
+            "target": "relationship"
+          }
+        ]
+      }
+    ],
+    "meta": {
+      "domain": "friend_context_shift",
+      "window": "scenario",
+      "evidence": "hypothetical",
+      "target": "close_friend",
+      "source": "experimental-40.v2#n09",
+      "claimLimit": "Does not establish what the respondent does in real events."
+    }
+  },
+  {
+    "id": "n10",
+    "chapter": 2,
+    "title": "Same low-key event, but the person asking is someone you know only a little. What would you most likely do?",
+    "setup": "Choose what you would most likely do; this is an intention, not proof of past behavior.",
+    "role": "hypothetical",
+    "test": false,
+    "options": [
+      {
+        "id": "a",
+        "text": "Go; trying the event sounds fine",
+        "why": "Go; trying the event sounds fine",
+        "tags": [
+          {
+            "d": "D_MODE",
+            "v": "join",
+            "target": "social"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "Ask for details, then decide",
+        "why": "Ask for details, then decide",
+        "tags": [
+          {
+            "d": "D_MODE",
+            "v": "clarify",
+            "target": "social"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "Suggest another way to hang out",
+        "why": "Suggest another way to hang out",
+        "tags": [
+          {
+            "d": "D_MODE",
+            "v": "reshape",
+            "target": "social"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "Pass; the event isn't for me",
+        "why": "Pass; the event isn't for me",
+        "tags": [
+          {
+            "d": "D_MODE",
+            "v": "decline",
+            "target": "social"
+          }
+        ]
+      }
+    ],
+    "meta": {
+      "domain": "accompaniment_context_shift",
+      "window": "scenario",
+      "evidence": "hypothetical",
+      "target": "acquaintance_or_newer_friend",
+      "source": "experimental-40.v2#n10",
+      "claimLimit": "Difference from n09 may reflect event comfort, not a global closeness trait."
+    }
+  },
+  {
+    "id": "n11",
+    "chapter": 3,
+    "title": "In the past month, think of a recent moment when you contributed to something other people would notice. What did you most want from it?",
+    "setup": "Use the latest real example from the past month. No example, Other, and Skip stay separate.",
+    "role": "actual",
+    "test": false,
+    "options": [
+      {
+        "id": "a",
+        "text": "The thing itself going well",
+        "why": "The thing itself going well",
+        "tags": [
+          {
+            "d": "D_RECOGNITION",
+            "v": "outcome",
+            "target": "work"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "People knowing I helped",
+        "why": "People knowing I helped",
+        "tags": [
+          {
+            "d": "D_RECOGNITION",
+            "v": "claim_credit",
+            "target": "work"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "A chance to show what I can do",
+        "why": "A chance to show what I can do",
+        "tags": [
+          {
+            "d": "D_RECOGNITION",
+            "v": "show_skill",
+            "target": "work"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "I wasn't looking for anything in particular",
+        "why": "I wasn't looking for anything in particular",
+        "tags": [
+          {
+            "d": "D_RECOGNITION",
+            "v": "none_specific",
+            "target": "work"
+          }
+        ]
+      }
+    ],
+    "meta": {
+      "domain": "recognition_motive",
+      "window": "latest_instance_past_month",
+      "evidence": "actual_event",
+      "target": "work_school_or_group",
+      "source": "experimental-40.v2#n11",
+      "claimLimit": "Wanting credit or visibility is not proof of insecurity, vanity, or narcissism."
+    }
+  },
+  {
+    "id": "n12",
+    "chapter": 3,
+    "title": "Think of a recent time this month someone around you got praise for something you also care about. Your inner scoreboard might wake up. What did you actually do next?",
+    "setup": "Use the latest real example from the past month. No example, Other, and Skip stay separate.",
+    "role": "actual",
+    "test": false,
+    "options": [
+      {
+        "id": "a",
+        "text": "Congratulated them",
+        "why": "Congratulated them",
+        "tags": [
+          {
+            "d": "D_RECOGNITION",
+            "v": "congratulate",
+            "target": "work"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "Asked how they got the opportunity",
+        "why": "Asked how they got the opportunity",
+        "tags": [
+          {
+            "d": "D_RECOGNITION",
+            "v": "learn_process",
+            "target": "work"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "Made my own contribution visible",
+        "why": "Made my own contribution visible",
+        "tags": [
+          {
+            "d": "D_RECOGNITION",
+            "v": "claim_credit",
+            "target": "work"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "Returned to what I was working on",
+        "why": "Returned to what I was working on",
+        "tags": [
+          {
+            "d": "D_RECOGNITION",
+            "v": "return_to_task",
+            "target": "work"
+          }
+        ]
+      }
+    ],
+    "meta": {
+      "domain": "recognition_comparison",
+      "window": "latest_instance_past_month",
+      "evidence": "actual_event",
+      "target": "peer_or_comparison_group",
+      "source": "experimental-40.v2#n12",
+      "claimLimit": "A single action does not imply envy, competitiveness, or insecurity."
+    }
+  },
+  {
+    "id": "n13",
+    "chapter": 3,
+    "title": "Think of the latest criticism you received this month. Before deciding whether it was fair, what did you do first?",
+    "setup": "Use the latest real example from the past month. No example, Other, and Skip stay separate.",
+    "role": "actual",
+    "test": false,
+    "options": [
+      {
+        "id": "a",
+        "text": "Asked what they meant or for an example",
+        "why": "Asked what they meant or for an example",
+        "tags": [
+          {
+            "d": "D_CRITICISM",
+            "v": "clarify",
+            "target": "feedback"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "Explained my side",
+        "why": "Explained my side",
+        "tags": [
+          {
+            "d": "D_CRITICISM",
+            "v": "explain",
+            "target": "feedback"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "Took time before responding",
+        "why": "Took time before responding",
+        "tags": [
+          {
+            "d": "D_CRITICISM",
+            "v": "pause",
+            "target": "feedback"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "Looked for one part I could use",
+        "why": "Looked for one part I could use",
+        "tags": [
+          {
+            "d": "D_CRITICISM",
+            "v": "revise",
+            "target": "feedback"
+          }
+        ]
+      }
+    ],
+    "meta": {
+      "domain": "response_to_credible_criticism",
+      "window": "latest_instance_past_month",
+      "evidence": "actual_event",
+      "target": "critic_or_feedback_source",
+      "source": "experimental-40.v2#n13",
+      "claimLimit": "Does not measure openness, resilience, or establish that every criticism was accurate."
+    }
+  },
+  {
+    "id": "n14",
+    "chapter": 3,
+    "title": "In the past month, was there a moment you realized something you said or did landed badly with someone? What happened next? The tiny repair department is open.",
+    "setup": "Use the latest real example from the past month. No example, Other, and Skip stay separate.",
+    "role": "actual",
+    "test": false,
+    "options": [
+      {
+        "id": "a",
+        "text": "I checked in and tried to make it right",
+        "why": "I checked in and tried to make it right",
+        "tags": [
+          {
+            "d": "D_REPAIR",
+            "v": "check_in",
+            "target": "relationship"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "I explained what I meant",
+        "why": "I explained what I meant",
+        "tags": [
+          {
+            "d": "D_REPAIR",
+            "v": "explain",
+            "target": "relationship"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "I gave them space and came back later",
+        "why": "I gave them space and came back later",
+        "tags": [
+          {
+            "d": "D_REPAIR",
+            "v": "space_return",
+            "target": "relationship"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "I wasn't sure what to do",
+        "why": "I wasn't sure what to do",
+        "tags": [
+          {
+            "d": "D_REPAIR",
+            "v": "uncertain",
+            "target": "relationship"
+          }
+        ]
+      }
+    ],
+    "meta": {
+      "domain": "repair_after_impact",
+      "window": "latest_instance_past_month",
+      "evidence": "actual_event",
+      "target": "person_affected",
+      "source": "experimental-40.v2#n14",
+      "claimLimit": "A single repair episode does not establish empathy, fault, or relationship outcome."
+    }
+  },
+  {
+    "id": "n15",
+    "chapter": 3,
+    "title": "Think of a recent time this month a particular person's reply mattered to you and took longer than you'd hoped. What did you actually do while waiting? You do not need to name them.",
+    "setup": "Use the latest real example from the past month. No example, Other, and Skip stay separate.",
+    "role": "actual",
+    "test": false,
+    "options": [
+      {
+        "id": "a",
+        "text": "Sent one follow-up message",
+        "why": "Sent one follow-up message",
+        "tags": [
+          {
+            "d": "D_REPLY",
+            "v": "follow_up",
+            "target": "relationship"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "Waited without checking the chat",
+        "why": "Waited without checking the chat",
+        "tags": [
+          {
+            "d": "D_REPLY",
+            "v": "wait",
+            "target": "relationship"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "Checked the chat or their status",
+        "why": "Checked the chat or their status",
+        "tags": [
+          {
+            "d": "D_REPLY",
+            "v": "check",
+            "target": "relationship"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "Couldn't tell what I did",
+        "why": "Couldn't tell what I did",
+        "tags": [
+          {
+            "d": "D_REPLY",
+            "v": "unsure",
+            "target": "relationship"
+          }
+        ]
+      }
+    ],
+    "meta": {
+      "domain": "chosen_person_reply_context",
+      "window": "latest_instance_past_month",
+      "evidence": "actual_event",
+      "target": "person_whose_reply_mattered_to_respondent",
+      "source": "experimental-40.v2#n15",
+      "claimLimit": "A wait response alone does not imply attachment style, rejection fear, or the other person's intent."
+    }
+  },
+  {
+    "id": "n16",
+    "chapter": 3,
+    "title": "In the past month, when you wanted something from a person whose opinion mattered to you, how did you let them know?",
+    "setup": "Use the latest real example from the past month. No example, Other, and Skip stay separate.",
+    "role": "actual",
+    "test": false,
+    "options": [
+      {
+        "id": "a",
+        "text": "Said what I wanted plainly",
+        "why": "Said what I wanted plainly",
+        "tags": [
+          {
+            "d": "D_NEED",
+            "v": "direct",
+            "target": "relationship"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "Hinted or waited to see if they'd notice",
+        "why": "Hinted or waited to see if they'd notice",
+        "tags": [
+          {
+            "d": "D_NEED",
+            "v": "hint",
+            "target": "relationship"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "Tried to handle it myself",
+        "why": "Tried to handle it myself",
+        "tags": [
+          {
+            "d": "D_NEED",
+            "v": "self_handle",
+            "target": "relationship"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "Decided it wasn't worth bringing up",
+        "why": "Decided it wasn't worth bringing up",
+        "tags": [
+          {
+            "d": "D_NEED",
+            "v": "withhold",
+            "target": "relationship"
+          }
+        ]
+      }
+    ],
+    "meta": {
+      "domain": "need_expression",
+      "window": "latest_instance_past_month",
+      "evidence": "actual_event",
+      "target": "person_whose_response_was_wanted",
+      "source": "experimental-40.v2#n16",
+      "claimLimit": "Does not establish a universal communication style or the reason for withholding."
+    }
+  },
+  {
+    "id": "n17",
+    "chapter": 3,
+    "title": "Think of the latest time someone offered you practical help this month. Did you take the assist?",
+    "setup": "Use the latest real example from the past month. No example, Other, and Skip stay separate.",
+    "role": "actual",
+    "test": false,
+    "options": [
+      {
+        "id": "a",
+        "text": "Accepted it",
+        "why": "Accepted it",
+        "tags": [
+          {
+            "d": "D_RECEIVE",
+            "v": "accept",
+            "target": "support"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "Accepted after talking through the details",
+        "why": "Accepted after talking through the details",
+        "tags": [
+          {
+            "d": "D_RECEIVE",
+            "v": "clarify_accept",
+            "target": "support"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "Declined and handled it myself",
+        "why": "Declined and handled it myself",
+        "tags": [
+          {
+            "d": "D_RECEIVE",
+            "v": "decline",
+            "target": "support"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "Declined but asked for a different kind of support",
+        "why": "Declined but asked for a different kind of support",
+        "tags": [
+          {
+            "d": "D_RECEIVE",
+            "v": "redirect",
+            "target": "support"
+          }
+        ]
+      }
+    ],
+    "meta": {
+      "domain": "receiving_help",
+      "window": "latest_instance_past_month",
+      "evidence": "actual_event",
+      "target": "person_offering_help",
+      "source": "experimental-40.v2#n17",
+      "claimLimit": "One response does not show dependency, independence, or comfort with all help."
+    }
+  },
+  {
+    "id": "n18",
+    "chapter": 3,
+    "title": "After a recent awkward conversation this month, once you had said your piece, what happened next for you?",
+    "setup": "Use the latest real example from the past month. No example, Other, and Skip stay separate.",
+    "role": "actual",
+    "test": false,
+    "options": [
+      {
+        "id": "a",
+        "text": "We talked again and understood each other better",
+        "why": "We talked again and understood each other better",
+        "tags": [
+          {
+            "d": "D_RECOVERY",
+            "v": "talk_again",
+            "target": "relationship"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "I took time away from the conversation",
+        "why": "I took time away from the conversation",
+        "tags": [
+          {
+            "d": "D_RECOVERY",
+            "v": "take_time",
+            "target": "relationship"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "I talked it through with someone else",
+        "why": "I talked it through with someone else",
+        "tags": [
+          {
+            "d": "D_RECOVERY",
+            "v": "talk_elsewhere",
+            "target": "relationship"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "I focused on another activity",
+        "why": "I focused on another activity",
+        "tags": [
+          {
+            "d": "D_RECOVERY",
+            "v": "activity",
+            "target": "relationship"
+          }
+        ]
+      },
+      {
+        "id": "e",
+        "text": "I kept turning it over in my head",
+        "why": "I kept turning it over in my head",
+        "tags": [
+          {
+            "d": "D_RECOVERY",
+            "v": "replay",
+            "target": "relationship"
+          }
+        ]
+      }
+    ],
+    "meta": {
+      "domain": "recovery_after_explanation",
+      "window": "latest_instance_past_month",
+      "evidence": "actual_event",
+      "target": "self_after_explanation",
+      "source": "experimental-40.v2#n18",
+      "claimLimit": "Does not establish emotional regulation or recovery time unless directly measured elsewhere."
+    }
+  },
+  {
+    "id": "n19",
+    "chapter": 4,
+    "title": "In the past month, think of a request for help that competed with your time or energy. Your calendar is a witness. What did you do?",
+    "setup": "Use the latest real example from the past month. No example, Other, and Skip stay separate.",
+    "role": "actual",
+    "test": false,
+    "options": [
+      {
+        "id": "a",
+        "text": "Helped, even though it squeezed my own plan",
+        "why": "Helped, even though it squeezed my own plan",
+        "tags": [
+          {
+            "d": "D_BOUNDARY",
+            "v": "full_help",
+            "target": "capacity"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "Helped in a smaller way I could manage",
+        "why": "Helped in a smaller way I could manage",
+        "tags": [
+          {
+            "d": "D_BOUNDARY",
+            "v": "limited_help",
+            "target": "capacity"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "Offered another time or person",
+        "why": "Offered another time or person",
+        "tags": [
+          {
+            "d": "D_BOUNDARY",
+            "v": "reschedule",
+            "target": "capacity"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "Said no",
+        "why": "Said no",
+        "tags": [
+          {
+            "d": "D_BOUNDARY",
+            "v": "decline",
+            "target": "capacity"
+          }
+        ]
+      }
+    ],
+    "meta": {
+      "domain": "helping_boundary",
+      "window": "latest_instance_past_month",
+      "evidence": "actual_event",
+      "target": "requester",
+      "source": "experimental-40.v2#n19",
+      "claimLimit": "Saying no is not selfishness; saying yes is not proof of generosity or coercion."
+    }
+  },
+  {
+    "id": "n20",
+    "chapter": 4,
+    "title": "What mattered most in that choice, whether you helped or not?",
+    "setup": "Use the latest real example from the past month. No example, Other, and Skip stay separate.",
+    "role": "actual",
+    "test": false,
+    "options": [
+      {
+        "id": "a",
+        "text": "I wanted to help that person",
+        "why": "I wanted to help that person",
+        "tags": [
+          {
+            "d": "D_HELP_MOTIVE",
+            "v": "care",
+            "target": "capacity"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "It felt like the right thing to do",
+        "why": "It felt like the right thing to do",
+        "tags": [
+          {
+            "d": "D_HELP_MOTIVE",
+            "v": "principle",
+            "target": "capacity"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "My available time or energy set the limit",
+        "why": "My available time or energy set the limit",
+        "tags": [
+          {
+            "d": "D_HELP_MOTIVE",
+            "v": "capacity",
+            "target": "capacity"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "I felt pressure or found it hard to refuse",
+        "why": "I felt pressure or found it hard to refuse",
+        "tags": [
+          {
+            "d": "D_HELP_MOTIVE",
+            "v": "pressure",
+            "target": "capacity"
+          }
+        ]
+      },
+      {
+        "id": "e",
+        "text": "Something else",
+        "why": "Something else",
+        "tags": []
+      }
+    ],
+    "meta": {
+      "domain": "helping_motive",
+      "window": "latest_instance_past_month",
+      "evidence": "actual_event",
+      "target": "same_requester",
+      "source": "experimental-40.v2#n20",
+      "claimLimit": "Directly reported motive for one event; not a moral judgment."
+    },
+    "dependsOn": {
+      "questionId": "n19",
+      "authored": true
+    }
+  },
+  {
+    "id": "n21",
+    "chapter": 4,
+    "title": "For a shared plan or task you cared about this month, what role did you actually take?",
+    "setup": "Use the latest real example from the past month. No example, Other, and Skip stay separate.",
+    "role": "actual",
+    "test": false,
+    "options": [
+      {
+        "id": "a",
+        "text": "Set the plan and kept track of the pieces",
+        "why": "Set the plan and kept track of the pieces",
+        "tags": [
+          {
+            "d": "D_ROLE",
+            "v": "organize",
+            "target": "group"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "Took one piece and let others handle theirs",
+        "why": "Took one piece and let others handle theirs",
+        "tags": [
+          {
+            "d": "D_ROLE",
+            "v": "own_piece",
+            "target": "group"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "Asked what others wanted before choosing a role",
+        "why": "Asked what others wanted before choosing a role",
+        "tags": [
+          {
+            "d": "D_ROLE",
+            "v": "invite_input",
+            "target": "group"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "Stayed flexible and adjusted as we went",
+        "why": "Stayed flexible and adjusted as we went",
+        "tags": [
+          {
+            "d": "D_ROLE",
+            "v": "adapt",
+            "target": "group"
+          }
+        ]
+      }
+    ],
+    "meta": {
+      "domain": "control_and_delegation",
+      "window": "latest_instance_past_month",
+      "evidence": "actual_event",
+      "target": "shared_task_or_plan",
+      "source": "experimental-40.v2#n21",
+      "claimLimit": "Organizing does not imply controlling; adapting does not imply passivity."
+    }
+  },
+  {
+    "id": "n22",
+    "chapter": 4,
+    "title": "Thinking about that shared plan: did it change, and if so, what did you do first?",
+    "setup": "Use the latest real example from the past month. No example, Other, and Skip stay separate.",
+    "role": "actual",
+    "test": false,
+    "options": [
+      {
+        "id": "a",
+        "text": "Worked out the new details",
+        "why": "Worked out the new details",
+        "tags": [
+          {
+            "d": "D_CHANGE",
+            "v": "replan",
+            "target": "group"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "Said what part was frustrating or inconvenient",
+        "why": "Said what part was frustrating or inconvenient",
+        "tags": [
+          {
+            "d": "D_CHANGE",
+            "v": "state_impact",
+            "target": "group"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "Went with it and adjusted on the fly",
+        "why": "Went with it and adjusted on the fly",
+        "tags": [
+          {
+            "d": "D_CHANGE",
+            "v": "adapt",
+            "target": "group"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "Asked to keep the original plan",
+        "why": "Asked to keep the original plan",
+        "tags": [
+          {
+            "d": "D_CHANGE",
+            "v": "keep_original",
+            "target": "group"
+          }
+        ]
+      },
+      {
+        "id": "e",
+        "text": "The plan didn't change",
+        "why": "The plan didn't change",
+        "tags": [
+          {
+            "d": "D_CHANGE",
+            "v": "no_change",
+            "target": "group"
+          }
+        ]
+      }
+    ],
+    "meta": {
+      "domain": "response_to_changed_plan",
+      "window": "latest_instance_past_month",
+      "evidence": "actual_event",
+      "target": "same_group_or_plan",
+      "source": "experimental-40.v2#n22",
+      "claimLimit": "One changed plan does not establish rigidity or flexibility as a trait."
+    },
+    "dependsOn": {
+      "questionId": "n21",
+      "authored": true
+    }
+  },
+  {
+    "id": "n23",
+    "chapter": 4,
+    "title": "Think of a recent moment this month you felt irritated with someone. What did you show on the outside?",
+    "setup": "Use the latest real example from the past month. No example, Other, and Skip stay separate.",
+    "role": "actual",
+    "test": false,
+    "options": [
+      {
+        "id": "a",
+        "text": "I said I was irritated",
+        "why": "I said I was irritated",
+        "tags": [
+          {
+            "d": "D_EXPRESSION",
+            "v": "name_it",
+            "target": "emotion"
+          }
+        ],
+        "signals": [
+          {
+            "family": "frustration",
+            "layer": "response",
+            "value": "name_it",
+            "label": "I said I was irritated"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "I stayed polite and dealt with it later",
+        "why": "I stayed polite and dealt with it later",
+        "tags": [
+          {
+            "d": "D_EXPRESSION",
+            "v": "polite_later",
+            "target": "emotion"
+          }
+        ],
+        "signals": [
+          {
+            "family": "frustration",
+            "layer": "response",
+            "value": "polite_later",
+            "label": "I stayed polite and dealt with it later"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "It came out in my tone or actions",
+        "why": "It came out in my tone or actions",
+        "tags": [
+          {
+            "d": "D_EXPRESSION",
+            "v": "showed",
+            "target": "emotion"
+          }
+        ],
+        "signals": [
+          {
+            "family": "frustration",
+            "layer": "response",
+            "value": "showed",
+            "label": "It came out in my tone or actions"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "I stepped away",
+        "why": "I stepped away",
+        "tags": [
+          {
+            "d": "D_EXPRESSION",
+            "v": "step_away",
+            "target": "emotion"
+          }
+        ],
+        "signals": [
+          {
+            "family": "frustration",
+            "layer": "response",
+            "value": "step_away",
+            "label": "I stepped away"
+          }
+        ]
+      }
+    ],
+    "meta": {
+      "domain": "inner_feeling_vs_outward_action",
+      "window": "latest_instance_past_month",
+      "evidence": "actual_event",
+      "target": "self_and_interaction_partner",
+      "source": "experimental-40.v2#n23",
+      "claimLimit": "A quiet exterior is not evidence of low intensity or calmness."
+    }
+  },
+  {
+    "id": "n24",
+    "chapter": 4,
+    "title": "How strong did the irritation feel inside at the time?",
+    "setup": "Use the latest real example from the past month. No example, Other, and Skip stay separate.",
+    "role": "actual",
+    "test": false,
+    "options": [
+      {
+        "id": "a",
+        "text": "A small flicker",
+        "why": "A small flicker",
+        "tags": [
+          {
+            "d": "D_INTENSITY",
+            "v": "low",
+            "target": "emotion"
+          }
+        ],
+        "signals": [
+          {
+            "family": "frustration",
+            "layer": "feeling",
+            "value": "low",
+            "label": "A small flicker"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "Noticeable, but manageable",
+        "why": "Noticeable, but manageable",
+        "tags": [
+          {
+            "d": "D_INTENSITY",
+            "v": "medium",
+            "target": "emotion"
+          }
+        ],
+        "signals": [
+          {
+            "family": "frustration",
+            "layer": "feeling",
+            "value": "medium",
+            "label": "Noticeable, but manageable"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "Strong; it took up real space",
+        "why": "Strong; it took up real space",
+        "tags": [
+          {
+            "d": "D_INTENSITY",
+            "v": "high",
+            "target": "emotion"
+          }
+        ],
+        "signals": [
+          {
+            "family": "frustration",
+            "layer": "feeling",
+            "value": "high",
+            "label": "Strong; it took up real space"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "Hard to tell now",
+        "why": "Hard to tell now",
+        "tags": [
+          {
+            "d": "D_INTENSITY",
+            "v": "unsure",
+            "target": "emotion"
+          }
+        ],
+        "signals": [
+          {
+            "family": "frustration",
+            "layer": "feeling",
+            "value": "unsure",
+            "label": "Hard to tell now"
+          }
+        ]
+      }
+    ],
+    "meta": {
+      "domain": "inner_feeling_intensity",
+      "window": "latest_instance_past_month",
+      "evidence": "actual_event",
+      "target": "self",
+      "source": "experimental-40.v2#n24",
+      "claimLimit": "Retrospective self-rating for one event, not a stable emotional-intensity scale."
+    },
+    "dependsOn": {
+      "questionId": "n23",
+      "authored": true
+    }
+  },
+  {
+    "id": "n25",
+    "chapter": 4,
+    "title": "This month, when a decision felt uncertain but reversible, what did you actually do?",
+    "setup": "Use the latest real example from the past month. No example, Other, and Skip stay separate.",
+    "role": "actual",
+    "test": false,
+    "options": [
+      {
+        "id": "a",
+        "text": "Picked a direction and tried it",
+        "why": "Picked a direction and tried it",
+        "tags": [
+          {
+            "d": "D_UNCERTAINTY",
+            "v": "try",
+            "target": "decision"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "Got one or two more details first",
+        "why": "Got one or two more details first",
+        "tags": [
+          {
+            "d": "D_UNCERTAINTY",
+            "v": "check",
+            "target": "decision"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "Asked someone I trust what they thought",
+        "why": "Asked someone I trust what they thought",
+        "tags": [
+          {
+            "d": "D_UNCERTAINTY",
+            "v": "consult",
+            "target": "decision"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "Waited until it felt clearer",
+        "why": "Waited until it felt clearer",
+        "tags": [
+          {
+            "d": "D_UNCERTAINTY",
+            "v": "wait",
+            "target": "decision"
+          }
+        ]
+      }
+    ],
+    "meta": {
+      "domain": "chosen_risk_control",
+      "window": "latest_instance_past_month",
+      "evidence": "actual_event",
+      "target": "self_and_decision",
+      "source": "experimental-40.v2#n25",
+      "claimLimit": "Does not establish decisiveness, anxiety, or control in other stakes."
+    }
+  },
+  {
+    "id": "n26",
+    "chapter": 4,
+    "title": "If a goal you cared about slipped behind schedule this month, what did you do next?",
+    "setup": "Use the latest real example from the past month. No example, Other, and Skip stay separate.",
+    "role": "actual",
+    "test": false,
+    "options": [
+      {
+        "id": "a",
+        "text": "Made the next step smaller",
+        "why": "Made the next step smaller",
+        "tags": [
+          {
+            "d": "D_GOAL",
+            "v": "shrink_step",
+            "target": "goal"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "Put in extra time to catch up",
+        "why": "Put in extra time to catch up",
+        "tags": [
+          {
+            "d": "D_GOAL",
+            "v": "extra_effort",
+            "target": "goal"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "Changed the plan or deadline",
+        "why": "Changed the plan or deadline",
+        "tags": [
+          {
+            "d": "D_GOAL",
+            "v": "revise",
+            "target": "goal"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "Paused to figure out what was getting in the way",
+        "why": "Paused to figure out what was getting in the way",
+        "tags": [
+          {
+            "d": "D_GOAL",
+            "v": "diagnose",
+            "target": "goal"
+          }
+        ]
+      }
+    ],
+    "meta": {
+      "domain": "goal_response",
+      "window": "latest_instance_past_month",
+      "evidence": "actual_event",
+      "target": "self_and_goal",
+      "source": "experimental-40.v2#n26",
+      "claimLimit": "Does not establish motivation or ability from one goal episode."
+    }
+  },
+  {
+    "id": "n27",
+    "chapter": 5,
+    "title": "Over the past month, how often did your usual sleep leave you feeling restored when you woke up?",
+    "setup": "A direct report, not a health score. Variation is a real answer.",
+    "role": "context",
+    "test": false,
+    "options": [
+      {
+        "id": "a",
+        "text": "Most mornings",
+        "why": "Most mornings",
+        "tags": [],
+        "measures": [
+          {
+            "id": "sleep_restoration",
+            "value": 3,
+            "label": "Most mornings"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "Some mornings",
+        "why": "Some mornings",
+        "tags": [],
+        "measures": [
+          {
+            "id": "sleep_restoration",
+            "value": 2,
+            "label": "Some mornings"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "Not often",
+        "why": "Not often",
+        "tags": [],
+        "measures": [
+          {
+            "id": "sleep_restoration",
+            "value": 1,
+            "label": "Not often"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "It varied too much to say",
+        "why": "It varied too much to say",
+        "tags": []
+      }
+    ],
+    "meta": {
+      "domain": "sleep_restoration_usual",
+      "window": "past_month",
+      "evidence": "self_report",
+      "target": "self",
+      "source": "experimental-40.v2#n27",
+      "claimLimit": "Do not infer duration, adequacy, cause, or medical status."
+    }
+  },
+  {
+    "id": "n28",
+    "chapter": 5,
+    "title": "And over just the last seven days, how often did sleep leave you feeling restored when you woke up?",
+    "setup": "A direct report, not a health score. Variation is a real answer.",
+    "role": "context",
+    "test": false,
+    "options": [
+      {
+        "id": "a",
+        "text": "Most mornings",
+        "why": "Most mornings",
+        "tags": [],
+        "measures": [
+          {
+            "id": "sleep_restoration",
+            "value": 3,
+            "label": "Most mornings"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "Some mornings",
+        "why": "Some mornings",
+        "tags": [],
+        "measures": [
+          {
+            "id": "sleep_restoration",
+            "value": 2,
+            "label": "Some mornings"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "Not often",
+        "why": "Not often",
+        "tags": [],
+        "measures": [
+          {
+            "id": "sleep_restoration",
+            "value": 1,
+            "label": "Not often"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "It varied too much to say",
+        "why": "It varied too much to say",
+        "tags": []
+      }
+    ],
+    "meta": {
+      "domain": "sleep_restoration_recent",
+      "window": "last_7_days",
+      "evidence": "self_report",
+      "target": "self",
+      "source": "experimental-40.v2#n28",
+      "claimLimit": "No sleep cause, duration, or clinical conclusion."
+    }
+  },
+  {
+    "id": "n29",
+    "chapter": 5,
+    "title": "Over the past month, how steady was your usual meal timing from day to day?",
+    "setup": "A direct report, not a health score. Variation is a real answer.",
+    "role": "context",
+    "test": false,
+    "options": [
+      {
+        "id": "a",
+        "text": "Mostly steady",
+        "why": "Mostly steady",
+        "tags": [],
+        "measures": [
+          {
+            "id": "meal_regularity",
+            "value": 3,
+            "label": "Mostly steady"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "Some days steady, some not",
+        "why": "Some days steady, some not",
+        "tags": [],
+        "measures": [
+          {
+            "id": "meal_regularity",
+            "value": 2,
+            "label": "Some days steady, some not"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "Often shifted around",
+        "why": "Often shifted around",
+        "tags": [],
+        "measures": [
+          {
+            "id": "meal_regularity",
+            "value": 1,
+            "label": "Often shifted around"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "My days varied too much for a usual pattern",
+        "why": "My days varied too much for a usual pattern",
+        "tags": []
+      }
+    ],
+    "meta": {
+      "domain": "meal_regular_usual",
+      "window": "past_month",
+      "evidence": "self_report",
+      "target": "self",
+      "source": "experimental-40.v2#n29",
+      "claimLimit": "Do not infer eating disorder, adequacy, body state, or health cause."
+    }
+  },
+  {
+    "id": "n30",
+    "chapter": 5,
+    "title": "And over just the last seven days, how steady was your meal timing from day to day?",
+    "setup": "A direct report, not a health score. Variation is a real answer.",
+    "role": "context",
+    "test": false,
+    "options": [
+      {
+        "id": "a",
+        "text": "Mostly steady",
+        "why": "Mostly steady",
+        "tags": [],
+        "measures": [
+          {
+            "id": "meal_regularity",
+            "value": 3,
+            "label": "Mostly steady"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "Some days steady, some not",
+        "why": "Some days steady, some not",
+        "tags": [],
+        "measures": [
+          {
+            "id": "meal_regularity",
+            "value": 2,
+            "label": "Some days steady, some not"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "Often shifted around",
+        "why": "Often shifted around",
+        "tags": [],
+        "measures": [
+          {
+            "id": "meal_regularity",
+            "value": 1,
+            "label": "Often shifted around"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "My days varied too much for a usual pattern",
+        "why": "My days varied too much for a usual pattern",
+        "tags": []
+      }
+    ],
+    "meta": {
+      "domain": "meal_regular_recent",
+      "window": "last_7_days",
+      "evidence": "self_report",
+      "target": "self",
+      "source": "experimental-40.v2#n30",
+      "claimLimit": "No diet-quality, adequacy, medical, or causal claim."
+    }
+  },
+  {
+    "id": "n31",
+    "chapter": 5,
+    "title": "Over the past month, how often did you have enough energy for the things you wanted or needed to do?",
+    "setup": "A direct report, not a health score. Variation is a real answer.",
+    "role": "context",
+    "test": false,
+    "options": [
+      {
+        "id": "a",
+        "text": "Most days",
+        "why": "Most days",
+        "tags": [],
+        "measures": [
+          {
+            "id": "daytime_energy",
+            "value": 3,
+            "label": "Most days"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "Some days",
+        "why": "Some days",
+        "tags": [],
+        "measures": [
+          {
+            "id": "daytime_energy",
+            "value": 2,
+            "label": "Some days"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "Not often",
+        "why": "Not often",
+        "tags": [],
+        "measures": [
+          {
+            "id": "daytime_energy",
+            "value": 1,
+            "label": "Not often"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "It depended too much on the day to say",
+        "why": "It depended too much on the day to say",
+        "tags": []
+      }
+    ],
+    "meta": {
+      "domain": "daytime_energy_usual",
+      "window": "past_month",
+      "evidence": "self_report",
+      "target": "self",
+      "source": "experimental-40.v2#n31",
+      "claimLimit": "No medical, sleep, nutrition, or mental-health cause inferred."
+    }
+  },
+  {
+    "id": "n32",
+    "chapter": 5,
+    "title": "And over just the last seven days, how often did you have enough energy for the things you wanted or needed to do?",
+    "setup": "A direct report, not a health score. Variation is a real answer.",
+    "role": "context",
+    "test": false,
+    "options": [
+      {
+        "id": "a",
+        "text": "Most days",
+        "why": "Most days",
+        "tags": [],
+        "measures": [
+          {
+            "id": "daytime_energy",
+            "value": 3,
+            "label": "Most days"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "Some days",
+        "why": "Some days",
+        "tags": [],
+        "measures": [
+          {
+            "id": "daytime_energy",
+            "value": 2,
+            "label": "Some days"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "Not often",
+        "why": "Not often",
+        "tags": [],
+        "measures": [
+          {
+            "id": "daytime_energy",
+            "value": 1,
+            "label": "Not often"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "It depended too much on the day to say",
+        "why": "It depended too much on the day to say",
+        "tags": []
+      }
+    ],
+    "meta": {
+      "domain": "daytime_energy_recent",
+      "window": "last_7_days",
+      "evidence": "self_report",
+      "target": "self",
+      "source": "experimental-40.v2#n32",
+      "claimLimit": "No medical, sleep, nutrition, or mental-health cause inferred."
+    }
+  },
+  {
+    "id": "h01",
+    "chapter": 6,
+    "title": "Your group has already picked a restaurant you don't care about, but you'd enjoy the company. What's your likeliest move?",
+    "setup": "Your answer stays outside the portrait that made this prediction.",
+    "role": "holdout",
+    "test": true,
+    "options": [
+      {
+        "id": "a",
+        "text": "Go for the people",
+        "why": "Go for the people",
+        "tags": [
+          {
+            "d": "D_MODE",
+            "v": "join",
+            "target": "social"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "Suggest a place I'd also enjoy",
+        "why": "Suggest a place I'd also enjoy",
+        "tags": [
+          {
+            "d": "D_MODE",
+            "v": "reshape",
+            "target": "social"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "Join for part of it",
+        "why": "Join for part of it",
+        "tags": [
+          {
+            "d": "D_MODE",
+            "v": "partial",
+            "target": "social"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "Skip this one",
+        "why": "Skip this one",
+        "tags": [
+          {
+            "d": "D_MODE",
+            "v": "decline",
+            "target": "social"
+          }
+        ]
+      }
+    ],
+    "meta": {
+      "domain": "social_purpose_vs_enjoyment",
+      "window": "scenario",
+      "evidence": "hypothetical",
+      "target": "friend_group",
+      "source": "experimental-40.v2#h01",
+      "claimLimit": "No inference about actual event behavior; check answer must not update the frozen profile."
+    },
+    "baseline": "a"
+  },
+  {
+    "id": "h02",
+    "chapter": 6,
+    "title": "A close friend is nervous about giving a short talk and asks you to sit in the audience. What would you most likely do?",
+    "setup": "Your answer stays outside the portrait that made this prediction.",
+    "role": "holdout",
+    "test": true,
+    "options": [
+      {
+        "id": "a",
+        "text": "Go to support them",
+        "why": "Go to support them",
+        "tags": [
+          {
+            "d": "D_SUPPORT",
+            "v": "show_up",
+            "target": "relationship"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "Help them practice another way",
+        "why": "Help them practice another way",
+        "tags": [
+          {
+            "d": "D_SUPPORT",
+            "v": "alternative",
+            "target": "relationship"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "Ask what kind of support would help",
+        "why": "Ask what kind of support would help",
+        "tags": [
+          {
+            "d": "D_SUPPORT",
+            "v": "clarify",
+            "target": "relationship"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "Say I can't make it",
+        "why": "Say I can't make it",
+        "tags": [
+          {
+            "d": "D_SUPPORT",
+            "v": "decline",
+            "target": "relationship"
+          }
+        ]
+      }
+    ],
+    "meta": {
+      "domain": "friend_accompaniment_context",
+      "window": "scenario",
+      "evidence": "hypothetical",
+      "target": "close_friend",
+      "source": "experimental-40.v2#h02",
+      "claimLimit": "Held out from profile; one hypothetical answer is not validated prediction accuracy."
+    },
+    "baseline": "a"
+  },
+  {
+    "id": "h03",
+    "chapter": 6,
+    "title": "A teammate gets public credit for work you also helped with. What would you most likely do next?",
+    "setup": "Your answer stays outside the portrait that made this prediction.",
+    "role": "holdout",
+    "test": true,
+    "options": [
+      {
+        "id": "a",
+        "text": "Let the moment pass",
+        "why": "Let the moment pass",
+        "tags": [
+          {
+            "d": "D_RECOGNITION",
+            "v": "none_specific",
+            "target": "work"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "Mention my part in the work",
+        "why": "Mention my part in the work",
+        "tags": [
+          {
+            "d": "D_RECOGNITION",
+            "v": "claim_credit",
+            "target": "work"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "Congratulate them, then talk privately about credit",
+        "why": "Congratulate them, then talk privately about credit",
+        "tags": [
+          {
+            "d": "D_RECOGNITION",
+            "v": "claim_credit",
+            "target": "work"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "Focus on the next task",
+        "why": "Focus on the next task",
+        "tags": [
+          {
+            "d": "D_RECOGNITION",
+            "v": "return_to_task",
+            "target": "work"
+          }
+        ]
+      }
+    ],
+    "meta": {
+      "domain": "recognition_and_comparison",
+      "window": "scenario",
+      "evidence": "hypothetical",
+      "target": "peer_group",
+      "source": "experimental-40.v2#h03",
+      "claimLimit": "Does not reveal motive, insecurity, or fairness of the situation."
+    },
+    "baseline": "a"
+  },
+  {
+    "id": "h04",
+    "chapter": 6,
+    "title": "A reviewer points out a concrete flaw in a draft you care about. What's your first move?",
+    "setup": "Your answer stays outside the portrait that made this prediction.",
+    "role": "holdout",
+    "test": true,
+    "options": [
+      {
+        "id": "a",
+        "text": "Ask for a specific example",
+        "why": "Ask for a specific example",
+        "tags": [
+          {
+            "d": "D_CRITICISM",
+            "v": "clarify",
+            "target": "feedback"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "Explain what I was aiming for",
+        "why": "Explain what I was aiming for",
+        "tags": [
+          {
+            "d": "D_CRITICISM",
+            "v": "explain",
+            "target": "feedback"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "Take a beat before answering",
+        "why": "Take a beat before answering",
+        "tags": [
+          {
+            "d": "D_CRITICISM",
+            "v": "pause",
+            "target": "feedback"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "Mark what I would revise",
+        "why": "Mark what I would revise",
+        "tags": [
+          {
+            "d": "D_CRITICISM",
+            "v": "revise",
+            "target": "feedback"
+          }
+        ]
+      }
+    ],
+    "meta": {
+      "domain": "response_to_credible_criticism",
+      "window": "scenario",
+      "evidence": "hypothetical",
+      "target": "person_giving_feedback",
+      "source": "experimental-40.v2#h04",
+      "claimLimit": "Hypothetical intent only; heldout answer never enters profile evidence."
+    },
+    "baseline": "a"
+  },
+  {
+    "id": "h05",
+    "chapter": 6,
+    "title": "You notice a joke you made left someone quieter than before. What would you most likely do?",
+    "setup": "Your answer stays outside the portrait that made this prediction.",
+    "role": "holdout",
+    "test": true,
+    "options": [
+      {
+        "id": "a",
+        "text": "Check in with them",
+        "why": "Check in with them",
+        "tags": [
+          {
+            "d": "D_REPAIR",
+            "v": "check_in",
+            "target": "relationship"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "Explain that I meant it playfully",
+        "why": "Explain that I meant it playfully",
+        "tags": [
+          {
+            "d": "D_REPAIR",
+            "v": "explain",
+            "target": "relationship"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "Give them room, then follow up",
+        "why": "Give them room, then follow up",
+        "tags": [
+          {
+            "d": "D_REPAIR",
+            "v": "space_return",
+            "target": "relationship"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "Wait to see if they bring it up",
+        "why": "Wait to see if they bring it up",
+        "tags": [
+          {
+            "d": "D_REPAIR",
+            "v": "uncertain",
+            "target": "relationship"
+          }
+        ]
+      }
+    ],
+    "meta": {
+      "domain": "repair_after_impact",
+      "window": "scenario",
+      "evidence": "hypothetical",
+      "target": "person_affected",
+      "source": "experimental-40.v2#h05",
+      "claimLimit": "Does not establish actual repair or the impact of a real interaction."
+    },
+    "baseline": "a"
+  },
+  {
+    "id": "h06",
+    "chapter": 6,
+    "title": "Someone whose reply matters has not answered your invitation to meet this weekend. What would you most likely do next?",
+    "setup": "Your answer stays outside the portrait that made this prediction.",
+    "role": "holdout",
+    "test": true,
+    "options": [
+      {
+        "id": "a",
+        "text": "Send one follow-up",
+        "why": "Send one follow-up",
+        "tags": [
+          {
+            "d": "D_REPLY",
+            "v": "follow_up",
+            "target": "relationship"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "Wait without checking the chat",
+        "why": "Wait without checking the chat",
+        "tags": [
+          {
+            "d": "D_REPLY",
+            "v": "wait",
+            "target": "relationship"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "Check the chat or their status",
+        "why": "Check the chat or their status",
+        "tags": [
+          {
+            "d": "D_REPLY",
+            "v": "check",
+            "target": "relationship"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "Decide later; I'm not sure",
+        "why": "Decide later; I'm not sure",
+        "tags": [
+          {
+            "d": "D_REPLY",
+            "v": "unsure",
+            "target": "relationship"
+          }
+        ]
+      }
+    ],
+    "meta": {
+      "domain": "chosen_person_reply_context",
+      "window": "scenario",
+      "evidence": "hypothetical",
+      "target": "specific_person_whose_reply_matters",
+      "source": "experimental-40.v2#h06",
+      "claimLimit": "Does not infer rejection fear or the other person's intention."
+    },
+    "baseline": "a"
+  },
+  {
+    "id": "h07",
+    "chapter": 6,
+    "title": "A trusted friend offers to pick up one errand for you this week. What would you most likely do?",
+    "setup": "Your answer stays outside the portrait that made this prediction.",
+    "role": "holdout",
+    "test": true,
+    "options": [
+      {
+        "id": "a",
+        "text": "Accept the offer",
+        "why": "Accept the offer",
+        "tags": [
+          {
+            "d": "D_RECEIVE",
+            "v": "accept",
+            "target": "support"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "Say what kind of help would fit",
+        "why": "Say what kind of help would fit",
+        "tags": [
+          {
+            "d": "D_RECEIVE",
+            "v": "redirect",
+            "target": "support"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "Thank them and handle it myself",
+        "why": "Thank them and handle it myself",
+        "tags": [
+          {
+            "d": "D_RECEIVE",
+            "v": "decline",
+            "target": "support"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "Ask if we can revisit it later",
+        "why": "Ask if we can revisit it later",
+        "tags": [
+          {
+            "d": "D_RECEIVE",
+            "v": "clarify_accept",
+            "target": "support"
+          }
+        ]
+      }
+    ],
+    "meta": {
+      "domain": "receiving_help",
+      "window": "scenario",
+      "evidence": "hypothetical",
+      "target": "trusted_friend_offering_help",
+      "source": "experimental-40.v2#h07",
+      "claimLimit": "Does not imply dependence, refusal discomfort, or actual recovery."
+    },
+    "baseline": "a"
+  },
+  {
+    "id": "h08",
+    "chapter": 6,
+    "title": "A friend asks you to help them move a shelf tonight, but you had planned a quiet evening. What would you most likely do?",
+    "setup": "Your answer stays outside the portrait that made this prediction.",
+    "role": "holdout",
+    "test": true,
+    "options": [
+      {
+        "id": "a",
+        "text": "Help tonight",
+        "why": "Help tonight",
+        "tags": [
+          {
+            "d": "D_BOUNDARY",
+            "v": "full_help",
+            "target": "capacity"
+          }
+        ]
+      },
+      {
+        "id": "b",
+        "text": "Offer a smaller bit of help",
+        "why": "Offer a smaller bit of help",
+        "tags": [
+          {
+            "d": "D_BOUNDARY",
+            "v": "limited_help",
+            "target": "capacity"
+          }
+        ]
+      },
+      {
+        "id": "c",
+        "text": "Suggest another time",
+        "why": "Suggest another time",
+        "tags": [
+          {
+            "d": "D_BOUNDARY",
+            "v": "reschedule",
+            "target": "capacity"
+          }
+        ]
+      },
+      {
+        "id": "d",
+        "text": "Say I can't tonight",
+        "why": "Say I can't tonight",
+        "tags": [
+          {
+            "d": "D_BOUNDARY",
+            "v": "decline",
+            "target": "capacity"
+          }
+        ]
+      }
+    ],
+    "meta": {
+      "domain": "helping_boundary",
+      "window": "scenario",
+      "evidence": "hypothetical",
+      "target": "requester",
+      "source": "experimental-40.v2#h08",
+      "claimLimit": "One intended choice cannot establish selfishness, generosity, or a stable boundary style."
+    },
+    "baseline": "a"
+  }
 ];
-const emotionFamilies = [
-  "frustration",
-  "worry",
-  "disappointment",
-  "embarrassment",
-  "guilt",
-  "joy",
-  "relief",
+export const ROUTE_SLOTS = [
+  {
+    "id": "slot-01",
+    "candidates": [
+      "n01"
+    ]
+  },
+  {
+    "id": "slot-02",
+    "candidates": [
+      "n02"
+    ]
+  },
+  {
+    "id": "slot-03",
+    "candidates": [
+      "n03"
+    ]
+  },
+  {
+    "id": "slot-04",
+    "candidates": [
+      "n04"
+    ]
+  },
+  {
+    "id": "slot-05",
+    "candidates": [
+      "n05"
+    ]
+  },
+  {
+    "id": "slot-06",
+    "candidates": [
+      "n06"
+    ]
+  },
+  {
+    "id": "slot-07",
+    "candidates": [
+      "n07"
+    ]
+  },
+  {
+    "id": "slot-08",
+    "candidates": [
+      "n08"
+    ]
+  },
+  {
+    "id": "slot-09",
+    "candidates": [
+      "n09"
+    ]
+  },
+  {
+    "id": "slot-10",
+    "candidates": [
+      "n10"
+    ]
+  },
+  {
+    "id": "slot-11",
+    "candidates": [
+      "n11"
+    ]
+  },
+  {
+    "id": "slot-12",
+    "candidates": [
+      "n12"
+    ]
+  },
+  {
+    "id": "slot-13",
+    "candidates": [
+      "n13"
+    ]
+  },
+  {
+    "id": "slot-14",
+    "candidates": [
+      "n14"
+    ]
+  },
+  {
+    "id": "slot-15",
+    "candidates": [
+      "n15"
+    ]
+  },
+  {
+    "id": "slot-16",
+    "candidates": [
+      "n16"
+    ]
+  },
+  {
+    "id": "slot-17",
+    "candidates": [
+      "n17"
+    ]
+  },
+  {
+    "id": "slot-18",
+    "candidates": [
+      "n18"
+    ]
+  },
+  {
+    "id": "slot-19",
+    "candidates": [
+      "n19"
+    ]
+  },
+  {
+    "id": "slot-20",
+    "candidates": [
+      "n20"
+    ]
+  },
+  {
+    "id": "slot-21",
+    "candidates": [
+      "n21"
+    ]
+  },
+  {
+    "id": "slot-22",
+    "candidates": [
+      "n22"
+    ]
+  },
+  {
+    "id": "slot-23",
+    "candidates": [
+      "n23"
+    ]
+  },
+  {
+    "id": "slot-24",
+    "candidates": [
+      "n24"
+    ]
+  },
+  {
+    "id": "slot-25",
+    "candidates": [
+      "n25"
+    ]
+  },
+  {
+    "id": "slot-26",
+    "candidates": [
+      "n26"
+    ]
+  },
+  {
+    "id": "slot-27",
+    "candidates": [
+      "n27"
+    ]
+  },
+  {
+    "id": "slot-28",
+    "candidates": [
+      "n28"
+    ]
+  },
+  {
+    "id": "slot-29",
+    "candidates": [
+      "n29"
+    ]
+  },
+  {
+    "id": "slot-30",
+    "candidates": [
+      "n30"
+    ]
+  },
+  {
+    "id": "slot-31",
+    "candidates": [
+      "n31"
+    ]
+  },
+  {
+    "id": "slot-32",
+    "candidates": [
+      "n32"
+    ]
+  },
+  {
+    "id": "slot-33",
+    "candidates": [
+      "h01"
+    ]
+  },
+  {
+    "id": "slot-34",
+    "candidates": [
+      "h02"
+    ]
+  },
+  {
+    "id": "slot-35",
+    "candidates": [
+      "h03"
+    ]
+  },
+  {
+    "id": "slot-36",
+    "candidates": [
+      "h04"
+    ]
+  },
+  {
+    "id": "slot-37",
+    "candidates": [
+      "h05"
+    ]
+  },
+  {
+    "id": "slot-38",
+    "candidates": [
+      "h06"
+    ]
+  },
+  {
+    "id": "slot-39",
+    "candidates": [
+      "h07"
+    ]
+  },
+  {
+    "id": "slot-40",
+    "candidates": [
+      "h08"
+    ]
+  }
 ];
-for (const [index, question] of addedEmotion.entries()) {
-  question.meta = meta(
-    "emotion",
-    "latest_instance_past_month",
-    "actual_event",
-    { subject: "self", emotionFamily: emotionFamilies[index] },
-  );
-  QUESTIONS.push(question);
-}
-const addSignals = (question, rows) =>
-  rows.forEach((items, index) => {
-    question.options[index].signals = items.map(
-      ([family, layer, value, label]) => ({ family, layer, value, label }),
-    );
-  });
-addSignals(addedEmotion[0], [
-  [
-    ["frustration", "feeling", "present", "A flash of irritation"],
-    ["frustration", "response", "direct", "Said what needed changing"],
-  ],
-  [
-    ["frustration", "feeling", "high", "Properly angry"],
-    ["frustration", "response", "pause", "Went quiet before deciding"],
-  ],
-  [
-    ["frustration", "feeling", "low", "Mildly bothered"],
-    ["frustration", "recovery", "reset", "Gave myself a reset"],
-  ],
-  [
-    ["frustration", "feeling", "uncertain", "Felt stuck"],
-    ["frustration", "response", "support", "Asked for help"],
-  ],
-]);
-addSignals(addedEmotion[1], [
-  [
-    ["worry", "feeling", "present", "Felt uneasy"],
-    ["worry", "response", "check_in", "Sent one check-in"],
-  ],
-  [
-    ["worry", "feeling", "high", "Very worried"],
-    ["worry", "response", "checking", "Checked the details"],
-  ],
-  [
-    ["worry", "feeling", "low", "Did not feel especially worried"],
-    ["worry", "response", "continue", "Carried on"],
-  ],
-  [
-    ["worry", "feeling", "uncertain", "Felt uncertain"],
-    ["worry", "recovery", "space", "Put the phone away"],
-  ],
-]);
-addSignals(addedEmotion[2], [
-  [
-    ["disappointment", "feeling", "present", "Felt disappointed"],
-    ["disappointment", "response", "reschedule", "Asked to reschedule"],
-  ],
-  [
-    ["disappointment", "feeling", "present", "Felt sad"],
-    ["disappointment", "recovery", "space", "Took the evening quietly"],
-  ],
-  [
-    ["disappointment", "feeling", "low", "Barely bothered"],
-    ["disappointment", "response", "adjust", "Made another plan"],
-  ],
-  [
-    ["disappointment", "feeling", "present", "Felt let down"],
-    ["disappointment", "response", "context", "Asked what changed"],
-  ],
-]);
-addSignals(addedEmotion[3], [
-  [
-    ["embarrassment", "feeling", "present", "Felt embarrassed"],
-    ["embarrassment", "response", "repair", "Corrected and laughed"],
-  ],
-  [
-    ["embarrassment", "feeling", "high", "Intensely embarrassed"],
-    ["embarrassment", "response", "pause", "Went quiet"],
-  ],
-  [
-    ["embarrassment", "feeling", "low", "A little awkward"],
-    ["embarrassment", "response", "continue", "Kept moving"],
-  ],
-  [
-    ["embarrassment", "feeling", "present", "Felt embarrassed"],
-    ["embarrassment", "recovery", "repair", "Apologized"],
-  ],
-]);
-addSignals(addedEmotion[4], [
-  [
-    ["guilt", "feeling", "present", "Felt guilty"],
-    ["guilt", "response", "repair", "Apologized"],
-  ],
-  [
-    ["guilt", "feeling", "high", "Felt awful"],
-    ["guilt", "recovery", "repair", "Offered a fix"],
-  ],
-  [
-    ["guilt", "feeling", "low", "Felt a little guilty"],
-    ["guilt", "response", "prevention", "Set a reminder"],
-  ],
-  [
-    ["guilt", "feeling", "present", "Felt guilty"],
-    ["guilt", "recovery", "pause", "Came back later"],
-  ],
-]);
-addSignals(addedEmotion[5], [
-  [
-    ["joy", "feeling", "present", "Felt delighted"],
-    ["joy", "response", "celebrate", "Called to celebrate"],
-  ],
-  [
-    ["joy", "feeling", "present", "Felt excited"],
-    ["joy", "response", "act", "Planned next step"],
-  ],
-  [
-    ["joy", "feeling", "present", "Felt happy"],
-    ["joy", "recovery", "savor", "Let it land"],
-  ],
-  [
-    ["joy", "feeling", "present", "Felt pleased"],
-    ["joy", "response", "express", "Said what it meant"],
-  ],
-]);
-addSignals(addedEmotion[6], [
-  [
-    ["relief", "feeling", "present", "Felt relieved"],
-    ["relief", "recovery", "rest", "Exhaled first"],
-  ],
-  [
-    ["relief", "feeling", "present", "Relief arrived slowly"],
-    ["relief", "recovery", "rest", "Rested"],
-  ],
-  [
-    ["relief", "feeling", "present", "Felt relieved"],
-    ["relief", "response", "connect", "Told the helper"],
-  ],
-  [
-    ["relief", "feeling", "present", "Felt relieved"],
-    ["relief", "response", "next_step", "Checked next step"],
-  ],
-]);
-
-const addedHealth = [
-  q(
-    72,
-    6,
-    "Over the past month, how regular was your usual sleep timing?",
-    "Count your ordinary pattern, including shifts or changing days.",
-    [
-      opt(
-        "It changed a lot from day to day.",
-        [],
-        "Reports very irregular usual sleep timing.",
-      ),
-      opt(
-        "It had a loose pattern.",
-        [],
-        "Reports partly regular usual sleep timing.",
-      ),
-      opt(
-        "It was usually consistent.",
-        [],
-        "Reports usually regular sleep timing.",
-      ),
-      opt("It was very consistent.", [], "Reports very regular sleep timing."),
-    ],
-    { role: "context" },
-  ),
-  q(
-    73,
-    6,
-    "In the last seven days, how regular was your sleep timing?",
-    "Look at the actual week. Sleep timing gets its own report card here.",
-    [
-      opt(
-        "It changed a lot from day to day.",
-        [],
-        "Reports very irregular recent sleep timing.",
-      ),
-      opt(
-        "It had a loose pattern.",
-        [],
-        "Reports partly regular recent sleep timing.",
-      ),
-      opt(
-        "It was usually consistent.",
-        [],
-        "Reports usually regular recent sleep timing.",
-      ),
-      opt(
-        "It was very consistent.",
-        [],
-        "Reports very regular recent sleep timing.",
-      ),
-    ],
-    { role: "context" },
-  ),
-  q(
-    74,
-    6,
-    "Over the past month, how often did you notice body cues before deciding what to do?",
-    "Cues can be hunger, tension, temperature, pain, or needing a break. Choose what fits your experience.",
-    [
-      opt(
-        "I often noticed late or postponed them.",
-        [],
-        "Reports often postponing body cues.",
-      ),
-      opt(
-        "I noticed some, depending on the day.",
-        [],
-        "Reports variable attention to body cues.",
-      ),
-      opt(
-        "I usually noticed and responded.",
-        [],
-        "Reports usually attending to body cues.",
-      ),
-      opt(
-        "I made room for them consistently.",
-        [],
-        "Reports consistent body-cue attention.",
-      ),
-    ],
-    { role: "context" },
-  ),
-  q(
-    75,
-    6,
-    "Over the past month, how did skin comfort or care show up in your routine?",
-    "Skin comfort has its own notes. What did you notice or do?",
-    [
-      opt(
-        "I rarely tracked it.",
-        [],
-        "Reports little routine attention to skin experience.",
-      ),
-      opt(
-        "I noticed issues when they appeared.",
-        [],
-        "Reports reactive skin attention.",
-      ),
-      opt(
-        "I had a small routine or check-in.",
-        [],
-        "Reports a regular skin-care attention pattern.",
-      ),
-      opt(
-        "I tracked what helped my comfort.",
-        [],
-        "Reports active attention to skin comfort.",
-      ),
-    ],
-    { role: "context" },
-  ),
-  q(
-    76,
-    6,
-    "In the last seven days, how often did your energy feel enough for the day?",
-    "Enough is your own threshold. Some days arrive with more battery than others.",
-    [
-      opt("Rarely.", [], "Reports low recent felt energy."),
-      opt("Some days.", [], "Reports variable recent felt energy."),
-      opt("Most days.", [], "Reports usually sufficient recent felt energy."),
-      opt(
-        "Nearly every day.",
-        [],
-        "Reports consistently sufficient recent felt energy.",
-      ),
-    ],
-    { role: "context" },
-  ),
-  q(
-    77,
-    6,
-    "Over the past month, on how many busy days did you remember a drink break?",
-    "Use your own rough count. The drink-break department keeps imperfect minutes.",
-    [
-      opt(
-        "Almost none.",
-        [],
-        "Reports remembering drink breaks on almost no busy days.",
-      ),
-      opt(
-        "Some busy days.",
-        [],
-        "Reports remembering drink breaks on some busy days.",
-      ),
-      opt(
-        "Most busy days.",
-        [],
-        "Reports remembering drink breaks on most busy days.",
-      ),
-      opt(
-        "Nearly every busy day.",
-        [],
-        "Reports remembering drink breaks on nearly every busy day.",
-      ),
-    ],
-    { role: "context" },
-  ),
-  q(
-    78,
-    6,
-    "Is there optional health context you want to record for this conversation?",
-    "Choose one context, or use Other for more than one. It stays a reported fact.",
-    [
-      opt(
-        "Allergies or sensitivities.",
-        [],
-        "Reports an optional allergy or sensitivity context.",
-        { healthContext: "allergies-or-sensitivities" },
-      ),
-      opt(
-        "An existing condition or ongoing treatment.",
-        [],
-        "Reports an optional existing-condition context.",
-        { healthContext: "existing-condition-or-treatment" },
-      ),
-      opt(
-        "A cycle or recurring body pattern.",
-        [],
-        "Reports an optional recurring body pattern.",
-        { healthContext: "cycle-or-recurring-pattern" },
-      ),
-      opt(
-        "None of these, or I would rather not say.",
-        [],
-        "Reports no optional context for this attempt.",
-        { healthContext: "none-or-prefer-not-to-say" },
-      ),
-    ],
-    { role: "context" },
-  ),
-  q(
-    97,
-    6,
-    "On your usual days this past month, how regular were your meal times?",
-    "Think of the pattern that showed up most often, including days when the clock went rogue.",
-    [
-      opt("They varied a lot.", [], "Reports very varied usual meal timing."),
-      opt(
-        "They had a loose pattern.",
-        [],
-        "Reports partly regular usual meal timing.",
-      ),
-      opt(
-        "They were usually predictable.",
-        [],
-        "Reports usually regular usual meal timing.",
-      ),
-      opt(
-        "They were very predictable.",
-        [],
-        "Reports very regular usual meal timing.",
-      ),
-    ],
-    { role: "context" },
-  ),
-  q(
-    98,
-    6,
-    "In the last seven days, how did your meal timing hold up?",
-    "Look at the actual week, with its meetings, errands, and suspiciously late snacks.",
-    [
-      opt(
-        "It changed from day to day.",
-        [],
-        "Reports very varied recent meal timing.",
-      ),
-      opt(
-        "It had a loose pattern.",
-        [],
-        "Reports partly regular recent meal timing.",
-      ),
-      opt(
-        "It was predictable most days.",
-        [],
-        "Reports usually regular recent meal timing.",
-      ),
-      opt(
-        "It was very predictable.",
-        [],
-        "Reports very regular recent meal timing.",
-      ),
-    ],
-    { role: "context" },
-  ),
-  q(
-    99,
-    6,
-    "On your usual days this past month, how often did your energy feel enough for the day?",
-    "Use your own threshold for enough. Your ordinary battery has the deciding vote.",
-    [
-      opt("Rarely.", [], "Reports low usual felt energy."),
-      opt("Some days.", [], "Reports variable usual felt energy."),
-      opt("Most days.", [], "Reports usually sufficient usual felt energy."),
-      opt(
-        "Nearly every day.",
-        [],
-        "Reports consistently sufficient usual felt energy.",
-      ),
-    ],
-    { role: "context" },
-  ),
-  q(
-    100,
-    6,
-    "Over the past month, how often did your usual sleep leave you feeling restored?",
-    "Think of the ordinary pattern, not the one heroic night that arrived with a cape.",
-    [
-      opt("Rarely restored.", [], "Reports low usual sleep restoration."),
-      opt(
-        "Restored on some days.",
-        [],
-        "Reports variable usual sleep restoration.",
-      ),
-      opt(
-        "Restored most days.",
-        [],
-        "Reports usually sufficient usual sleep restoration.",
-      ),
-      opt(
-        "Every day or nearly every day.",
-        [],
-        "Reports consistently sufficient usual sleep restoration.",
-      ),
-    ],
-    { role: "context" },
-  ),
-  q(
-    101,
-    6,
-    "During a typical week in the past month, on how many days did you deliberately get some movement?",
-    "Count movement that works for your body, from a walk to a wheelchair workout to an excellent stretch.",
-    [
-      opt("Zero days.", [], "Reports rare usual movement."),
-      opt("One or two days.", [], "Reports occasional usual movement."),
-      opt("Three or four days.", [], "Reports frequent usual movement."),
-      opt("Five to seven days.", [], "Reports very frequent usual movement."),
-    ],
-    { role: "context" },
-  ),
-  q(
-    102,
-    6,
-    "In the last seven days, how often did sleep leave you feeling restored?",
-    "Think of the actual week, including the night your pillow became a negotiation partner.",
-    [
-      opt("Rarely restored.", [], "Reports low recent sleep restoration."),
-      opt(
-        "Restored on some days.",
-        [],
-        "Reports variable recent sleep restoration.",
-      ),
-      opt(
-        "Restored most days.",
-        [],
-        "Reports usually sufficient recent sleep restoration.",
-      ),
-      opt(
-        "Every day or nearly every day.",
-        [],
-        "Reports consistently sufficient recent sleep restoration.",
-      ),
-    ],
-    { role: "context" },
-  ),
-];
-const healthDefs = {
-  q72: ["sleep_regularity", "past_month"],
-  q73: ["sleep_regularity", "last_7_days"],
-  q74: ["body_attention", "past_month"],
-  q75: ["skin_attention", "past_month"],
-  q76: ["felt_energy", "last_7_days"],
-  q77: ["hydration_cues", "past_month"],
-  q97: ["meal_regularity", "past_month"],
-  q98: ["meal_regularity", "last_7_days"],
-  q99: ["felt_energy", "past_month"],
-  q100: ["sleep_restoration", "past_month"],
-  q101: ["movement_consistency", "past_month"],
-  q102: ["sleep_restoration", "last_7_days"],
-};
-for (const question of addedHealth) {
-  const definition = healthDefs[question.id];
-  question.chapter = ["q72", "q73", "q76", "q100", "q102"].includes(question.id)
-    ? 7
-    : 6;
-  question.meta = definition
-    ? meta("health", definition[1], "self_report", {
-        subject: "self",
-        measure: definition[0],
-      })
-    : meta("health", null, "self_report", { subject: "self", optional: true });
-  QUESTIONS.push(question);
-}
-for (const [id, counterpart] of [
-  ["q72", "q73"],
-  ["q73", "q72"],
-  ["q76", "q99"],
-  ["q99", "q76"],
-  ["q97", "q98"],
-  ["q98", "q97"],
-  ["q100", "q102"],
-  ["q102", "q100"],
-  ["q101", "q46"],
-  ["q46", "q101"],
-]) {
-  const question = QUESTIONS.find((item) => item.id === id);
-  question.meta = { ...question.meta, counterpart };
-}
-const healthMeasureLabels = {
-  q72: [
-    "It changed a lot from day to day.",
-    "It had a loose pattern.",
-    "It was usually consistent.",
-    "It was very consistent.",
-  ],
-  q73: [
-    "It changed a lot from day to day.",
-    "It had a loose pattern.",
-    "It was usually consistent.",
-    "It was very consistent.",
-  ],
-  q74: [
-    "I often noticed late or postponed them.",
-    "I noticed some, depending on the day.",
-    "I usually noticed and responded.",
-    "I made room for them consistently.",
-  ],
-  q75: [
-    "I rarely tracked it.",
-    "I noticed issues when they appeared.",
-    "I had a small routine or check-in.",
-    "I tracked what helped my comfort.",
-  ],
-  q76: ["Rarely.", "Some days.", "Most days.", "Nearly every day."],
-  q77: [
-    "Almost none.",
-    "Some busy days.",
-    "Most busy days.",
-    "Nearly every busy day.",
-  ],
-  q97: [
-    "They varied a lot.",
-    "They had a loose pattern.",
-    "They were usually predictable.",
-    "They were very predictable.",
-  ],
-  q98: [
-    "It changed from day to day.",
-    "It had a loose pattern.",
-    "It was predictable most days.",
-    "It was very predictable.",
-  ],
-  q99: ["Rarely.", "Some days.", "Most days.", "Nearly every day."],
-  q100: [
-    "Rarely restored.",
-    "Restored on some days.",
-    "Restored most days.",
-    "Every day or nearly every day.",
-  ],
-  q101: [
-    "Zero days.",
-    "One or two days.",
-    "Three or four days.",
-    "Five to seven days.",
-  ],
-  q102: [
-    "Rarely restored.",
-    "Restored on some days.",
-    "Restored most days.",
-    "Every day or nearly every day.",
-  ],
-};
-const healthMeasureIds = {
-  q72: "sleep_regularity",
-  q73: "sleep_regularity",
-  q74: "body_attention",
-  q75: "skin_attention",
-  q76: "felt_energy",
-  q77: "hydration_cues",
-  q97: "meal_regularity",
-  q98: "meal_regularity",
-  q99: "felt_energy",
-  q100: "sleep_restoration",
-  q101: "movement_consistency",
-  q102: "sleep_restoration",
-};
-for (const [id, labels] of Object.entries(healthMeasureLabels))
-  labels.forEach((label, index) => {
-    const option = QUESTIONS.find((question) => question.id === id).options[
-      index
-    ];
-    option.measures = [{ id: healthMeasureIds[id], value: index, label }];
-  });
-
-const sleepDirect = [
-  q(
-    94,
-    3,
-    "What time do you usually wake up?",
-    "Use your ordinary past-month pattern.",
-    [
-      opt("Before 6 a.m.", [], "Reports an earlier usual wake-time band.", {
-        wake: "before 06:00",
-      }),
-      opt("6 to 8 a.m.", [], "Reports a middle usual wake-time band.", {
-        wake: "06:00-08:00",
-      }),
-      opt("8 to 9 a.m.", [], "Reports a later usual wake-time band.", {
-        wake: "08:00-09:00",
-      }),
-      opt("After 9 a.m.", [], "Reports a later usual wake-time band.", {
-        wake: "after 09:00",
-      }),
-      opt(
-        "It varies too much for one band.",
-        [],
-        "Reports a variable usual wake-time pattern.",
-        { wake: "variable" },
-      ),
-    ],
-    { role: "context" },
-  ),
-  q(
-    95,
-    3,
-    "How long do you usually sleep?",
-    "Think of your ordinary past-month pattern.",
-    [
-      opt(
-        "Under 6 hours.",
-        [],
-        "Reports a shorter usual sleep-duration band.",
-        { sleepDuration: "under-6-hours" },
-      ),
-      opt(
-        "6 to under 7 hours.",
-        [],
-        "Reports a middle-short usual sleep-duration band.",
-        { sleepDuration: "6-to-under-7-hours" },
-      ),
-      opt(
-        "7 to under 9 hours.",
-        [],
-        "Reports a middle usual sleep-duration band.",
-        { sleepDuration: "7-to-under-9-hours" },
-      ),
-      opt(
-        "9 hours or more.",
-        [],
-        "Reports a longer usual sleep-duration band.",
-        { sleepDuration: "9-hours-or-more" },
-      ),
-      opt(
-        "It varies too much for one band.",
-        [],
-        "Reports a variable usual sleep-duration pattern.",
-        { sleepDuration: "variable" },
-      ),
-    ],
-    { role: "context" },
-  ),
-];
-sleepDirect.push(
-  q(
-    96,
-    7,
-    "Think of the latest night this month when an optional task competed with sleep.",
-    "Choose “No example to use” if this has not happened in the past month. What did you actually do?",
-    [
-      opt(
-        "Stopped and went to sleep.",
-        [tag("D14a", "protect"), tag("D14d", "rest")],
-        "You report protecting sleep.",
-      ),
-      opt(
-        "Finished the task and slept later.",
-        [tag("D14a", "delay"), tag("D14d", "obligation")],
-        "You report delaying sleep for an optional task.",
-      ),
-      opt(
-        "Moved the task or changed tomorrow.",
-        [tag("D14a", "adjust"), tag("D3", "plan")],
-        "You report adjusting the plan to protect sleep.",
-      ),
-      opt(
-        "Asked someone how they handle a night like that.",
-        [tag("D14d", "connection")],
-        "You report seeking a practical way through the situation.",
-      ),
-    ],
-    { role: "actual" },
-  ),
-);
-for (const question of sleepDirect) {
-  question.chapter = question.id === "q96" ? 7 : 2;
-  question.meta =
-    question.id === "q96"
-      ? meta("health", "latest_instance_past_month", "actual_event", {
-          subject: "self",
-          measure: "sleep_interference",
-        })
-      : meta("health", "past_month", "self_report", {
-          subject: "self",
-          measure: question.id === "q94" ? "sleep_wake" : "sleep_duration",
-        });
-  QUESTIONS.push(question);
-}
-
-// Generic equivalents are used when the selected close person or household
-// does not exist. They retain the same D-tag construct with a general target.
-const generic = (id, sourceId, role = null, test = false) => {
-  const original = QUESTIONS.find((question) => question.id === sourceId);
-  const options = original.options.map((option) => ({
-    ...option,
-    text: option.text.replaceAll("{close}", "someone important"),
-    ...(HOST_REACTIONS[sourceId]?.[option.id]
-      ? { reaction: HOST_REACTIONS[sourceId][option.id] }
-      : {}),
-    tags: (option.tags || []).map((tagValue) => ({
-      ...tagValue,
-      target:
-        tagValue.target === "close" || tagValue.target === "household"
-          ? "general"
-          : tagValue.target,
-    })),
-  }));
-  const question = {
-    ...original,
-    id: `q${id}`,
-    applicable: undefined,
-    title: original.title.replaceAll("{close}", "someone important"),
-    setup: original.setup.replaceAll("{close}", "someone important"),
-    options,
-  };
-  if (role) question.role = role;
-  if (test) question.test = true;
-  question.meta = meta(
-    test ? "personality" : original.meta?.domain || "personality",
-    test ? "scenario" : original.meta?.window || "scenario",
-    test ? "hypothetical" : original.meta?.evidence || "hypothetical",
-    { subject: "general" },
-  );
-  return question;
-};
-const householdFallback = q(
-  82,
-  2,
-  "A shared project workload needs a fair plan.",
-  "The project has one deadline and several people with different capacity.",
-  [
-    opt(
-      "Name the contributions and split the work.",
-      [tag("D8", "proportional"), tag("D7", "direct")],
-      "You map contributions and renegotiate the work.",
-    ),
-    opt(
-      "Send a private message about my share.",
-      [tag("D8", "proportional"), tag("D7", "soften")],
-      "You raise the workload privately.",
-    ),
-    opt(
-      "Take the extra work to keep it moving.",
-      [tag("D8", "absorb")],
-      "You absorb the extra effort.",
-    ),
-    opt(
-      "State what I can do and stop there.",
-      [tag("D8", "limit")],
-      "You set a capacity limit.",
-    ),
-  ],
-);
-householdFallback.meta = meta("personality", "scenario", "hypothetical", {
-  subject: "self",
-});
-const genericFallbacks = [
-  generic(81, "q10"),
-  householdFallback,
-  generic(83, "q18"),
-  generic(84, "q19"),
-  generic(85, "q21"),
-  generic(86, "q22"),
-  generic(87, "q23"),
-  generic(88, "q24"),
-  generic(89, "q29"),
-  generic(90, "q30"),
-  generic(91, "q53"),
-  generic(92, "q58", "holdout", true),
-  generic(93, "q62", "holdout", true),
-];
-QUESTIONS.push(...genericFallbacks);
 for (const question of QUESTIONS) {
   const reactions = HOST_REACTIONS[question.id];
-  if (reactions)
-    for (const option of question.options)
-      if (reactions[option.id]) option.reaction = reactions[option.id];
+  if (!reactions) continue;
+  for (const option of question.options)
+    if (reactions[option.id]) option.reaction = reactions[option.id];
 }
-// These legacy scenes are superseded by direct, literal candidates above.
-// Removing them keeps QUESTIONS an auditable routed bank rather than an archive.
-const retiredIds = new Set([
-  "q11",
-  "q12",
-  "q14",
-  "q25",
-  "q26",
-  "q27",
-  "q28",
-  "q34",
-  "q35",
-  "q36",
-  "q37",
-  "q38",
-  "q39",
-  "q40",
-  "q48",
-  "q49",
-  "q50",
-  "q51",
-  "q52",
-  "q53",
-  "q54",
-  "q55",
-  "q56",
-  "q91",
-]);
-for (let index = QUESTIONS.length - 1; index >= 0; index -= 1)
-  if (retiredIds.has(QUESTIONS[index].id)) QUESTIONS.splice(index, 1);
 
-const train = [
-  ["q01"],
-  ["q02"],
-  ["q03"],
-  ["q04"],
-  ["q05"],
-  ["q06"],
-  ["q07"],
-  ["q08"],
-  ["q09"],
-  ["q10", "q81"],
-  ["q94"],
-  ["q13"],
-  ["q95"],
-  ["q15", "q82"],
-  ["q16"],
-  ["q17"],
-  ["q18", "q83"],
-  ["q19", "q84"],
-  ["q20"],
-  ["q21", "q85"],
-  ["q22", "q86"],
-  ["q23", "q87"],
-  ["q24", "q88"],
-  ["q29", "q89"],
-  ["q30", "q90"],
-  ["q31"],
-  ["q32"],
-  ["q65"],
-  ["q66"],
-  ["q67"],
-  ["q68"],
-  ["q69"],
-  ["q70"],
-  ["q71"],
-  ["q33"],
-  ["q41"],
-  ["q42"],
-  ["q43"],
-  ["q44"],
-  ["q45"],
-  ["q46"],
-  ["q47"],
-  ["q74"],
-  ["q75"],
-  ["q77"],
-  ["q78"],
-  ["q97"],
-  ["q98"],
-  ["q99"],
-  ["q101"],
-  ["q72"],
-  ["q73"],
-  ["q76"],
-  ["q100"],
-  ["q102"],
-  ["q96"],
-];
-const checks = [
-  ["q57"],
-  ["q58", "q92"],
-  ["q59"],
-  ["q60"],
-  ["q61"],
-  ["q62", "q93"],
-  ["q63"],
-  ["q64"],
-];
-export const ROUTE_SLOTS = [...train, ...checks].map((candidates, index) => ({
-  id: `slot-${String(index + 1).padStart(2, "0")}`,
-  candidates,
-}));
-for (const slot of ROUTE_SLOTS)
-  for (const questionId of slot.candidates) {
-    const question = QUESTIONS.find((item) => item.id === questionId);
-    if (question) question.meta = { ...question.meta, slot: slot.id };
-  }
-applyEnglishCopy(QUESTIONS);
-
-export const QUESTIONS_BY_ID = Object.fromEntries(
-  QUESTIONS.map((question) => [question.id, question]),
-);
+export const QUESTIONS_BY_ID = new Map(QUESTIONS.map((question) => [question.id, question]));

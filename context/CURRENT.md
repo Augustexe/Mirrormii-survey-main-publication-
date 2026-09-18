@@ -1,12 +1,12 @@
 # Current state and next work
 
-As of 2026-09-18. Branch/workspace cleanup completed; not a new product decision.
+As of 2026-09-18. The Switch Modes v3 implementation test is complete on isolated branch `codex/evidence-first-survey-implementation`; it is not deployed or automatically approved as the replacement survey.
 
 ## What we are building
 
 A playful, perceptive Genii conversation that earns a specific provisional portrait from traceable answers. Keep recognition/fun, prediction performance and demonstrated product benefit separate. North America, all genders, English first is the confirmed broad direction. The 21–25 “surrounded but unrooted” cohort is a proposed test wedge, not proven ICP or age eligibility.
 
-The newest experiment explores a memorable behavioral tension and contextual exceptions with lighter routine collection. It does not force belonging trouble onto every user. It has not replaced the implemented route or settled the remaining evidence-model interview.
+The current implementation test explores a memorable behavioral tension and contextual exceptions with lighter routine collection. Its thesis is: **the useful portrait is not a permanent type; it is the pattern between the situation, what mattered, and what the person did.** It does not force belonging trouble onto every user.
 
 ## Three different states — do not conflate
 
@@ -14,7 +14,8 @@ The newest experiment explores a memorable behavioral tension and contextual exc
 |---|---|---|
 | Registered checkout | `project/`, local branch `main`, cleanup commit `chore: reconcile maintained survey context` | Consolidated on top of `origin/main` with maintained `context/` masters and `docs -> context`. Local branch is ahead of `origin/main` by this cleanup commit; push/publication still awaits user review. |
 | Approved R6 app | `project/quiz64` and [approved app source](../../runs/20260918T011159Z-16d23238fdf9/scratch/handoff/quiz64), release handoff `b8cf8eccddbe441c8a6bdc53e6791c418bfd2684` | React/Vite `quiz64`: 76 candidates, 64 route slots, 56 profile/context plus 8 frozen checks. Visual approval tied to ancestor `b0d7a89b964e0c0d00adec1093435a570f606343`. The registered checkout now contains the approved app and its tests; current public serving revision is not asserted here. |
-| Experimental bank | [40-item bank](questions/EXPERIMENTAL-40.md), [structured bank](questions/experimental-40.json) | Tested candidate v2: 32 profile items including 6 routine anchors, plus 8 checks. No runtime adapter or integration. Revise as a new version, preserving frozen v2 evidence. |
+| Frozen experimental bank | [40-item bank](questions/EXPERIMENTAL-40.md), [structured bank](questions/experimental-40.json) | Tested candidate v2 and failed source fidelity. Preserve it unchanged as evaluation evidence. |
+| Switch Modes v3 implementation test | Branch `codex/evidence-first-survey-implementation`; run `20260918T225142Z-26f0b1b07248`; current map `quiz64/docs/QUESTION-MAP.md` | 32 profile/context candidates plus 8 sealed checks; 36–40 questions after four conditional follow-ups. Implements literal receipts, bounded linked-event claims, routine unknowns, tone-aware teaching, and a goal-aware CTA without CSS/layout changes. Tests/build pass; independent second-pass review has no blockers. Not deployed. |
 
 ## Latest evaluation result
 
@@ -24,10 +25,10 @@ The prior [single-persona evaluation](../../runs/20260918T022609Z-a8f52a6beecf/o
 
 ## Next bounded work
 
-1. Use [NEXT-REVISION-PATCHES.md](questions/NEXT-REVISION-PATCHES.md): separate action/motive, repair criticism timeline, remove presumed goal failure, clarify feedback-only copy, and preserve low-access/secure-social countercases.
-2. Define an output contract that locks literal goals, preferences and routine fields outside generated narrative. Check every narrative clause against exact question/option evidence. This is proposed work, not already implemented.
-3. Resolve [open decisions](OPEN-QUESTIONS.md) that materially affect this revision. Version the candidate, mappings and fixtures; do not rewrite frozen evaluations.
-4. Only after an explicit integration task, adapt the candidate to the approved engine and run that app's tests. The cleanup does not merge branches, replace the app, or authorize publishing.
+1. Review the v3 implementation test as a product candidate; do not conflate passing contract tests with validated user value or prediction lift.
+2. Run a fresh evaluation whose scorer reads machine-owned literal fields/receipts rather than allowing generated prose to restate selections freely.
+3. Conduct real respondent comprehension/usability sessions for the conditional route, evidence receipts, switch-modes thesis, teaching tone, and goal-aware continuation CTA.
+4. Decide whether to promote v3 into the approved app. Merge/deployment/publication remain separate explicit decisions.
 
 ## Preserve across every revision
 

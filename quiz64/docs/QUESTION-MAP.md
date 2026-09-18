@@ -1,1146 +1,753 @@
-# English question bank and evidence map
+# Genii Switch Modes v3 — question and evidence map
 
-Respondent-facing wording after the 2026-09-17 voice pass. The 64-slot route selects from 76 candidates. Mapping columns are author-only. Wording lives in `src/english-copy.js`; routing and semantics live in `src/data.js`.
+Version: `genii-switch-modes.v3` · 32 profile/context candidates + 8 sealed checks · 36–40 respondent questions.
 
-## q01 · slot-01
+This is the implemented v3 map. The v2 experimental bank remains frozen in project context. Visual layout and styles are unchanged.
 
-Who knows the version of you that would never make LinkedIn?
+## Output contract
 
-Pick one close person to keep in mind for a few questions. You can leave this open.
+- Opening route, goal, and tone fields are direct facts, never scored traits.
+- Linked action/motive answers stay one event and do not create two independent supports.
+- Routine measures are direct typed projections; variable/Other/Skip remain unknown.
+- Claims retain scope, alternatives, next validation, and exact answer receipts.
+- Checks freeze after training and never update the portrait.
 
-Source: self_report; window: context.
+## n01 · slot-01
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | My mom. She's seen several eras. | close=mother |
-| b | My dad. He knows the behind-the-scenes version. | close=father |
-| c | My partner. They've seen the extended cut. | close=partner |
-| d | A close friend. Unfortunately, they know the lore. | close=friend |
-| e | No particular person for this conversation. | close=none |
+**What has been taking up the most room in your head lately?**
 
-## q02 · slot-02
+Pick the closest answer. This guides the conversation; it is not a diagnosis.
 
-Who's in your household cast?
+- Role: `self_report`
+- Window: `current`
+- Target: `self`
+- Domain/facet: `conversation_route`
+- Claim limit: A selected topic is not a diagnosis, trait, or proof of a problem.
 
-The people, not the chair currently wearing all your clothes. Pick your living arrangement.
+Options:
+- **a.** Friends and where I fit — literal/context only
+- **b.** Work, school, or what comes next — literal/context only
+- **c.** Dating or family stuff — literal/context only
+- **d.** My routines, energy, or body — literal/context only
+- **e.** Something else, or I can't name it yet — literal/context only
 
-Source: self_report; window: context.
+## n02 · slot-02
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Just me. Every mysterious noise is my problem. | household=alone |
-| b | People I share a home with. An ensemble cast. | household=shared |
-| c | Family. Plenty of shared history. | household=family |
-| d | I'd rather keep this one private. | household=unspecified |
+**Which sounds closest to your social life these days?**
 
-## q03 · slot-03
+Pick the closest answer. This guides the conversation; it is not a diagnosis.
 
-Three days off. Trip money. Your brain opens which tab first?
+- Role: `self_report`
+- Window: `current`
+- Target: `self_and_social_circle`
+- Domain/facet: `social_context`
+- Claim limit: Does not establish loneliness, belonging insecurity, or relationship quality.
 
-You have enough for one small trip. Nothing's booked yet. What comes first?
+Options:
+- **a.** I see people often and feel known by at least a few — literal/context only
+- **b.** I see people often, but still edit parts of myself — literal/context only
+- **c.** I have a small circle and that mostly suits me — literal/context only
+- **d.** My people-time has been changing lately — literal/context only
+- **e.** I don't get many local chances to connect, and I'd like more — literal/context only
+- **f.** None of these quite fits — literal/context only
 
-Source: hypothetical; window: scenario.
+## n03 · slot-03
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Who to bring. The right person makes the story. | D1:people (general) |
-| b | Where to go. Destination before guest list. | D1:task (general) |
-| c | What I want. For once, I'm the itinerary. | D1:self (general) |
-| d | Open a map and see what looks good. We'll find a plot. | D1:task (general); D3:improvise (general) |
+**If this chat got one thing right about you, what would you want it to help with?**
 
-## q04 · slot-04
+Pick the closest answer. This guides the conversation; it is not a diagnosis.
 
-A local says, “Trust me, take this detour.” The internet has zero opinions.
+- Role: `self_report`
+- Window: `current`
+- Target: `self`
+- Domain/facet: `chosen_goal`
+- Claim limit: A desired kind of help is not evidence that the person needs or received it.
 
-It's safe, unfamiliar, and a little out of the way. Do you go?
+Options:
+- **a.** Help me understand a pattern I keep repeating — literal/context only
+- **b.** Help me put words to what I feel — literal/context only
+- **c.** Help me decide what to do next — literal/context only
+- **d.** Give me a funny, weirdly accurate read — literal/context only
+- **e.** I don't have a specific goal — literal/context only
 
-Source: hypothetical; window: scenario.
+## n04 · slot-04
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Go. Someone has to become the first review. | D2:novel (general); D3:improvise (general) |
-| b | Ask a few questions before saying yes. | D2:conditional (general); D3:plan (general) |
-| c | Stick to the route. Boring can be a love language. | D2:familiar (general); D3:plan (general) |
-| d | Only if my travel companion is into it too. | D2:conditional (general) |
+**Optional, and you can keep it broad: is there something you feel a bit tender or unsure about lately?**
 
-## q05 · slot-05
+Pick the closest answer. This guides the conversation; it is not a diagnosis.
 
-The restaurant is viral. Your friend is becoming hangry in real time.
+- Role: `self_report`
+- Window: `current`
+- Target: `self`
+- Domain/facet: `optional_tender_topic`
+- Claim limit: Do not infer universal insecurity, pathology, or a stable self-esteem trait.
 
-You planned to eat here, but the wait is 90 minutes. What's your first move?
+Options:
+- **a.** How I come across to people — literal/context only
+- **b.** Whether I am doing enough or keeping up — literal/context only
+- **c.** A choice or goal I care about — literal/context only
+- **d.** Something else — literal/context only
+- **e.** I'd rather not say, or nothing comes to mind — literal/context only
 
-Source: hypothetical; window: scenario.
+## n05 · slot-05
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Find food now. The famous noodles will survive without us. | D1:people (general) |
-| b | Stay. We planned the day around this place. | D1:task (general); D3:plan (general) |
-| c | Ask what they want and decide together. | D1:people (general) |
-| d | Grab myself a snack and let them choose. | D1:self (general) |
+**Would you want an optional feature where you invite one chosen friend to guess or gently challenge one of your reads? Nothing would be shared unless you chose to invite them.**
 
-## q06 · slot-06
+Pick the closest answer. This guides the conversation; it is not a diagnosis.
 
-You're on a trip. “Quick favor?” has found your location.
+- Role: `self_report`
+- Window: `current`
+- Target: `self_and_chosen_friend`
+- Domain/facet: `consensual_friend_challenge`
+- Claim limit: Does not establish relationship trust or sharing consent.
 
-Work or family needs something handled now. It's important, but not an emergency. What do you do?
+Options:
+- **a.** Yes, that sounds fun — literal/context only
+- **b.** Maybe, after I see my own read — literal/context only
+- **c.** No, keep this just for me — literal/context only
+- **d.** Not sure yet — literal/context only
 
-Source: hypothetical; window: scenario.
+## n06 · slot-06
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Handle it now. The trip can pause. | D1:people (general); D11:duty (general) |
-| b | Say when I can help later. Finish the current plan. | D1:task (general); D11:autonomy (general) |
-| c | Ask someone else to cover it. I'm away. | D1:self (general); D11:autonomy (general) |
-| d | Do the smallest useful fix, then get back to the trip. | D1:task (general); D3:plan (general) |
+**If Genii checks whether a read fits, what approach would feel right to you?**
 
-## q07 · slot-07
+Pick the closest answer. This guides the conversation; it is not a diagnosis.
 
-You ordered a salad. The group ordered a financial event.
+- Role: `self_report`
+- Window: `current`
+- Target: `self`
+- Domain/facet: `fit_feedback_tone_and_permission`
+- Claim limit: Does not establish agreement, disagreement, or current fit of any interpretation.
 
-On a trip with friends, the bill includes pricey extras you didn't use. They suggest splitting evenly. Your move?
+Options:
+- **a.** Ask gently and keep it brief — literal/context only
+- **b.** Be direct; I'll tell you whether it fits — literal/context only
+- **c.** Keep it playful, but let me say what missed — literal/context only
+- **d.** Ask permission before opening feedback — literal/context only
 
-Source: hypothetical; window: scenario.
+## n07 · slot-07
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Ask everyone to pay for what they actually used. | D8:proportional (friends); D7:direct (friends) |
-| b | Split evenly. I'd pay a little to end the table math. | D8:absorb (friends) |
-| c | Explain my share privately and ask to adjust it. | D8:proportional (friends); D7:soften (friends) |
-| d | Pay the extra. Say nothing. Notice everything. | D8:absorb (friends); D7:hint (friends) |
+**A social invitation arrived, and your enthusiasm did not RSVP at the same speed. Thinking of the latest example this past month, what did you actually do?**
 
-## q08 · slot-08
+Use the latest real example from the past month. No example, Other, and Skip stay separate.
 
-Last time a plan went off-script, did you also go off-script?
+- Role: `actual_event`
+- Window: `latest_instance_past_month`
+- Target: `friends_or_group`
+- Domain/facet: `social_purpose_vs_enjoyment`
+- Claim limit: Purpose and enjoyment are separate; neither attendance nor refusal establishes sociability, selfishness, or people-pleasing.
 
-Think of the most recent time in the past month. What did you actually do when the plan fell apart?
+Options:
+- **a.** Attended as planned — D_MODE:join@social
+- **b.** Joined for part of it — D_MODE:partial@social
+- **c.** Suggested a different way to take part — D_MODE:reshape@social
+- **d.** Declined and let them know — D_MODE:decline@social
 
-Source: actual_event; window: latest_instance_past_month.
+## n08 · slot-08
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Changed course immediately. New plot, let's go. | D3:improvise (general) |
-| b | Made a new plan before doing anything. | D3:plan (general) |
-| c | Asked someone else what they wanted to do. | D1:people (general); D3:consult (general) |
-| d | Carried on and hoped the problem got bored. | D3:avoid (general) |
+**What mattered most in that choice?**
 
-## q09 · slot-09
+Use the latest real example from the past month. No example, Other, and Skip stay separate.
 
-A month's worth of bills just landed in your account. As a gift. Breathe.
+- Role: `actual_event`
+- Window: `latest_instance_past_month`
+- Target: `same_friends_or_group`
+- Domain/facet: `social_motive`
+- Claim limit: Direct motive report for one event, not a hidden motive diagnosis.
+- Follow-up predicate: authored `n07` answer only
 
-It's yours to keep. What gets first dibs?
+Options:
+- **a.** I was looking forward to it — D_MOTIVE:enjoyment@social
+- **b.** I cared about the occasion's purpose — D_MOTIVE:purpose@social
+- **c.** I wanted time with those people — D_MOTIVE:company@social
+- **d.** My time, energy, or other plans decided it — D_MOTIVE:capacity@social
+- **e.** Avoiding tension mattered most — D_MOTIVE:avoid_tension@social
+- **f.** Something else — literal/context only
 
-Source: hypothetical; window: scenario.
+## n09 · slot-09
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Savings. I want the cushion before the confetti. | D4:security (general); D3:plan (general) |
-| b | A new experience I've been putting off. | D4:enjoyment (general); D2:novel (general) |
-| c | Something that buys my time back. | D4:freedom (general) |
-| d | The recognizable brand. Yes, the logo is part of the appeal. | D4:status (general); D9:recognition (general) |
+**A close friend asks you to come along to a low-key thing. You like them, but the event itself is not your scene. What's your move?**
 
-## q10 · slot-10
+Choose what you would most likely do; this is an intention, not proof of past behavior.
 
-{close} orders the extras. Apparently, so does your wallet.
+- Role: `hypothetical`
+- Window: `scenario`
+- Target: `close_friend`
+- Domain/facet: `friend_context_shift`
+- Claim limit: Does not establish what the respondent does in real events.
 
-You're out together. They suggest splitting the bill evenly, including extras only they ordered. What do you do?
+Options:
+- **a.** Go; the friend is the good part — D_MODE:join@social, D_SUPPORT:show_up@relationship
+- **b.** Suggest something we'd both enjoy — D_MODE:reshape@social, D_SUPPORT:alternative@relationship
+- **c.** Pass kindly; liking them doesn't make every plan my plan — D_MODE:decline@social, D_SUPPORT:decline@relationship
+- **d.** Ask what they need from me before deciding — D_MODE:clarify@social, D_SUPPORT:clarify@relationship
 
-Source: hypothetical; window: scenario.
+## n10 · slot-10
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Ask them to cover their extras. The dessert knows whose it is. | D8:proportional (close); D7:direct (close) |
-| b | Explain my share privately and adjust the split. | D8:proportional (close); D7:soften (close) |
-| c | Split evenly. Less math, more evening. | D8:absorb (close) |
-| d | Pay the extra and leave it unmentioned. | D8:absorb (close); D7:avoid (close) |
+**Same low-key event, but the person asking is someone you know only a little. What would you most likely do?**
 
-## q81 · slot-10
+Choose what you would most likely do; this is an intention, not proof of past behavior.
 
-Someone important to you orders the extras. Apparently, so does your wallet.
+- Role: `hypothetical`
+- Window: `scenario`
+- Target: `acquaintance_or_newer_friend`
+- Domain/facet: `accompaniment_context_shift`
+- Claim limit: Difference from n09 may reflect event comfort, not a global closeness trait.
 
-You're out together. They suggest splitting the bill evenly, including extras only they ordered. What do you do?
+Options:
+- **a.** Go; trying the event sounds fine — D_MODE:join@social
+- **b.** Ask for details, then decide — D_MODE:clarify@social
+- **c.** Suggest another way to hang out — D_MODE:reshape@social
+- **d.** Pass; the event isn't for me — D_MODE:decline@social
 
-Source: hypothetical; window: scenario.
+## n11 · slot-11
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Ask them to cover their extras. The dessert knows whose it is. | D8:proportional (general); D7:direct (general) |
-| b | Explain my share privately and adjust the split. | D8:proportional (general); D7:soften (general) |
-| c | Split evenly. Less math, more evening. | D8:absorb (general) |
-| d | Pay the extra and leave it unmentioned. | D8:absorb (general); D7:avoid (general) |
+**In the past month, think of a recent moment when you contributed to something other people would notice. What did you most want from it?**
 
-## q94 · slot-11
+Use the latest real example from the past month. No example, Other, and Skip stay separate.
 
-When does your day usually start loading?
+- Role: `actual_event`
+- Window: `latest_instance_past_month`
+- Target: `work_school_or_group`
+- Domain/facet: `recognition_motive`
+- Claim limit: Wanting credit or visibility is not proof of insecurity, vanity, or narcissism.
 
-Over the past month, what time did you usually wake up? Sleepy staring at the ceiling still counts as awake.
+Options:
+- **a.** The thing itself going well — D_RECOGNITION:outcome@work
+- **b.** People knowing I helped — D_RECOGNITION:claim_credit@work
+- **c.** A chance to show what I can do — D_RECOGNITION:show_skill@work
+- **d.** I wasn't looking for anything in particular — D_RECOGNITION:none_specific@work
 
-Source: self_report; window: past_month.
+## n12 · slot-12
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Before 6 a.m. | wake=before 06:00 |
-| b | 6 to before 8 a.m. | wake=06:00-08:00 |
-| c | 8 to 9 a.m. | wake=08:00-09:00 |
-| d | After 9 a.m. | wake=after 09:00 |
-| e | It varies too much for one range. | wake=variable |
+**Think of a recent time this month someone around you got praise for something you also care about. Your inner scoreboard might wake up. What did you actually do next?**
 
-## q13 · slot-12
+Use the latest real example from the past month. No example, Other, and Skip stay separate.
 
-Family needs a loan. Your bank balance would also like one.
+- Role: `actual_event`
+- Window: `latest_instance_past_month`
+- Target: `peer_or_comparison_group`
+- Domain/facet: `recognition_comparison`
+- Claim limit: A single action does not imply envy, competitiveness, or insecurity.
 
-Your month is already tight. They promise to pay you back. What's your response?
+Options:
+- **a.** Congratulated them — D_RECOGNITION:congratulate@work
+- **b.** Asked how they got the opportunity — D_RECOGNITION:learn_process@work
+- **c.** Made my own contribution visible — D_RECOGNITION:claim_credit@work
+- **d.** Returned to what I was working on — D_RECOGNITION:return_to_task@work
 
-Source: hypothetical; window: scenario.
+## n13 · slot-13
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Say what I can afford and lend that amount. | D8:limit (family); D7:direct (family) |
-| b | Ask what's going on and find another way to help. | D8:limit (family); D11:duty (family) |
-| c | Lend it. I don't want family left stranded. | D8:absorb (family); D11:duty (family) |
-| d | Decline. My own bills have called dibs. | D8:limit (family); D11:autonomy (family) |
+**Think of the latest criticism you received this month. Before deciding whether it was fair, what did you do first?**
 
-## q95 · slot-13
+Use the latest real example from the past month. No example, Other, and Skip stay separate.
 
-How much sleep makes it into the final cut?
+- Role: `actual_event`
+- Window: `latest_instance_past_month`
+- Target: `critic_or_feedback_source`
+- Domain/facet: `response_to_credible_criticism`
+- Claim limit: Does not measure openness, resilience, or establish that every criticism was accurate.
 
-Over the past month, how long did you usually actually sleep? Time in bed thinking about everything doesn't count.
+Options:
+- **a.** Asked what they meant or for an example — D_CRITICISM:clarify@feedback
+- **b.** Explained my side — D_CRITICISM:explain@feedback
+- **c.** Took time before responding — D_CRITICISM:pause@feedback
+- **d.** Looked for one part I could use — D_CRITICISM:revise@feedback
 
-Source: self_report; window: past_month.
+## n14 · slot-14
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Under 6 hours. | sleepDuration=under-6-hours |
-| b | 6 to under 7 hours. | sleepDuration=6-to-under-7-hours |
-| c | 7 to under 9 hours. | sleepDuration=7-to-under-9-hours |
-| d | 9 hours or more. | sleepDuration=9-hours-or-more |
-| e | It varies too much for one range. | sleepDuration=variable |
+**In the past month, was there a moment you realized something you said or did landed badly with someone? What happened next? The tiny repair department is open.**
 
-## q15 · slot-14
+Use the latest real example from the past month. No example, Other, and Skip stay separate.
 
-Your housemates believe in a cleaning fairy. It's you. You're the fairy.
+- Role: `actual_event`
+- Window: `latest_instance_past_month`
+- Target: `person_affected`
+- Domain/facet: `repair_after_impact`
+- Claim limit: A single repair episode does not establish empathy, fault, or relationship outcome.
 
-You've been doing more than your share. How do you handle it?
+Options:
+- **a.** I checked in and tried to make it right — D_REPAIR:check_in@relationship
+- **b.** I explained what I meant — D_REPAIR:explain@relationship
+- **c.** I gave them space and came back later — D_REPAIR:space_return@relationship
+- **d.** I wasn't sure what to do — D_REPAIR:uncertain@relationship
 
-Source: hypothetical; window: scenario.
+## n15 · slot-15
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Ask to split the chores by task. | D8:proportional (household); D7:direct (household) |
-| b | Make a schedule. The trash needs shared custody. | D8:proportional (household); D3:plan (general) |
-| c | Do it myself. Discussing the dish takes longer. | D8:absorb (household); D7:avoid (household) |
-| d | Stop doing their share. Let the magic wear off. | D8:limit (household) |
+**Think of a recent time this month a particular person's reply mattered to you and took longer than you'd hoped. What did you actually do while waiting? You do not need to name them.**
 
-## q82 · slot-14
+Use the latest real example from the past month. No example, Other, and Skip stay separate.
 
-The shared project is starting to feel suspiciously like your solo debut.
+- Role: `actual_event`
+- Window: `latest_instance_past_month`
+- Target: `person_whose_reply_mattered_to_respondent`
+- Domain/facet: `chosen_person_reply_context`
+- Claim limit: A wait response alone does not imply attachment style, rejection fear, or the other person's intent.
 
-One deadline, several people, different amounts of free time. How do you handle the workload?
+Options:
+- **a.** Sent one follow-up message — D_REPLY:follow_up@relationship
+- **b.** Waited without checking the chat — D_REPLY:wait@relationship
+- **c.** Checked the chat or their status — D_REPLY:check@relationship
+- **d.** Couldn't tell what I did — D_REPLY:unsure@relationship
 
-Source: hypothetical; window: scenario.
+## n16 · slot-16
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Name each person's contribution and split the work. | D8:proportional (general); D7:direct (general) |
-| b | Send a private message about my share. | D8:proportional (general); D7:soften (general) |
-| c | Take on the extra to keep things moving. | D8:absorb (general) |
-| d | State what I can do and stop there. | D8:limit (general) |
+**In the past month, when you wanted something from a person whose opinion mattered to you, how did you let them know?**
 
-## q16 · slot-15
+Use the latest real example from the past month. No example, Other, and Skip stay separate.
 
-Think of the last friend-group bill that got… interesting.
+- Role: `actual_event`
+- Window: `latest_instance_past_month`
+- Target: `person_whose_response_was_wanted`
+- Domain/facet: `need_expression`
+- Claim limit: Does not establish a universal communication style or the reason for withholding.
 
-In the past month, when a shared cost got awkward, what did you actually do?
+Options:
+- **a.** Said what I wanted plainly — D_NEED:direct@relationship
+- **b.** Hinted or waited to see if they'd notice — D_NEED:hint@relationship
+- **c.** Tried to handle it myself — D_NEED:self_handle@relationship
+- **d.** Decided it wasn't worth bringing up — D_NEED:withhold@relationship
 
-Source: actual_event; window: latest_instance_past_month.
+## n17 · slot-17
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Said the amount plainly. Gave the number a voice. | D8:proportional (friends); D7:direct (friends) |
-| b | Sent a careful message privately. | D8:proportional (friends); D7:soften (friends) |
-| c | Paid or lent the money and let it go. | D8:absorb (friends); D7:avoid (friends) |
-| d | Paid my share and left the rest for someone else to sort. | D8:proportional (friends) |
+**Think of the latest time someone offered you practical help this month. Did you take the assist?**
 
-## q17 · slot-16
+Use the latest real example from the past month. No example, Other, and Skip stay separate.
 
-When do you usually log off being a person?
+- Role: `actual_event`
+- Window: `latest_instance_past_month`
+- Target: `person_offering_help`
+- Domain/facet: `receiving_help`
+- Claim limit: One response does not show dependency, independence, or comfort with all help.
 
-Over the past month, what time did you usually go to sleep? Count actual sleep, not getting into bed to scroll.
+Options:
+- **a.** Accepted it — D_RECEIVE:accept@support
+- **b.** Accepted after talking through the details — D_RECEIVE:clarify_accept@support
+- **c.** Declined and handled it myself — D_RECEIVE:decline@support
+- **d.** Declined but asked for a different kind of support — D_RECEIVE:redirect@support
 
-Source: self_report; window: past_month.
+## n18 · slot-18
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Before 11 p.m. Early credits. | bedtime=before 23:00 |
-| b | 11 p.m. to 1 a.m. The late showing. | bedtime=23:00-01:00 |
-| c | After 1 a.m. Bonus content. | bedtime=after 01:00 |
-| d | It varies, or I work shifts. Different showtimes. | bedtime=variable-or-shifts |
+**After a recent awkward conversation this month, once you had said your piece, what happened next for you?**
 
-## q18 · slot-17
+Use the latest real example from the past month. No example, Other, and Skip stay separate.
 
-{close} goes quiet after a hard day. Your brain starts writing… what?
+- Role: `actual_event`
+- Window: `latest_instance_past_month`
+- Target: `self_after_explanation`
+- Domain/facet: `recovery_after_explanation`
+- Claim limit: Does not establish emotional regulation or recovery time unless directly measured elsewhere.
 
-You haven't heard back. What's your first interpretation or response?
+Options:
+- **a.** We talked again and understood each other better — D_RECOVERY:talk_again@relationship
+- **b.** I took time away from the conversation — D_RECOVERY:take_time@relationship
+- **c.** I talked it through with someone else — D_RECOVERY:talk_elsewhere@relationship
+- **d.** I focused on another activity — D_RECOVERY:activity@relationship
+- **e.** I kept turning it over in my head — D_RECOVERY:replay@relationship
 
-Source: hypothetical; window: scenario.
+## n19 · slot-19
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | They're probably busy. Silence can just be silence. | D5:secure (close) |
-| b | Worry they're upset with me and send a check-in. | D5:worry (close); D6:support (close) |
-| c | Reread my message, looking for what I did wrong. | D5:reassurance (close); D6:private (close) |
-| d | Ask directly if we're okay. Skip the detective season. | D5:reassurance (close); D7:direct (close) |
+**In the past month, think of a request for help that competed with your time or energy. Your calendar is a witness. What did you do?**
 
-## q83 · slot-17
+Use the latest real example from the past month. No example, Other, and Skip stay separate.
 
-Someone important to you goes quiet after a hard day. Your brain starts writing… what?
+- Role: `actual_event`
+- Window: `latest_instance_past_month`
+- Target: `requester`
+- Domain/facet: `helping_boundary`
+- Claim limit: Saying no is not selfishness; saying yes is not proof of generosity or coercion.
 
-You haven't heard back. What's your first interpretation or response?
+Options:
+- **a.** Helped, even though it squeezed my own plan — D_BOUNDARY:full_help@capacity
+- **b.** Helped in a smaller way I could manage — D_BOUNDARY:limited_help@capacity
+- **c.** Offered another time or person — D_BOUNDARY:reschedule@capacity
+- **d.** Said no — D_BOUNDARY:decline@capacity
 
-Source: hypothetical; window: scenario.
+## n20 · slot-20
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | They're probably busy. Silence can just be silence. | D5:secure (general) |
-| b | Worry they're upset with me and send a check-in. | D5:worry (general); D6:support (general) |
-| c | Reread my message, looking for what I did wrong. | D5:reassurance (general); D6:private (general) |
-| d | Ask directly if we're okay. Skip the detective season. | D5:reassurance (general); D7:direct (general) |
+**What mattered most in that choice, whether you helped or not?**
 
-## q19 · slot-18
+Use the latest real example from the past month. No example, Other, and Skip stay separate.
 
-It's 11 p.m. Today deserves a one-star review.
+- Role: `actual_event`
+- Window: `latest_instance_past_month`
+- Target: `same_requester`
+- Domain/facet: `helping_motive`
+- Claim limit: Directly reported motive for one event; not a moral judgment.
+- Follow-up predicate: authored `n19` answer only
 
-How much of the story do you share with {close}?
+Options:
+- **a.** I wanted to help that person — D_HELP_MOTIVE:care@capacity
+- **b.** It felt like the right thing to do — D_HELP_MOTIVE:principle@capacity
+- **c.** My available time or energy set the limit — D_HELP_MOTIVE:capacity@capacity
+- **d.** I felt pressure or found it hard to refuse — D_HELP_MOTIVE:pressure@capacity
+- **e.** Something else — literal/context only
 
-Source: hypothetical; window: scenario.
+## n21 · slot-21
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | The whole thing. I ask them to listen. | D6:support (close) |
-| b | The trailer, then I go quiet. | D6:selective (close) |
-| c | I sort it out privately before telling them anything. | D6:private (close) |
-| d | Someone else gets the first call. | D6:selective (general) |
+**For a shared plan or task you cared about this month, what role did you actually take?**
 
-## q84 · slot-18
+Use the latest real example from the past month. No example, Other, and Skip stay separate.
 
-It's 11 p.m. Today deserves a one-star review.
+- Role: `actual_event`
+- Window: `latest_instance_past_month`
+- Target: `shared_task_or_plan`
+- Domain/facet: `control_and_delegation`
+- Claim limit: Organizing does not imply controlling; adapting does not imply passivity.
 
-How much of the story do you share with someone important to you?
+Options:
+- **a.** Set the plan and kept track of the pieces — D_ROLE:organize@group
+- **b.** Took one piece and let others handle theirs — D_ROLE:own_piece@group
+- **c.** Asked what others wanted before choosing a role — D_ROLE:invite_input@group
+- **d.** Stayed flexible and adjusted as we went — D_ROLE:adapt@group
 
-Source: hypothetical; window: scenario.
+## n22 · slot-22
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | The whole thing. I ask them to listen. | D6:support (general) |
-| b | The trailer, then I go quiet. | D6:selective (general) |
-| c | I sort it out privately before telling them anything. | D6:private (general) |
-| d | Someone else gets the first call. | D6:selective (general) |
+**Thinking about that shared plan: did it change, and if so, what did you do first?**
 
-## q20 · slot-19
+Use the latest real example from the past month. No example, Other, and Skip stay separate.
 
-How often did dinner have a tracking number?
+- Role: `actual_event`
+- Window: `latest_instance_past_month`
+- Target: `same_group_or_plan`
+- Domain/facet: `response_to_changed_plan`
+- Claim limit: One changed plan does not establish rigidity or flexibility as a trait.
+- Follow-up predicate: authored `n21` answer only
 
-In the last 7 days, how many dinners came from a restaurant, takeout, or delivery? Eating there counts too.
+Options:
+- **a.** Worked out the new details — D_CHANGE:replan@group
+- **b.** Said what part was frustrating or inconvenient — D_CHANGE:state_impact@group
+- **c.** Went with it and adjusted on the fly — D_CHANGE:adapt@group
+- **d.** Asked to keep the original plan — D_CHANGE:keep_original@group
+- **e.** The plan didn't change — D_CHANGE:no_change@group
 
-Source: self_report; window: last_7_days.
+## n23 · slot-23
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | None. Zero restaurant dinners. | takeaway_days=0; takeaway=0 days / last 7 |
-| b | 1–2 dinners. An occasional guest appearance. | takeaway_days=1; takeaway=1-2 days / last 7 |
-| c | 3–4 dinners. A recurring character. | takeaway_days=2; takeaway=3-4 days / last 7 |
-| d | 5–7 dinners. A series regular. | takeaway_days=3; takeaway=5-7 days / last 7 |
+**Think of a recent moment this month you felt irritated with someone. What did you show on the outside?**
 
-## q21 · slot-20
+Use the latest real example from the past month. No example, Other, and Skip stay separate.
 
-Last time you felt ignored by {close}, what made it out of your head?
+- Role: `actual_event`
+- Window: `latest_instance_past_month`
+- Target: `self_and_interaction_partner`
+- Domain/facet: `inner_feeling_vs_outward_action`
+- Claim limit: A quiet exterior is not evidence of low intensity or calmness.
 
-Think of the most recent time in the past month. Pick what you actually did, not the comeback you wrote in the shower.
+Options:
+- **a.** I said I was irritated — D_EXPRESSION:name_it@emotion · frustration/response:name_it
+- **b.** I stayed polite and dealt with it later — D_EXPRESSION:polite_later@emotion · frustration/response:polite_later
+- **c.** It came out in my tone or actions — D_EXPRESSION:showed@emotion · frustration/response:showed
+- **d.** I stepped away — D_EXPRESSION:step_away@emotion · frustration/response:step_away
 
-Source: actual_event; window: latest_instance_past_month.
+## n24 · slot-24
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Said what was bothering me. Out loud, to them. | D7:direct (close) |
-| b | Eased into the conversation gently. | D7:soften (close) |
-| c | Asked for time, then came back to talk. | D7:pause (close); D6:private (close) |
-| d | Let it pass without having the conversation. | D7:avoid (close); D6:private (close) |
+**How strong did the irritation feel inside at the time?**
 
-## q85 · slot-20
+Use the latest real example from the past month. No example, Other, and Skip stay separate.
 
-Last time you felt ignored by someone important to you, what made it out of your head?
+- Role: `actual_event`
+- Window: `latest_instance_past_month`
+- Target: `self`
+- Domain/facet: `inner_feeling_intensity`
+- Claim limit: Retrospective self-rating for one event, not a stable emotional-intensity scale.
+- Follow-up predicate: authored `n23` answer only
 
-Think of the most recent time in the past month. Pick what you actually did, not the comeback you wrote in the shower.
+Options:
+- **a.** A small flicker — D_INTENSITY:low@emotion · frustration/feeling:low
+- **b.** Noticeable, but manageable — D_INTENSITY:medium@emotion · frustration/feeling:medium
+- **c.** Strong; it took up real space — D_INTENSITY:high@emotion · frustration/feeling:high
+- **d.** Hard to tell now — D_INTENSITY:unsure@emotion · frustration/feeling:unsure
 
-Source: actual_event; window: latest_instance_past_month.
+## n25 · slot-25
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Said what was bothering me. Out loud, to them. | D7:direct (general) |
-| b | Eased into the conversation gently. | D7:soften (general) |
-| c | Asked for time, then came back to talk. | D7:pause (general); D6:private (general) |
-| d | Let it pass without having the conversation. | D7:avoid (general); D6:private (general) |
+**This month, when a decision felt uncertain but reversible, what did you actually do?**
 
-## q22 · slot-21
+Use the latest real example from the past month. No example, Other, and Skip stay separate.
 
-You had a fight. {close} sends a raccoon eating grapes.
+- Role: `actual_event`
+- Window: `latest_instance_past_month`
+- Target: `self_and_decision`
+- Domain/facet: `chosen_risk_control`
+- Claim limit: Does not establish decisiveness, anxiety, or control in other stakes.
 
-No apology. No explanation. Just a very well-fed raccoon. What do you send back?
+Options:
+- **a.** Picked a direction and tried it — D_UNCERTAINTY:try@decision
+- **b.** Got one or two more details first — D_UNCERTAINTY:check@decision
+- **c.** Asked someone I trust what they thought — D_UNCERTAINTY:consult@decision
+- **d.** Waited until it felt clearer — D_UNCERTAINTY:wait@decision
 
-Source: hypothetical; window: scenario.
+## n26 · slot-26
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | “He's incredible. Can we talk about yesterday?” | D7:direct (close); D12:repair (close) |
-| b | A meme back, then a request to talk tonight. | D7:soften (close); D12:repair (close) |
-| c | A meme back. Let the raccoon handle the rest. | D7:avoid (close) |
-| d | “I need a day. Then let's talk.” | D7:pause (close); D6:private (close) |
+**If a goal you cared about slipped behind schedule this month, what did you do next?**
 
-## q86 · slot-21
+Use the latest real example from the past month. No example, Other, and Skip stay separate.
 
-You had a fight. someone important to you sends a raccoon eating grapes.
+- Role: `actual_event`
+- Window: `latest_instance_past_month`
+- Target: `self_and_goal`
+- Domain/facet: `goal_response`
+- Claim limit: Does not establish motivation or ability from one goal episode.
 
-No apology. No explanation. Just a very well-fed raccoon. What do you send back?
+Options:
+- **a.** Made the next step smaller — D_GOAL:shrink_step@goal
+- **b.** Put in extra time to catch up — D_GOAL:extra_effort@goal
+- **c.** Changed the plan or deadline — D_GOAL:revise@goal
+- **d.** Paused to figure out what was getting in the way — D_GOAL:diagnose@goal
 
-Source: hypothetical; window: scenario.
+## n27 · slot-27
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | “He's incredible. Can we talk about yesterday?” | D7:direct (general); D12:repair (general) |
-| b | A meme back, then a request to talk tonight. | D7:soften (general); D12:repair (general) |
-| c | A meme back. Let the raccoon handle the rest. | D7:avoid (general) |
-| d | “I need a day. Then let's talk.” | D7:pause (general); D6:private (general) |
+**Over the past month, how often did your usual sleep leave you feeling restored when you woke up?**
 
-## q23 · slot-22
+A direct report, not a health score. Variation is a real answer.
 
-{close} says “it's fine.” The period says otherwise.
+- Role: `self_report`
+- Window: `past_month`
+- Target: `self`
+- Domain/facet: `sleep_restoration_usual`
+- Claim limit: Do not infer duration, adequacy, cause, or medical status.
 
-You forgot something important to them. What do you do next?
+Options:
+- **a.** Most mornings — literal/context only · sleep_restoration=3 (Most mornings)
+- **b.** Some mornings — literal/context only · sleep_restoration=2 (Some mornings)
+- **c.** Not often — literal/context only · sleep_restoration=1 (Not often)
+- **d.** It varied too much to say — literal/context only
 
-Source: hypothetical; window: scenario.
+## n28 · slot-28
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Apologize and ask what would help make it right. | D12:repair (close); D7:direct (close) |
-| b | Apologize and explain what happened. | D12:explain (close); D7:soften (close) |
-| c | Plan something thoughtful to make up for it. | D12:action (close); D3:plan (general) |
-| d | Ask for some space and agree on when we'll talk. | D12:pause (close); D7:pause (close) |
+**And over just the last seven days, how often did sleep leave you feeling restored when you woke up?**
 
-## q87 · slot-22
+A direct report, not a health score. Variation is a real answer.
 
-They say “it's fine.” The period says otherwise.
+- Role: `self_report`
+- Window: `last_7_days`
+- Target: `self`
+- Domain/facet: `sleep_restoration_recent`
+- Claim limit: No sleep cause, duration, or clinical conclusion.
 
-You forgot something important to someone you care about. What do you do next?
+Options:
+- **a.** Most mornings — literal/context only · sleep_restoration=3 (Most mornings)
+- **b.** Some mornings — literal/context only · sleep_restoration=2 (Some mornings)
+- **c.** Not often — literal/context only · sleep_restoration=1 (Not often)
+- **d.** It varied too much to say — literal/context only
 
-Source: hypothetical; window: scenario.
+## n29 · slot-29
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Apologize and ask what would help make it right. | D12:repair (general); D7:direct (general) |
-| b | Apologize and explain what happened. | D12:explain (general); D7:soften (general) |
-| c | Plan something thoughtful to make up for it. | D12:action (general); D3:plan (general) |
-| d | Ask for some space and agree on when we'll talk. | D12:pause (general); D7:pause (general) |
+**Over the past month, how steady was your usual meal timing from day to day?**
 
-## q24 · slot-23
+A direct report, not a health score. Variation is a real answer.
 
-{close} cancels. A new date is apparently sold separately.
+- Role: `self_report`
+- Window: `past_month`
+- Target: `self`
+- Domain/facet: `meal_regular_usual`
+- Claim limit: Do not infer eating disorder, adequacy, body state, or health cause.
 
-They haven't suggested another time. What's your first interpretation or response?
+Options:
+- **a.** Mostly steady — literal/context only · meal_regularity=3 (Mostly steady)
+- **b.** Some days steady, some not — literal/context only · meal_regularity=2 (Some days steady, some not)
+- **c.** Often shifted around — literal/context only · meal_regularity=1 (Often shifted around)
+- **d.** My days varied too much for a usual pattern — literal/context only
 
-Source: hypothetical; window: scenario.
+## n30 · slot-30
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | They're busy. We'll find another time. | D5:secure (close) |
-| b | Worry they're pulling away and want reassurance. | D5:worry (close); D6:support (close) |
-| c | Ask directly whether we're okay. | D5:reassurance (close); D7:direct (close) |
-| d | Wait. I don't have enough information to write the story. | D5:uncertain (close); D6:private (close) |
+**And over just the last seven days, how steady was your meal timing from day to day?**
 
-## q88 · slot-23
+A direct report, not a health score. Variation is a real answer.
 
-Someone important to you cancels. A new date is apparently sold separately.
+- Role: `self_report`
+- Window: `last_7_days`
+- Target: `self`
+- Domain/facet: `meal_regular_recent`
+- Claim limit: No diet-quality, adequacy, medical, or causal claim.
 
-They haven't suggested another time. What's your first interpretation or response?
+Options:
+- **a.** Mostly steady — literal/context only · meal_regularity=3 (Mostly steady)
+- **b.** Some days steady, some not — literal/context only · meal_regularity=2 (Some days steady, some not)
+- **c.** Often shifted around — literal/context only · meal_regularity=1 (Often shifted around)
+- **d.** My days varied too much for a usual pattern — literal/context only
 
-Source: hypothetical; window: scenario.
+## n31 · slot-31
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | They're busy. We'll find another time. | D5:secure (general) |
-| b | Worry they're pulling away and want reassurance. | D5:worry (general); D6:support (general) |
-| c | Ask directly whether we're okay. | D5:reassurance (general); D7:direct (general) |
-| d | Wait. I don't have enough information to write the story. | D5:uncertain (general); D6:private (general) |
+**Over the past month, how often did you have enough energy for the things you wanted or needed to do?**
 
-## q29 · slot-24
+A direct report, not a health score. Variation is a real answer.
 
-Last hangout where you carried more than {close}: did you say something?
+- Role: `self_report`
+- Window: `past_month`
+- Target: `self`
+- Domain/facet: `daytime_energy_usual`
+- Claim limit: No medical, sleep, nutrition, or mental-health cause inferred.
 
-Think of the latest time in the past month you paid more or did more of the organizing. What did you actually do?
+Options:
+- **a.** Most days — literal/context only · daytime_energy=3 (Most days)
+- **b.** Some days — literal/context only · daytime_energy=2 (Some days)
+- **c.** Not often — literal/context only · daytime_energy=1 (Not often)
+- **d.** It depended too much on the day to say — literal/context only
 
-Source: actual_event; window: latest_instance_past_month.
+## n32 · slot-32
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Pointed out the imbalance and asked for a fairer split. | D8:proportional (close); D7:direct (close) |
-| b | Sent a careful private message about my share. | D8:proportional (close); D7:soften (close) |
-| c | Covered the extra and kept the peace. | D8:absorb (close) |
-| d | Stopped covering the extra without explaining why. | D8:limit (close); D7:avoid (close) |
+**And over just the last seven days, how often did you have enough energy for the things you wanted or needed to do?**
 
-## q89 · slot-24
+A direct report, not a health score. Variation is a real answer.
 
-Last hangout where you carried more than someone important to you: did you say something?
+- Role: `self_report`
+- Window: `last_7_days`
+- Target: `self`
+- Domain/facet: `daytime_energy_recent`
+- Claim limit: No medical, sleep, nutrition, or mental-health cause inferred.
 
-Think of the latest time in the past month you paid more or did more of the organizing. What did you actually do?
+Options:
+- **a.** Most days — literal/context only · daytime_energy=3 (Most days)
+- **b.** Some days — literal/context only · daytime_energy=2 (Some days)
+- **c.** Not often — literal/context only · daytime_energy=1 (Not often)
+- **d.** It depended too much on the day to say — literal/context only
 
-Source: actual_event; window: latest_instance_past_month.
+## h01 · slot-33 · sealed check
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Pointed out the imbalance and asked for a fairer split. | D8:proportional (general); D7:direct (general) |
-| b | Sent a careful private message about my share. | D8:proportional (general); D7:soften (general) |
-| c | Covered the extra and kept the peace. | D8:absorb (general) |
-| d | Stopped covering the extra without explaining why. | D8:limit (general); D7:avoid (general) |
+**Your group has already picked a restaurant you don't care about, but you'd enjoy the company. What's your likeliest move?**
 
-## q30 · slot-25
+Your answer stays outside the portrait that made this prediction.
 
-Something went wrong. Did {close} get the live coverage or the recap?
+- Role: `hypothetical`
+- Window: `scenario`
+- Target: `friend_group`
+- Domain/facet: `social_purpose_vs_enjoyment`
+- Claim limit: No inference about actual event behavior; check answer must not update the frozen profile.
 
-Think of your most recent setback in the past month. What did you actually share?
+Options:
+- **a.** Go for the people — D_MODE:join@social
+- **b.** Suggest a place I'd also enjoy — D_MODE:reshape@social
+- **c.** Join for part of it — D_MODE:partial@social
+- **d.** Skip this one — D_MODE:decline@social
 
-Source: actual_event; window: latest_instance_past_month.
+## h02 · slot-34 · sealed check
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Told them quickly and asked for support. | D6:support (close) |
-| b | Gave them a smaller version first. | D6:selective (close) |
-| c | Worked through it privately before saying anything. | D6:private (close) |
-| d | Talked to someone else before telling them. | D6:selective (general) |
+**A close friend is nervous about giving a short talk and asks you to sit in the audience. What would you most likely do?**
 
-## q90 · slot-25
+Your answer stays outside the portrait that made this prediction.
 
-Something went wrong. Did someone important to you get the live coverage or the recap?
+- Role: `hypothetical`
+- Window: `scenario`
+- Target: `close_friend`
+- Domain/facet: `friend_accompaniment_context`
+- Claim limit: Held out from profile; one hypothetical answer is not validated prediction accuracy.
 
-Think of your most recent setback in the past month. What did you actually share?
+Options:
+- **a.** Go to support them — D_SUPPORT:show_up@relationship
+- **b.** Help them practice another way — D_SUPPORT:alternative@relationship
+- **c.** Ask what kind of support would help — D_SUPPORT:clarify@relationship
+- **d.** Say I can't make it — D_SUPPORT:decline@relationship
 
-Source: actual_event; window: latest_instance_past_month.
+## h03 · slot-35 · sealed check
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Told them quickly and asked for support. | D6:support (general) |
-| b | Gave them a smaller version first. | D6:selective (general) |
-| c | Worked through it privately before saying anything. | D6:private (general) |
-| d | Talked to someone else before telling them. | D6:selective (general) |
+**A teammate gets public credit for work you also helped with. What would you most likely do next?**
 
-## q31 · slot-26
+Your answer stays outside the portrait that made this prediction.
 
-You lose your job. The family group chat is still sending recipes.
+- Role: `hypothetical`
+- Window: `scenario`
+- Target: `peer_group`
+- Domain/facet: `recognition_and_comparison`
+- Claim limit: Does not reveal motive, insecurity, or fairness of the situation.
 
-Imagine this happened today. Who in your family would you tell, and when?
+Options:
+- **a.** Let the moment pass — D_RECOGNITION:none_specific@work
+- **b.** Mention my part in the work — D_RECOGNITION:claim_credit@work
+- **c.** Congratulate them, then talk privately about credit — D_RECOGNITION:claim_credit@work
+- **d.** Focus on the next task — D_RECOGNITION:return_to_task@work
 
-Source: hypothetical; window: scenario.
+## h04 · slot-36 · sealed check
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Tell them quickly. I need my people around me. | D6:support (family) |
-| b | Tell one person privately first. | D6:selective (family) |
-| c | Wait until I have a plan to go with the news. | D6:private (family); D3:plan (general) |
-| d | Handle it on my own for a while. | D6:distance (family) |
+**A reviewer points out a concrete flaw in a draft you care about. What's your first move?**
 
-## q32 · slot-27
+Your answer stays outside the portrait that made this prediction.
 
-Your family had a plan for your life. Cute. Was it your plan?
+- Role: `hypothetical`
+- Window: `scenario`
+- Target: `person_giving_feedback`
+- Domain/facet: `response_to_credible_criticism`
+- Claim limit: Hypothetical intent only; heldout answer never enters profile evidence.
 
-Think of the latest disagreement in the past month about something they wanted you to do. What did you actually do?
+Options:
+- **a.** Ask for a specific example — D_CRITICISM:clarify@feedback
+- **b.** Explain what I was aiming for — D_CRITICISM:explain@feedback
+- **c.** Take a beat before answering — D_CRITICISM:pause@feedback
+- **d.** Mark what I would revise — D_CRITICISM:revise@feedback
 
-Source: actual_event; window: latest_instance_past_month.
+## h05 · slot-37 · sealed check
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Said no and stuck with my own plan. | D11:autonomy (family); D7:direct (family) |
-| b | Found a compromise we could live with. | D11:conditional (family) |
-| c | Went along with what they wanted. | D11:duty (family); D1:people (general) |
-| d | Avoided the conversation for now. | D7:avoid (family) |
+**You notice a joke you made left someone quieter than before. What would you most likely do?**
 
-## q65 · slot-28
+Your answer stays outside the portrait that made this prediction.
 
-A plan hit a surprise problem. What was the face-to-inner-monologue ratio?
+- Role: `hypothetical`
+- Window: `scenario`
+- Target: `person_affected`
+- Domain/facet: `repair_after_impact`
+- Claim limit: Does not establish actual repair or the impact of a real interaction.
 
-Think of the latest time in the past month. Pick the closest combination of what you felt and what you did.
+Options:
+- **a.** Check in with them — D_REPAIR:check_in@relationship
+- **b.** Explain that I meant it playfully — D_REPAIR:explain@relationship
+- **c.** Give them room, then follow up — D_REPAIR:space_return@relationship
+- **d.** Wait to see if they bring it up — D_REPAIR:uncertain@relationship
 
-Source: actual_event; window: latest_instance_past_month.
+## h06 · slot-38 · sealed check
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | A flash of irritation. I said what needed changing. | frustration/feeling:present; frustration/response:direct |
-| b | Properly angry inside. Quiet outside while I decided. | frustration/feeling:high; frustration/response:pause |
-| c | Mildly bothered. Took a reset, moved to the next step. | frustration/feeling:low; frustration/recovery:reset |
-| d | Felt stuck. Asked someone to help untangle it. | frustration/feeling:uncertain; frustration/response:support |
+**Someone whose reply matters has not answered your invitation to meet this weekend. What would you most likely do next?**
 
-## q66 · slot-29
+Your answer stays outside the portrait that made this prediction.
 
-The deadline was getting closer. Their reply was not.
+- Role: `hypothetical`
+- Window: `scenario`
+- Target: `specific_person_whose_reply_matters`
+- Domain/facet: `chosen_person_reply_context`
+- Claim limit: Does not infer rejection fear or the other person's intention.
 
-Think of the latest time in the past month a message you needed sat unread. What did you feel and do?
+Options:
+- **a.** Send one follow-up — D_REPLY:follow_up@relationship
+- **b.** Wait without checking the chat — D_REPLY:wait@relationship
+- **c.** Check the chat or their status — D_REPLY:check@relationship
+- **d.** Decide later; I'm not sure — D_REPLY:unsure@relationship
 
-Source: actual_event; window: latest_instance_past_month.
+## h07 · slot-39 · sealed check
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Uneasy. Sent one clear check-in. | worry/feeling:present; worry/response:check_in |
-| b | Very worried. Checked the details again. | worry/feeling:high; worry/response:checking |
-| c | Not especially worried. Assumed they were busy and carried on. | worry/feeling:low; worry/response:continue |
-| d | Uncertain. Put the phone away for a bit. | worry/feeling:uncertain; worry/recovery:space |
+**A trusted friend offers to pick up one errand for you this week. What would you most likely do?**
 
-## q67 · slot-30
+Your answer stays outside the portrait that made this prediction.
 
-The plan you were looking forward to got canceled. Plot twist nobody ordered.
+- Role: `hypothetical`
+- Window: `scenario`
+- Target: `trusted_friend_offering_help`
+- Domain/facet: `receiving_help`
+- Claim limit: Does not imply dependence, refusal discomfort, or actual recovery.
 
-Think of the latest time in the past month. What happened inside, and what did you do next?
+Options:
+- **a.** Accept the offer — D_RECEIVE:accept@support
+- **b.** Say what kind of help would fit — D_RECEIVE:redirect@support
+- **c.** Thank them and handle it myself — D_RECEIVE:decline@support
+- **d.** Ask if we can revisit it later — D_RECEIVE:clarify_accept@support
 
-Source: actual_event; window: latest_instance_past_month.
+## h08 · slot-40 · sealed check
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Disappointed. Said I wanted to reschedule. | disappointment/feeling:present; disappointment/response:reschedule |
-| b | Sad. Took a quiet evening and revisited it later. | disappointment/feeling:present; disappointment/recovery:space |
-| c | Barely bothered. Made another plan. | disappointment/feeling:low; disappointment/response:adjust |
-| d | Let down. Asked what had changed. | disappointment/feeling:present; disappointment/response:context |
+**A friend asks you to help them move a shelf tonight, but you had planned a quiet evening. What would you most likely do?**
 
-## q68 · slot-31
+Your answer stays outside the portrait that made this prediction.
 
-You called someone the wrong name. In front of other people. Lovely.
+- Role: `hypothetical`
+- Window: `scenario`
+- Target: `requester`
+- Domain/facet: `helping_boundary`
+- Claim limit: One intended choice cannot establish selfishness, generosity, or a stable boundary style.
 
-If this happened in the past month, think of the most recent time. What did you feel and do?
+Options:
+- **a.** Help tonight — D_BOUNDARY:full_help@capacity
+- **b.** Offer a smaller bit of help — D_BOUNDARY:limited_help@capacity
+- **c.** Suggest another time — D_BOUNDARY:reschedule@capacity
+- **d.** Say I can't tonight — D_BOUNDARY:decline@capacity
 
-Source: actual_event; window: latest_instance_past_month.
+## Routine definitions
 
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Embarrassed. Laughed and corrected myself. | embarrassment/feeling:present; embarrassment/response:repair |
-| b | Intensely embarrassed. Went quiet for a beat. | embarrassment/feeling:high; embarrassment/response:pause |
-| c | A little awkward. Kept the conversation moving. | embarrassment/feeling:low; embarrassment/response:continue |
-| d | Embarrassed. Apologized and let the moment pass. | embarrassment/feeling:present; embarrassment/recovery:repair |
-
-## q69 · slot-32
-
-Your brain remembered the promise. After the other person waited. Excellent timing.
-
-Think of the latest time in the past month. What did you feel, and how did you respond?
-
-Source: actual_event; window: latest_instance_past_month.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Guilty. Apologized plainly. | guilt/feeling:present; guilt/response:repair |
-| b | Awful. Explained what happened and offered a fix. | guilt/feeling:high; guilt/recovery:repair |
-| c | A little guilty. Set a reminder for next time. | guilt/feeling:low; guilt/response:prevention |
-| d | Guilty. Asked for some time, then came back to it. | guilt/feeling:present; guilt/recovery:pause |
-
-## q70 · slot-33
-
-That good news you'd been quietly hoping for? It actually happened.
-
-Think of the latest time in the past month. How did the happy get out?
-
-Source: actual_event; window: latest_instance_past_month.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Delighted. Called someone to celebrate. | joy/feeling:present; joy/response:celebrate |
-| b | Fizzing with excitement. Made a plan for the next step. | joy/feeling:present; joy/response:act |
-| c | Happy. Kept it private and let it sink in. | joy/feeling:present; joy/recovery:savor |
-| d | Pleased. Told them exactly how much it meant. | joy/feeling:present; joy/response:express |
-
-## q71 · slot-34
-
-The stressful thing finally ended. Did the rest of you get the memo?
-
-Think of the latest time in the past month a stressful situation ended. What did relief look like for you?
-
-Source: actual_event; window: latest_instance_past_month.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Felt relieved. Exhaled before doing anything else. | relief/feeling:present; relief/recovery:rest |
-| b | The relief arrived slowly. Then I rested. | relief/feeling:present; relief/recovery:rest |
-| c | Felt relieved and told the person who'd helped. | relief/feeling:present; relief/response:connect |
-| d | Felt relieved, then checked the next small step. | relief/feeling:present; relief/response:next_step |
-
-## q33 · slot-35
-
-You bring a friend to the party. They become the party.
-
-Everyone loves them. You're standing there holding two drinks. What's your move?
-
-Source: hypothetical; window: scenario.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Introduce them to more people. Enjoy watching them shine. | D9:noncompetitive (general) |
-| b | Stay close and make sure I'm not forgotten. | D9:recognition (general) |
-| c | Make it a double act. We can be iconic together. | D9:competitive (general); D1:people (general) |
-| d | Head out early. My social battery is done. | D14d:rest (general) |
-
-## q41 · slot-36
-
-A soaked cat looks at you like you're customer support for the weather.
-
-You can't take it home. How would you respond?
-
-Source: hypothetical; window: scenario.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Bring food and water. Catering, not accommodation. | D13:bounded (general) |
-| b | Contact a rescue that can help. | D13:coordinate (general); D3:plan (general) |
-| c | Ask nearby people who can pitch in. | D13:coordinate (general); D1:people (general) |
-| d | Leave. I can't safely help right now. | D13:limit (general); D1:self (general) |
-
-## q42 · slot-37
-
-You're running on 2%. A stranger needs directions. Your bus is coming.
-
-You're exhausted, and the bus arrives in two minutes. What do you do?
-
-Source: hypothetical; window: scenario.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Stay and help them. I'll catch another bus. | D13:direct (general); D1:people (general) |
-| b | Give quick directions, then catch my bus. | D13:bounded (general) |
-| c | Point them toward staff before I go. | D13:coordinate (general); D1:task (general) |
-| d | Apologize and catch my bus. That's what I have capacity for. | D13:limit (general); D14d:rest (general) |
-
-## q43 · slot-38
-
-Your movement plan has competition. The competition brought snacks.
-
-You've got one free hour and an appealing alternative to your planned movement. What wins?
-
-Source: hypothetical; window: scenario.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | The original movement plan. Keeping the appointment. | D14c:planned (general); D3:plan (general) |
-| b | The alternative. Reschedule the movement. | D14c:adjust (general); D3:plan (general) |
-| c | The alternative. Skip movement today. | D14c:skip (general) |
-| d | A shorter bit of movement, then join in. A crossover episode. | D14c:adjust (general); D3:improvise (general) |
-
-## q44 · slot-39
-
-Last time dinner fell apart, what was the edible backup plan?
-
-Think of the latest stressful dinner-plan failure in the past month. What did you actually do about eating?
-
-Source: actual_event; window: latest_instance_past_month.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Made the meal I'd planned anyway. | D14b:planned (general) |
-| b | Made a quick version of the original plan. | D14b:bounded (general) |
-| c | Ordered comfort food right away. Dinner needed a soft landing. | D14b:comfort (general); D10:act (general) |
-| d | Put off eating until I could think clearly. | D14b:delay (general); D10:wait (general) |
-
-## q45 · slot-40
-
-You're about to sleep. One more task appears like a post-credits scene.
-
-It would help, but it's optional and can wait until morning. What do you do?
-
-Source: hypothetical; window: scenario.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Move it to tomorrow and go to bed. | D14a:protect (general); D14d:rest (general) |
-| b | Finish it, then sleep later. | D14a:delay (general); D14d:obligation (general) |
-| c | Finish it and shift tomorrow's wake-up so I can still sleep. | D14a:adjust (general); D3:plan (general) |
-| d | Decline it. Tonight is closed. | D14a:protect (general); D14d:rest (general) |
-
-## q46 · slot-41
-
-This week's movement count. Tiny walks are allowed to have main-character energy.
-
-In the last 7 days, on how many days did you deliberately move? Walks, wheelchair exercise, and movement that works for your body all count.
-
-Source: self_report; window: last_7_days.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | 0 days. | movement_consistency=0; movement=0 days / last 7 |
-| b | 1–2 days. | movement_consistency=1; movement=1-2 days / last 7 |
-| c | 3–4 days. | movement_consistency=2; movement=3-4 days / last 7 |
-| d | 5–7 days. | movement_consistency=3; movement=5-7 days / last 7 |
-
-## q47 · slot-42
-
-Last time life stepped on your movement plan, what survived?
-
-Think of the latest time in the past month a hard day got in the way. What did you actually do?
-
-Source: actual_event; window: latest_instance_past_month.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Kept the original plan. | D14c:planned (general) |
-| b | Changed the plan to fit the day. | D14c:adjust (general); D3:plan (general) |
-| c | Skipped it and didn't replace it. | D14c:skip (general) |
-| d | Did a shorter version. The pocket edition. | D14c:adjust (general) |
-
-## q74 · slot-43
-
-When your body sends a notification, does it get left on read?
-
-Over the past month, how did you notice and respond to cues like hunger, tension, pain, or needing a bathroom break?
-
-Source: self_report; window: past_month.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Often noticed late or put them off. | body_attention=0 |
-| b | Noticed some. Depended on the day. | body_attention=1 |
-| c | Usually noticed and responded. | body_attention=2 |
-| d | Consistently made room for them. | body_attention=3 |
-
-## q75 · slot-44
-
-Your skin lives with you rent-free. How much attention did it get?
-
-Over the past month, how did you notice or care for skin comfort? No 12-step routine required.
-
-Source: self_report; window: past_month.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Rarely kept track of it. | skin_attention=0 |
-| b | Noticed issues when they appeared. | skin_attention=1 |
-| c | Had a small routine or check-in. | skin_attention=2 |
-| d | Kept track of what helped it feel comfortable. | skin_attention=3 |
-
-## q77 · slot-45
-
-Your water bottle: beverage or desk accessory?
-
-Over the past month, how often did you remember a drink break on busy days? Count the break, not how aesthetic the bottle is.
-
-Source: self_report; window: past_month.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Almost no busy days. | hydration_cues=0 |
-| b | Some busy days. | hydration_cues=1 |
-| c | Most busy days. | hydration_cues=2 |
-| d | Nearly every busy day. | hydration_cues=3 |
-
-## q78 · slot-46
-
-Anything your body would like to add to the group chat?
-
-Optional: choose one health context, or use Other for more than one. Share only what you're comfortable recording on this device.
-
-Source: self_report; window: context.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Allergies or sensitivities. | healthContext=allergies-or-sensitivities |
-| b | An existing condition or ongoing treatment. | healthContext=existing-condition-or-treatment |
-| c | A cycle or recurring body pattern. | healthContext=cycle-or-recurring-pattern |
-| d | None of these, or I'd rather not say. | healthContext=none-or-prefer-not-to-say |
-
-## q97 · slot-47
-
-Do your meals have regular time slots, or just surprise cameos?
-
-Over the past month, how predictable were your usual meal times? Think timing, not what was on the plate.
-
-Source: self_report; window: past_month.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Varied a lot. | meal_regularity=0 |
-| b | Had a loose pattern. | meal_regularity=1 |
-| c | Usually predictable. | meal_regularity=2 |
-| d | Very predictable. | meal_regularity=3 |
-
-## q98 · slot-48
-
-This week, did meals keep their appointments?
-
-In just the last 7 days, how predictable were your meal times? Count the week you had, including any lunch that auditioned for dinner.
-
-Source: self_report; window: last_7_days.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Changed from day to day. | meal_regularity=0 |
-| b | Had a loose pattern. | meal_regularity=1 |
-| c | Predictable most days. | meal_regularity=2 |
-| d | Very predictable. | meal_regularity=3 |
-
-## q99 · slot-49
-
-On a usual day, does your battery last as long as your to-do list?
-
-Over the past month, how often did your energy feel enough for your day? Enough means enough for you.
-
-Source: self_report; window: past_month.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Rarely. | felt_energy=0 |
-| b | Some days. | felt_energy=1 |
-| c | Most days. | felt_energy=2 |
-| d | Nearly every day. | felt_energy=3 |
-
-## q101 · slot-50
-
-Zooming out: how often does movement make the weekly lineup?
-
-During a typical week in the past month, on how many days did you deliberately move? Walks, wheelchair workouts, stretches: your version counts.
-
-Source: self_report; window: past_month.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | 0 days. | movement_consistency=0 |
-| b | 1–2 days. | movement_consistency=1 |
-| c | 3–4 days. | movement_consistency=2 |
-| d | 5–7 days. | movement_consistency=3 |
-
-## q72 · slot-51
-
-Does your sleep schedule have a pattern, or is it more of a guest appearance?
-
-Over the past month, how consistent were the times you went to sleep and woke up? Include shifts and changing days.
-
-Source: self_report; window: past_month.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Changed a lot from day to day. | sleep_regularity=0 |
-| b | A loose pattern. Roughly in the same universe. | sleep_regularity=1 |
-| c | Usually consistent. | sleep_regularity=2 |
-| d | Very consistent. Similar times day to day. | sleep_regularity=3 |
-
-## q73 · slot-52
-
-And this past week: same sleep schedule, or surprise remix?
-
-In just the last 7 days, how consistent were your sleep and wake times? This can differ from your usual month.
-
-Source: self_report; window: last_7_days.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Changed a lot from day to day. | sleep_regularity=0 |
-| b | A loose pattern. | sleep_regularity=1 |
-| c | Usually consistent. | sleep_regularity=2 |
-| d | Very consistent. | sleep_regularity=3 |
-
-## q76 · slot-53
-
-This week's energy: enough to run the day, or a lot of low-battery pop-ups?
-
-In the last 7 days, how often did your energy feel enough for your day? Use your own meaning of “enough.”
-
-Source: self_report; window: last_7_days.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Rarely. | felt_energy=0 |
-| b | Some days. | felt_energy=1 |
-| c | Most days. | felt_energy=2 |
-| d | Nearly every day. | felt_energy=3 |
-
-## q100 · slot-54
-
-You slept. Did it feel like a recharge or just a very long blink?
-
-Over the past month, how often did sleep leave you feeling restored? Think your usual pattern, not one unusually good night.
-
-Source: self_report; window: past_month.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Rarely restored. | sleep_restoration=0 |
-| b | Restored on some days. | sleep_restoration=1 |
-| c | Restored most days. | sleep_restoration=2 |
-| d | Every day or nearly every day. | sleep_restoration=3 |
-
-## q102 · slot-55
-
-And this week: did sleep actually hit refresh?
-
-In just the last 7 days, how often did you wake up feeling restored? The pillow can keep its marketing claims.
-
-Source: self_report; window: last_7_days.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Rarely restored. | sleep_restoration=0 |
-| b | Restored on some days. | sleep_restoration=1 |
-| c | Restored most days. | sleep_restoration=2 |
-| d | Every day or nearly every day. | sleep_restoration=3 |
-
-## q96 · slot-56
-
-Last time “one more thing” tried to steal bedtime, who won?
-
-Think of the latest night in the past month an optional task competed with sleep. What did you actually do?
-
-Source: actual_event; window: latest_instance_past_month.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Stopped and went to sleep. Rolled the credits. | D14a:protect (general); D14d:rest (general) |
-| b | Finished the task and slept later. | D14a:delay (general); D14d:obligation (general) |
-| c | Moved the task or changed tomorrow's plan. | D14a:adjust (general); D3:plan (general) |
-| d | Asked someone how they handle a night like that. | D14d:connection (general) |
-
-## q57 · slot-57 · held-out
-
-“Pack a bag.” Your friend has a last-minute trip and almost no notice.
-
-You've never been there. You have the time, but only tonight to decide. What do you do?
-
-Source: hypothetical; window: scenario.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Go. The map can explain itself later. | D2:novel (general) |
-| b | Check the details before saying yes. | D2:conditional (general) |
-| c | Pick something familiar instead. | D2:familiar (general) |
-| d | Only go if someone I know joins. | D2:conditional (general) |
-
-## q58 · slot-58 · held-out
-
-{close} cancels something you cared about. Then offers a sequel.
-
-They suggest a replacement plan without mentioning what happened. How do you respond?
-
-Source: hypothetical; window: scenario.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Rebook, and explain why the cancellation hurt. | D7:direct (close) |
-| b | Start warmly, then gently bring up the cancellation. | D7:soften (close) |
-| c | Ask for a day and set a time to talk. | D7:pause (close) |
-| d | Accept the new plan and leave it unmentioned. | D7:avoid (close) |
-
-## q92 · slot-58 · held-out
-
-Someone important to you cancels something you cared about. Then offers a sequel.
-
-They suggest a replacement plan without mentioning what happened. How do you respond?
-
-Source: hypothetical; window: scenario.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Rebook, and explain why the cancellation hurt. | D7:direct (general) |
-| b | Start warmly, then gently bring up the cancellation. | D7:soften (general) |
-| c | Ask for a day and set a time to talk. | D7:pause (general) |
-| d | Accept the new plan and leave it unmentioned. | D7:avoid (general) |
-
-## q59 · slot-59 · held-out
-
-A group bill includes something you didn't use. Your wallet has questions.
-
-Your friends suggest splitting everything evenly. How do you handle it?
-
-Source: hypothetical; window: scenario.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Ask to take that item off my share. | D8:proportional (friends); D7:direct (friends) |
-| b | Message the organizer privately about my share. | D8:proportional (friends); D7:soften (friends) |
-| c | Say it's okay and pay it. Simplicity is worth it here. | D8:absorb (friends); D7:direct (friends) |
-| d | Pay it. Keep the irritation to myself. | D8:absorb (friends); D7:hint (friends) |
-
-## q60 · slot-60 · held-out
-
-Someone gives you spending money. Your shopping cart sits up straight.
-
-You can make one optional purchase. What matters most in your choice?
-
-Source: hypothetical; window: scenario.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Something reliable, with money left over to save. | D4:security (general) |
-| b | Something that gives me time and options back. | D4:freedom (general) |
-| c | Something that makes me happy. That's the reason. | D4:enjoyment (general) |
-| d | The recognizable version. I like that people know it. | D4:status (general) |
-
-## q61 · slot-61 · held-out
-
-The team needs one more favor. You're at 1%, no charger in sight.
-
-It's optional. You're already exhausted. What do you offer?
-
-Source: hypothetical; window: scenario.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | A no. I need to recover. | D14d:rest (general) |
-| b | The whole task. I'll get it done for the team. | D14d:obligation (general) |
-| c | Help finding someone with capacity to share it. | D14d:connection (general) |
-| d | A small piece, then my evening belongs to me. | D14d:bounded (general) |
-
-## q62 · slot-62 · held-out
-
-You let {close} down. The apology is still in your drafts.
-
-Imagine a different mistake from the one earlier. How would you begin making it right?
-
-Source: hypothetical; window: scenario.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Apologize directly and ask what would help. | D12:repair (close) |
-| b | Apologize and explain what led to it. | D12:explain (close) |
-| c | Arrange something thoughtful to make up for it. | D12:action (close) |
-| d | Agree on some space and a time to reconnect. | D12:pause (close) |
-
-## q93 · slot-62 · held-out
-
-You let someone important to you down. The apology is still in your drafts.
-
-Imagine a different mistake from the one earlier. How would you begin making it right?
-
-Source: hypothetical; window: scenario.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Apologize directly and ask what would help. | D12:repair (general) |
-| b | Apologize and explain what led to it. | D12:explain (general) |
-| c | Arrange something thoughtful to make up for it. | D12:action (general) |
-| d | Agree on some space and a time to reconnect. | D12:pause (general) |
-
-## q63 · slot-63 · held-out
-
-You want to help. Your available resources: one hour and good intentions.
-
-Someone needs a hand. You have no spare money. What do you do?
-
-Source: hypothetical; window: scenario.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Use the hour to help directly. | D13:direct (general) |
-| b | Find a person or service better placed to help. | D13:coordinate (general) |
-| c | Say I can't take it on today. | D13:limit (general) |
-| d | Offer ten minutes, then hand it back. | D13:bounded (general) |
-
-## q64 · slot-64 · held-out
-
-The plan falls apart. Everyone looks at you like you wrote the next episode.
-
-It's the last minute. Someone asks, “So what now?” What do you do first?
-
-Source: hypothetical; window: scenario.
-
-| Answer | Wording | Evidence |
-|---|---|---|
-| a | Pick a workable next step. We can move now. | D3:improvise (general) |
-| b | Pause, get the details, make a new plan. | D3:plan (general) |
-| c | Ask what the affected people want, then plan around it. | D3:consult (general) |
-| d | Let this one go. I don't have capacity for a new version. | D3:stop (general) |
+- `sleep_restoration`: Waking restored; Not often → Most mornings; How often sleep felt restoring, reported directly.
+- `meal_regularity`: Meal timing; Often shifted → Mostly steady; How steady meal timing felt, not diet quality.
+- `daytime_energy`: Enough energy for the day; Not often → Most days; Subjective available energy, with no cause inferred.

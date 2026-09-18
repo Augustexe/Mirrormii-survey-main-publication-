@@ -1,71 +1,52 @@
-// Acknowledgments are authored conversation, not additional scored evidence.
-// Use them selectively: a response should add warmth, not recite every answer.
+// Selective acknowledgments only. These do not become evidence or claims.
 export const HOST_REACTIONS = {
-  q01: {
-    a: "Several eras. Potentially several haircuts.",
-    b: "Dad gets the behind-the-scenes pass.",
-    c: "Extended cut, deleted scenes, all of it.",
-    d: "A friend with context. A powerful thing.",
-    e: "We can keep the people in these scenes open.",
+  n01: {
+    a: "Friends and fit. Starting where the social plot actually lives.",
+    d: "Routines and body. We can stay concrete.",
+    e: "Not naming it yet is still useful context.",
   },
-  q02: {
-    a: "Every mysterious noise: unfortunately, your department.",
-    b: "An ensemble cast. The shared fridge has stories.",
-    c: "Family under one roof. Plenty of material.",
-    d: "Private it stays.",
+  n02: {
+    a: "People around, and at least a few places to exhale.",
+    b: "People around; some editing still happening.",
+    c: "Small can be settled. Not every circle needs expansion.",
+    e: "Wanting more access is different from failing at connection.",
+    f: "None of the boxes gets custody of your social life.",
   },
-  q04: {
-    a: "First review: currently in production.",
-    b: "“Trust me” can handle a few follow-up questions.",
-    c: "The original route gets to keep its job.",
-    d: "A joint yes before a joint detour.",
+  n06: {
+    a: "Gentle and brief. No twelve-slide emotional deck.",
+    b: "Direct, with veto power still yours.",
+    c: "Playful, but the joke does not outrank the truth.",
+    d: "Permission first. The door stays yours.",
   },
-  q07: {
-    a: "The salad did not sign up to sponsor the extras.",
-    b: "Table math does have a surprisingly long runtime.",
-    c: "A private message can still contain a very clear number.",
-    d: "The bill got paid. The moment still happened.",
+  n07: {
+    a: "Attended. Motive is a separate question—not a guess.",
+    b: "A partial yes is still its own answer.",
+    c: "You changed the shape, not necessarily the relationship.",
+    d: "A clean no. No morality play attached.",
   },
-  q10: {
-    a: "The dessert knows whose it is.",
-    b: "You can be tactful and still name your share.",
-    c: "Less math, more evening. Got it.",
-    d: "Paid, without opening the conversation.",
+  n09: {
+    c: "Liking the person does not make every plan your plan.",
+    d: "You checked what support meant before volunteering a version of it.",
   },
-  q17: {
-    a: "The rest of the internet will have to manage.",
-    b: "A late showing. Got it.",
-    c: "Night gets its own bonus chapter.",
-    d: "We'll leave room for a changing schedule.",
+  n13: {
+    c: "A pause before deciding what the feedback deserves.",
+    d: "One useful piece can be enough to keep.",
   },
-  q22: {
-    a: "Excellent raccoon. Separate issue.",
-    b: "A meme can open the door. A conversation still walks through it.",
-    c: "The raccoon has been given a lot of responsibility.",
-    d: "A pause, with a return date.",
+  n19: {
+    b: "Help, resized to fit an actual human calendar.",
+    d: "No is a capacity answer, not a character indictment.",
   },
-  q65: {
-    b: "Quiet on the outside doesn't mean calm on the inside.",
-    c: "A reset before the next step.",
+  n23: {
+    b: "Polite outside does not automatically mean peaceful inside.",
+    d: "Stepping away tells us the action, not the intensity.",
   },
-  q68: {
-    a: "A correction, with a laugh to carry it.",
-    b: "The outside went quiet. The inside had plenty going on.",
+  n24: {
+    c: "Strong on the inside. Keeping that separate from what showed.",
+    d: "Hard to tell now is more honest than invented precision.",
   },
-  q70: {
-    a: "Good news wanted company.",
-    c: "A moment can be big without having an audience.",
-  },
-  q74: {
-    a: "Body notifications are surprisingly easy to snooze.",
-    d: "You made room for the message.",
-  },
-  q77: {
-    a: "A drink break can disappear into a busy day.",
-    d: "The break made it into the day, even when the day was full.",
-  },
-  q95: {
-    e: "A range wouldn't tell the whole story here. Keeping the variation.",
-  },
+  n27: { d: "Variation is data. It is not secretly the bottom of the scale." },
+  n28: { d: "A variable week stays variable—not zero, not worse." },
+  n29: { d: "No usual pattern is different from an irregularity score." },
+  n31: { d: "The days varied. We are keeping the cause unknown." },
 };
 export default HOST_REACTIONS;

@@ -137,25 +137,14 @@ export function EvidenceSummary({
             <Check size={14} /> Your first portrait
           </span>
           <h1 ref={heading} tabIndex="-1">
-            {hasEvidence ? (
-              <>
-                A little more
-                <br />
-                <em>you, in focus.</em>
-              </>
-            ) : (
-              <>
-                Still a little
-                <br />
-                <em>mysterious.</em>
-              </>
-            )}
+            {portrait.titleLead || (hasEvidence ? "Your patterns" : "Still getting")}
+            <br />
+            <em>
+              {portrait.titleEmphasis ||
+                (hasEvidence ? "have conditions." : "to know you.")}
+            </em>
           </h1>
-          <p className="completion-lede">
-            {hasEvidence
-              ? "The habits, feelings, and little plot twists that showed up in your answers. Take a look. Tell me what fits."
-              : "Some things need another conversation. Here's what you shared, with room for everything we haven't met yet."}
-          </p>
+          <p className="completion-lede">{portrait.summary}</p>
           <div className="completion-actions">
             <button
               type="button"
@@ -229,15 +218,16 @@ export function EvidenceSummary({
       )}
       <section className="portrait-section">
         <div className="section-intro">
-          <span className="eyebrow">Your provisional portrait</span>
+          <span className="eyebrow">Teach · {portrait.teachingTone || "understanding"}</span>
           <h2>
-            A few things that
+            What this can
             <br />
-            kept showing up.
+            teach you.
           </h2>
           <p>
-            Do these sound like you? True or False records your take on each
-            interpretation. Your original reading stays here.
+            {portrait.thesis ||
+              "The point is not a permanent type. It is seeing what changes your move."}{" "}
+            True or False records your take; the original reading and receipts stay intact.
           </p>
         </div>
         <div className="claim-list">
@@ -381,8 +371,9 @@ export function EvidenceSummary({
       </section>
       <section className="completion-footer">
         <p>
-          Want to run it again? A new attempt is practice for questions you have
-          already seen.
+          <strong>Your next move:</strong>{" "}
+          {portrait.cta ||
+            "Choose one pattern worth testing in a future conversation."}
         </p>
         <button
           type="button"
@@ -412,10 +403,13 @@ function Claim({ claim, state, portraitId, onReviewClaim }) {
     <article className="portrait-claim">
       <div className="claim-top">
         <div>
-          <span className="eyebrow">{dimensionLabel(claim.dimension)}</span>
+          <span className="eyebrow">
+            {claim.tone || "understanding"} · {dimensionLabel(claim.dimension)}
+          </span>
           <h3>{claim.text}</h3>
           <p>
-            {claim.target ? targetLabel(claim.target) : "Across your answers"}
+            {claim.lesson ||
+              (claim.target ? targetLabel(claim.target) : "Across your answers")}
           </p>
         </div>
         <span className="claim-confidence">
@@ -460,6 +454,27 @@ function Claim({ claim, state, portraitId, onReviewClaim }) {
       </div>
       {open && (
         <div className="receipt-list">
+          {claim.scope && (
+            <div className="receipt">
+              <b>Scope</b>
+              <span>{claim.scope}</span>
+              <small>{claim.evidenceStatus || "bounded interpretation"}</small>
+            </div>
+          )}
+          {(claim.alternativeExplanations || []).map((alternative, index) => (
+            <div className="receipt" key={`alternative-${index}`}>
+              <b>Another explanation</b>
+              <span>{alternative}</span>
+              <small>Kept open, not silently scored away</small>
+            </div>
+          ))}
+          {claim.nextValidation && (
+            <div className="receipt">
+              <b>What would test this next</b>
+              <span>{claim.nextValidation}</span>
+              <small>A validation prompt, not a prescription</small>
+            </div>
+          )}
           {rows.map((row, i) => {
             const q = Survey.QUESTIONS?.find(
               (item) => item.id === (row.questionId || row.question),
@@ -638,6 +653,12 @@ const factNames = {
   healthContext: "Health context",
   wake: "Wake time",
   sleepDuration: "Sleep duration",
+  currentFriction: "Current chapter",
+  socialContext: "Social context",
+  chosenGoal: "What you want from Genii",
+  tenderTopic: "Optional tender topic",
+  friendChallengePreference: "Friend challenge preference",
+  feedbackTone: "Preferred teaching tone",
 };
 const factValues = {
   none: "No specific person",

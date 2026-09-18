@@ -673,11 +673,11 @@ function ChapterJourney() {
         <small>Get to know your patterns. Find small habits that fit.</small>
       </div>
       <div className="journey-fact">
-        <b>64</b>
-        <span>specific scenes</span>
+        <b>40 max</b>
+        <span>specific scenes; linked follow-ups appear only when relevant</span>
       </div>
       <div className="journey-fact">
-        <b>8</b>
+        <b>6</b>
         <span>chapters to wander through</span>
       </div>
       <div className="journey-fact">
@@ -712,12 +712,12 @@ function Interlude({ chapter, state, route, onContinue, onSave }) {
           scene="chapter"
           mood={chapter.id % 2 ? "attentive" : "curious"}
           bubble={
-            chapter.id === 5
-              ? "The inside voice gets a turn."
-              : chapter.id === 6
-                ? "Even your water bottle has a subplot."
-                : chapter.id === 7
-                  ? "Usual you. This-week you. Both count."
+            chapter.id === 4
+              ? "Capacity and feelings both get a vote."
+              : chapter.id === 5
+                ? "Usual month. Actual week. Both count."
+                : chapter.id === 6
+                  ? "The guesses are sealed before you answer."
                   : "Okay, there’s more to this story."
           }
         />
@@ -843,12 +843,12 @@ function QuizView({
             bubble={
               q.test
                 ? "No peeking. I sealed the envelope."
-                : chapter?.id === 5
-                  ? "Quiet on the outside can still be loud inside."
-                  : chapter?.id === 6
-                    ? "Your body would like to join the conversation."
-                    : chapter?.id === 7
-                      ? "Your actual week. No highlight reel needed."
+                : chapter?.id === 4
+                  ? "What happened inside and outside may be different."
+                  : chapter?.id === 5
+                    ? "Your actual week. No highlight reel needed."
+                    : chapter?.id === 6
+                      ? "No peeking. The reading is already frozen."
                       : "The honest answer is the interesting one."
             }
             chapter={chapter?.id}

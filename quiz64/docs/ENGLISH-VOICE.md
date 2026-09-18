@@ -1,18 +1,47 @@
-# Genii English voice
+# Switch Modes v3 English voice
 
-This is the implemented English direction for review, informed by the approved Chinese voice principles. It is not a literal translation or a claim that every English line has received final approval.
+## Voice promise
 
-The host notices a familiar situation and adds one small, affectionate absurdity. It sounds like someone who can hold a conversation, not a health intake form or an account trying to use every meme at once.
+Genii is observant, warm, specific, and lightly funny. It never turns one answer into a fixed identity, confuses quiet behavior with calm feeling, or adds a motive the respondent did not select.
 
-- Lead with the scene: “You ordered a salad. The group ordered a financial event.” Then ask exactly what happened or what the person would do.
-- Keep fact collection literal beneath the hook: “Your water bottle: beverage or desk accessory?” still asks about drink breaks on busy days over the past month. It does not measure water intake or hydration adequacy.
-- Vary the joke. Use contrast, understatement, a familiar social detail, or an object with an opinion. Avoid repeating department, paperwork, HR, court, and clipboard jokes.
-- Make every choice plausible. Do not reward the apparently healthy or socially approved choice with better humor. Sensitive optional context gets a gentle invitation, not a roast.
-- Preserve the distinction between feeling and action: “Properly angry inside. Quiet outside while I decided.” Quiet does not become calm.
-- Preserve the recall window and person. “Last time” means an actual event in the stated month; imagined scenes stay hypothetical. Generic replacements inherit the voice without requiring a partner or housemate.
-- Let concrete answers breathe. Numeric sleep or movement bands can be plain. The hook supplies personality; forcing a punchline into every number can add an unasked-for motive.
-- React selectively. A short response should recognize the chosen behavior, not assign a flattering trait or repeat every answer. Other text is never interpreted or scored.
+## Question rules
 
-`src/english-copy.js` owns the live English title, setup and option text. `src/data.js` owns all IDs, evidence mappings and routing; it applies the wording after building route candidates. `src/host-reactions.js` owns selected, unscored replies. The author-facing `docs/QUESTION-MAP.md` lists the resulting wording beside its evidence mapping.
+- Ask about one event, window, or comparison at a time.
+- Put context into the stem rather than hiding it in scoring.
+- Let answers describe mutually intelligible actions or reasons.
+- Keep `Other`, `Skip`, and `No example` semantically distinct.
+- Use humor to reduce performance pressure, never to mock an answer.
+- Follow up on motive or intensity only when the parent event exists.
 
-Visual companion: white background, purple selection/action accents, readable graphite text, unchanged Genii imagery, and glass confined to the character stage. Results show observed routines with separate evidence coverage, not health scores. This pass changes presentation; retention gains require actual participant testing.
+## Result rules
+
+- Lead with context-dependent mode switching, not a personality type.
+- Quote literal answer text in receipts and linked-event claims.
+- Say where the evidence came from: actual event, hypothetical choice, routine self-report, or direct context.
+- Name a plausible alternative before sounding certain.
+- Give the respondent one concrete thing to notice next.
+- Describe routine values as direct reports, not personality-derived health facts.
+- Keep the sealed-check score separate from recognition and product benefit.
+
+## Teaching tones
+
+- **Understanding:** calm, validating, and careful.
+- **Direct:** concise, plain, and non-ornamental.
+- **Funny:** one light line without weakening evidence boundaries.
+- **Permission-first:** invite the respondent to keep, reject, or revise the read.
+
+Tone changes how evidence is taught, not which evidence is selected or how it is scored.
+
+## Continuation CTA
+
+The continuation message should connect the selected goal to one small, reversible MirrorMe next step. It is a preview of a possible workflow, not proof that MirrorMe has already improved the respondent's life.
+
+## Banned shortcuts
+
+- “This means you are…” from one answer.
+- Calm/regulated/resilient inferred from a quiet outward response.
+- A motive inferred from an action when motive was not asked.
+- Multiple tags from one answer presented as corroboration.
+- “Other” interpreted as the nearest authored option.
+- Variable/unknown routine answers displayed as a low value.
+- Scientific, diagnostic, clinical, or calibrated-accuracy language.

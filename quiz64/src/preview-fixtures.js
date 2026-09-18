@@ -2,172 +2,50 @@ import * as Engine from "./engine.js";
 import * as Survey from "./survey.js";
 
 export const PREVIEW_FIXTURES = [
-  {
-    id: "complete",
-    label: "Complete",
-    detail: "Full answers and sealed checks",
-  },
-  { id: "mixed", label: "Mixed", detail: "Varied choices across situations" },
-  { id: "sparse", label: "Sparse", detail: "A few answers among skips" },
-  { id: "skipped", label: "Skipped", detail: "All answers skipped" },
+  { id: "complete", label: "Complete", detail: "Context shifts, direct routines, and sealed checks" },
+  { id: "mixed", label: "Mixed", detail: "Different choices across people and pressure" },
+  { id: "sparse", label: "Sparse", detail: "A few literal answers among unknowns" },
+  { id: "skipped", label: "Skipped", detail: "Unknown remains a valid result" },
 ];
 
-// Fixed, fictional response maps. Held-out answers are authored independently
-// of the frozen predictions so this preview does not imply model accuracy.
-const COMPLETE_ANSWERS = {
-  q01: "c",
-  q02: "b",
-  q03: "b",
-  q04: "b",
-  q05: "a",
-  q06: "c",
-  q07: "c",
-  q08: "b",
-  q09: "c",
-  q10: "b",
-  q94: "b",
-  q13: "a",
-  q95: "c",
-  q15: "b",
-  q16: "b",
-  q17: "b",
-  q18: "c",
-  q19: "b",
-  q20: "b",
-  q21: "c",
-  q22: "b",
-  q23: "c",
-  q24: "a",
-  q29: "b",
-  q30: "c",
-  q31: "b",
-  q32: "a",
-  q65: "a",
-  q66: "c",
-  q67: "d",
-  q68: "a",
-  q69: "c",
-  q70: "b",
-  q71: "c",
-  q33: "c",
-  q41: "b",
-  q42: "b",
-  q43: "d",
-  q44: "b",
-  q45: "a",
-  q46: "b",
-  q47: "d",
-  q74: "c",
-  q75: "b",
-  q77: "c",
-  q78: "d",
-  q97: "b",
-  q98: "c",
-  q99: "b",
-  q101: "b",
-  q72: "b",
-  q73: "c",
-  q76: "b",
-  q100: "c",
-  q102: "b",
-  q96: "a",
-  q57: "b",
-  q58: "c",
-  q59: "a",
-  q60: "c",
-  q61: "d",
-  q62: "b",
-  q63: "b",
-  q64: "c",
+const COMPLETE = {
+  n01: "a", n02: "b", n03: "c", n04: "a", n05: "b", n06: "d",
+  n07: "c", n08: "d", n09: "c", n10: "a", n11: "a", n12: "c",
+  n13: "c", n14: "a", n15: "c", n16: "a", n17: "b", n18: "e",
+  n19: "b", n20: "c", n21: "a", n22: "b", n23: "b", n24: "c",
+  n25: "b", n26: "a", n27: "b", n28: "c", n29: "b", n30: "c",
+  n31: "b", n32: "c",
 };
-const MIXED_OVERRIDES = {
-  q03: "c",
-  q04: "d",
-  q05: "d",
-  q06: "b",
-  q07: "a",
-  q08: "d",
-  q09: "a",
-  q13: "d",
-  q16: "c",
-  q31: "d",
-  q41: "a",
-  q42: "d",
-  q43: "c",
-  q44: "d",
-  q45: "b",
-  q46: "d",
-  q47: "c",
-  q72: "d",
-  q73: "a",
-  q96: "b",
+const MIXED = {
+  ...COMPLETE,
+  n01: "d", n02: "a", n03: "d", n06: "c", n07: "d", n08: "b",
+  n09: "a", n10: "d", n19: "d", n20: "a", n23: "a", n24: "a",
+  n27: "a", n28: "d", n31: "d", n32: "a",
 };
-const SPARSE_ANSWER_IDS = new Set([
-  "q01",
-  "q02",
-  "q03",
-  "q07",
-  "q94",
-  "q95",
-  "q20",
-  "q46",
-  "q72",
-  "q100",
-  "q57",
-  "q60",
-]);
-const HELDOUT_ANSWERS = {
-  q57: "a",
-  q58: "b",
-  q59: "a",
-  q60: "c",
-  q61: "d",
-  q62: "b",
-  q63: "b",
-  q64: "c",
-};
+const SPARSE_IDS = new Set(["n01", "n02", "n03", "n06", "n09", "n10", "n27", "n28", "n31", "n32"]);
+const CHECKS = { h01: "b", h02: "c", h03: "b", h04: "c", h05: "a", h06: "c", h07: "b", h08: "b" };
 
-function answerFor(question, fixture) {
+function response(question, fixture) {
   if (fixture === "skipped") return "skip";
-  if (fixture === "sparse" && !SPARSE_ANSWER_IDS.has(question.id))
-    return "skip";
-  const authored =
-    fixture === "mixed"
-      ? MIXED_OVERRIDES[question.id] || COMPLETE_ANSWERS[question.id]
-      : COMPLETE_ANSWERS[question.id];
-  return question.options?.some((option) => option.id === authored)
-    ? authored
-    : "skip";
+  if (fixture === "sparse" && !SPARSE_IDS.has(question.id)) return "skip";
+  const map = fixture === "mixed" ? MIXED : COMPLETE;
+  const value = map[question.id];
+  return question.options.some((option) => option.id === value) ? value : "skip";
 }
 
 export function makePreviewState(fixtureId = "complete") {
-  const fixture = PREVIEW_FIXTURES.some((item) => item.id === fixtureId)
-    ? fixtureId
-    : "complete";
+  const fixture = PREVIEW_FIXTURES.some((item) => item.id === fixtureId) ? fixtureId : "complete";
   const state = Engine.fresh();
-  // Route questions are re-read after each answer because context answers can
-  // select a different authored question for a later route slot.
   while (true) {
     const question = Engine.routeQuestions(state).find(
       (item) => !item.test && !Object.hasOwn(state.answers, item.id),
     );
     if (!question) break;
-    Engine.setAnswer(state, question.id, answerFor(question, fixture));
+    Engine.setAnswer(state, question.id, response(question, fixture));
   }
   state.locked = Engine.freeze(state);
-  for (const question of Engine.routeQuestions(state).filter(
-    (item) => item.test,
-  )) {
-    const value =
-      fixture === "skipped" || fixture === "sparse"
-        ? "skip"
-        : HELDOUT_ANSWERS[question.id];
-    Engine.setAnswer(
-      state,
-      question.id,
-      question.options.some((option) => option.id === value) ? value : "skip",
-    );
-  }
+  for (const question of Engine.routeQuestions(state).filter((item) => item.test))
+    Engine.setAnswer(state, question.id, fixture === "skipped" || fixture === "sparse" ? "skip" : CHECKS[question.id]);
   state.previewFixture = fixture;
   state.previewSynthetic = true;
   state._stats = Engine.stats(state);
@@ -183,11 +61,7 @@ export function reviewPreviewClaim(state, claim, value) {
 
 export function exportPreview(state) {
   return {
-    preview: {
-      synthetic: true,
-      fixture: state.previewFixture,
-      label: "Developer preview; synthetic data",
-    },
+    preview: { synthetic: true, fixture: state.previewFixture, label: "Developer preview; synthetic data" },
     attempt: Engine.exportAttempt(state),
   };
 }
@@ -195,19 +69,11 @@ export function exportPreview(state) {
 export function reviewRows(state) {
   return Engine.routeQuestions(state).map((question) => {
     const option = Engine.selected(question, state.answers);
-    const missingText =
-      { skip: "Skipped", no_example: "No example", other: "Other" }[
-        state.answers[question.id]
-      ] || "No answer";
+    const missingText = { skip: "Skipped", no_example: "No example", other: "Other" }[state.answers[question.id]] || "No answer";
     return {
       id: question.id,
-      title:
-        Survey.safeTitle?.(question, state) ||
-        Survey.interpolate?.(question.title, state) ||
-        question.title,
-      answerText: option
-        ? Survey.optionText?.(option, state) || option.text
-        : missingText,
+      title: Survey.safeTitle?.(question, state) || Survey.interpolate?.(question.title, state) || question.title,
+      answerText: option ? Survey.optionText?.(option, state) || option.text : missingText,
       test: Boolean(question.test),
     };
   });

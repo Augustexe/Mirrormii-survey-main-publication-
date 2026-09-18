@@ -1,19 +1,15 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { QUESTIONS, DIMS, VERSION } from "../src/data.js";
+import { QUESTIONS, VERSION } from "../src/data.js";
 import {
   KEY,
   fresh,
   selected,
   facts,
-  applicable,
   buildRoute,
   routeQuestions,
-  evidence,
   observations,
   profile,
-  signature,
-  predict,
   freeze,
   portrait,
   stats,
@@ -21,412 +17,222 @@ import {
   restore,
   exportAttempt,
   reviewClaim,
+  predict,
 } from "../src/engine.js";
-import { optionText } from "../src/survey.js";
 
-const context = (close = "c", household = "b") => {
-  const state = fresh();
-  setAnswer(state, "q01", close);
-  setAnswer(state, "q02", household);
-  return state;
-};
+const byId = new Map(QUESTIONS.map((q) => [q.id, q]));
 
-function fillTraining(state, value = "a") {
-  for (const question of routeQuestions(state).filter((q) => !q.test)) {
-    if (!Object.hasOwn(state.answers, question.id))
-      setAnswer(
-        state,
-        question.id,
-        question.options.some((option) => option.id === value)
-          ? value
-          : question.options[0].id,
-      );
+function fillTraining(state, choices = {}) {
+  while (true) {
+    const question = routeQuestions(state).find(
+      (item) => !item.test && !Object.hasOwn(state.answers, item.id),
+    );
+    if (!question) break;
+    const value = choices[question.id] ?? question.options[0].id;
+    setAnswer(state, question.id, value, value === "other" ? { otherText: "custom" } : {});
   }
   return state;
 }
 
-function freezeState(close = "c", household = "b") {
-  const state = fillTraining(context(close, household));
+function frozen(choices = {}) {
+  const state = fillTraining(fresh(), choices);
   state.locked = freeze(state);
   return state;
 }
 
-test("bank and route expose 64 stable slots with valid candidate questions", () => {
-  assert.ok(QUESTIONS.length >= 64);
-  assert.equal(buildRoute({}).total, 64);
-  assert.equal(new Set(QUESTIONS.map((q) => q.id)).size, QUESTIONS.length);
-  const route = buildRoute({});
-  assert.equal(
-    route.ids.length +
-      route.omitted.filter((item) => item.reason !== "unknown_candidate")
-        .length >=
-      56,
-    true,
-  );
-  for (const question of QUESTIONS) {
-    assert.ok(question.id && question.title && question.setup);
-    assert.ok(question.options.length >= 4);
-    for (const option of question.options)
-      for (const tag of option.tags || []) assert.ok(DIMS[tag.d]);
-  }
-  assert.match(VERSION, /^genii-/);
-  assert.equal(typeof KEY, "string");
+function answerAllChecks(state, value = "skip") {
+  for (const question of routeQuestions(state).filter((q) => q.test))
+    if (!Object.hasOwn(state.answers, question.id))
+      setAnswer(state, question.id, question.options.some((o) => o.id === value) ? value : "skip", value === "other" ? { otherText: "custom" } : {});
+  return state;
+}
+
+test("new storage/version boundary fails closed from v2 attempts", () => {
+  assert.equal(VERSION, "genii-switch-modes.v3");
+  assert.equal(KEY, "genii.switch-modes.v3");
+  assert.deepEqual(restore({ version: "genii-root.v2", answers: {} }), fresh());
 });
 
-test("unknown and inapplicable context is omitted with a reason, never silently answered", () => {
-  const unknown = buildRoute({});
-  assert.ok(
-    unknown.omitted.some((item) => item.reason.startsWith("requires_")) ||
-      unknown.ids.length === unknown.total,
-  );
-  const solo = context("e", "a");
-  const route = buildRoute(solo.answers);
-  assert.ok(
-    route.omitted.some((item) => item.reason.startsWith("requires_")) ||
-      route.ids.length === route.total,
-  );
-  const closeQuestion = QUESTIONS.find((q) => q.applicable === "close");
-  if (closeQuestion && !route.ids.includes(closeQuestion.id))
-    assert.equal(applicable(closeQuestion, solo.answers), false);
-  assert.equal(facts(solo.answers).close, "none");
-  assert.equal(facts(solo.answers).household, "alone");
-});
-
-test("selected and evidence exclude every explicit missingness sentinel", () => {
-  const actual = QUESTIONS.find((q) => !q.test && q.role === "actual");
-  assert.ok(actual);
-  assert.equal(selected(actual, { [actual.id]: "skip" }), undefined);
-  assert.equal(selected(actual, { [actual.id]: "no_example" }), undefined);
-  assert.equal(selected(actual, { [actual.id]: "other" }), undefined);
-  assert.equal(
-    evidence({ [actual.id]: "skip" }).some((row) => row.question === actual.id),
-    false,
-  );
-  assert.equal(
-    evidence({ [actual.id]: "no_example" }).some(
-      (row) => row.question === actual.id,
-    ),
-    false,
-  );
-});
-
-test("Other stores bounded text without turning it into scored evidence", () => {
-  const state = context();
-  const question = routeQuestions(state).find(
-    (q) => !q.test && !q.applicable && q.options.length >= 4,
-  );
-  assert.ok(question);
-  setAnswer(state, question.id, "other", {
-    otherText: "A custom answer from the participant.",
-    note: "Author note",
+test("literal context fields are locked directly and never become scored observations", () => {
+  const state = fresh();
+  for (const [id, value] of Object.entries({ n01: "a", n02: "e", n03: "c", n04: "e", n05: "c", n06: "d" }))
+    setAnswer(state, id, value);
+  assert.deepEqual(facts(state.answers), {
+    currentFriction: "friends",
+    socialContext: "low_access_wants_more",
+    chosenGoal: "next_step",
+    tenderTopic: "tender_none",
+    friendChallengePreference: "friend_challenge_no",
+    feedbackTone: "feedback_permission_first",
   });
-  assert.equal(
-    state.other[question.id],
-    "A custom answer from the participant.",
-  );
-  assert.equal(state.notes[question.id], "Author note");
-  assert.equal(
-    evidence(state.answers).some((row) => row.question === question.id),
-    false,
-  );
-  assert.throws(
-    () => setAnswer(context(), question.id, "other"),
-    /Other text required/,
-  );
+  assert.equal(observations(state.answers).length, 0);
 });
 
-test("context edits invalidate dependent answers and all sealed checks while preserving history", () => {
-  const state = freezeState("c", "b");
-  const dependent = QUESTIONS.find(
-    (q) => q.applicable === "close" && state.route?.ids.includes(q.id),
-  );
-  if (dependent) {
-    state.notes[dependent.id] = "context note";
-    state.other[dependent.id] = "context custom";
-  }
-  const before = state.locked;
-  setAnswer(state, "q01", "e");
-  assert.equal(state.locked, null);
-  assert.equal(state.resultHistory.length, 1);
-  assert.deepEqual(state.resultHistory[0].signature, before.signature);
-  if (dependent) {
-    assert.equal(state.answers[dependent.id], undefined);
-    assert.equal(state.notes[dependent.id], undefined);
-    assert.equal(state.other[dependent.id], undefined);
-  }
+test("Other, Skip, and no-example remain unscored and distinct", () => {
+  const state = fresh();
+  setAnswer(state, "n01", "other", { otherText: "My own chapter" });
+  assert.equal(state.other.n01, "My own chapter");
+  assert.equal(selected(byId.get("n01"), state.answers), undefined);
+  assert.equal(observations(state.answers).length, 0);
+
+  const skip = fresh();
+  setAnswer(skip, "n01", "skip");
+  assert.equal(skip.answers.n01, "skip");
+
+  const actual = fresh();
+  for (const id of ["n01", "n02", "n03", "n04", "n05", "n06"]) setAnswer(actual, id, "skip");
+  setAnswer(actual, "n07", "no_example");
+  assert.equal(actual.answers.n07, "no_example");
+  assert.equal(buildRoute(actual.answers).ids.includes("n08"), false);
 });
 
-test("context edits also clear answers attached to a generic fallback that leaves the route", () => {
-  const state = context("e", "a");
-  const fallback = routeQuestions(state).find((q) => q.id === "q81");
-  assert.ok(fallback, "solo route uses the generic fallback");
-  setAnswer(state, fallback.id, "other", { otherText: "fallback note" });
-  state.notes[fallback.id] = "fallback author note";
-  setAnswer(state, "q01", "a");
-  assert.equal(state.route.ids.includes(fallback.id), false);
-  assert.equal(state.answers[fallback.id], undefined);
-  assert.equal(state.other[fallback.id], undefined);
-  assert.equal(state.notes[fallback.id], undefined);
+test("changing a parent answer removes its linked follow-up and clears its data", () => {
+  const state = fresh();
+  for (const id of ["n01", "n02", "n03", "n04", "n05", "n06"]) setAnswer(state, id, "a");
+  setAnswer(state, "n07", "a");
+  assert.ok(buildRoute(state.answers).ids.includes("n08"));
+  setAnswer(state, "n08", "other", { otherText: "A mixed reason", note: "linked note" });
+  setAnswer(state, "n07", "skip");
+  assert.equal(buildRoute(state.answers).ids.includes("n08"), false);
+  assert.equal(state.answers.n08, undefined);
+  assert.equal(state.other.n08, undefined);
+  assert.equal(state.notes.n08, undefined);
 });
 
-test("freeze keeps heldout responses outside profile and freezes predictions before checks", () => {
-  const state = freezeState();
-  assert.equal(
-    state.locked.predictions.length,
-    routeQuestions(state).filter((q) => q.test).length,
-  );
-  const snapshot = JSON.stringify(state.locked);
-  const heldout = routeQuestions(state).find((q) => q.test);
-  assert.ok(heldout);
-  setAnswer(state, heldout.id, "skip");
-  assert.equal(JSON.stringify(state.locked), snapshot);
-  assert.equal(
-    state.locked.profile.some((group) =>
-      group.rows.some((row) => row.question === heldout.id),
-    ),
-    false,
-  );
-  assert.throws(() => setAnswer(state, heldout.id, heldout.options[0].id));
+test("freeze excludes heldouts and preserves abstention when support is thin", () => {
+  const state = frozen();
+  assert.equal(state.locked.predictions.length, 8);
+  assert.equal(state.locked.profile.some((g) => g.rows.some((r) => r.questionId.startsWith("h"))), false);
+  const thin = predict(byId.get("h04"), { n13: "a" });
+  assert.equal(thin.option, null);
+  assert.match(thin.reason, /Too few distinct/i);
+  const before = JSON.stringify(state.locked);
+  setAnswer(state, "h01", "skip");
+  assert.equal(JSON.stringify(state.locked), before);
 });
 
-test("prediction uses exact matching source questions and exposes abstention", () => {
-  const heldout = QUESTIONS.find(
-    (q) => q.test && q.options.some((o) => o.tags?.length),
-  );
-  assert.ok(heldout);
-  const prediction = predict(heldout, { q01: "c", q02: "b" });
-  assert.equal(prediction.option, null);
-  assert.ok(prediction.reason);
-  assert.ok(
-    prediction.scores.every((score) =>
-      score.parts.every((part) =>
-        part.sources.every((id) => id !== heldout.id),
-      ),
-    ),
-  );
-});
-
-test("portrait separates measures, direct facts, emotion layers and confidence", () => {
-  const state = freezeState();
+test("portrait states the thesis, honors tone/goal, and preserves exact action-motive receipts", () => {
+  const state = frozen({
+    n03: "c",
+    n06: "d",
+    n07: "c",
+    n08: "d",
+    n09: "c",
+    n10: "a",
+    n19: "b",
+    n20: "c",
+    n23: "b",
+    n24: "c",
+  });
   const result = portrait(state);
-  assert.deepEqual(Object.keys(result), [
-    "id",
-    "version",
-    "title",
-    "summary",
-    "claims",
-    "groups",
-    "domains",
-    "emotions",
-    "facts",
-  ]);
-  assert.equal(result.version, VERSION);
-  for (const claim of result.claims) {
-    assert.ok(claim.id && claim.text && claim.dimension && claim.target);
-    assert.ok(Array.isArray(claim.evidenceIds));
-    assert.ok(["missing", "low", "medium", "high"].includes(claim.confidence));
-  }
-  for (const domain of result.domains)
-    for (const axis of domain.axes) {
-      assert.ok(Object.hasOwn(axis, "usual") && Object.hasOwn(axis, "recent"));
-      assert.ok(["missing", "low", "medium", "high"].includes(axis.confidence));
-    }
-  for (const emotion of result.emotions)
-    assert.ok(
-      [
-        "frustration",
-        "worry",
-        "disappointment",
-        "embarrassment",
-        "guilt",
-        "joy",
-        "relief",
-      ].includes(emotion.family),
-    );
+  assert.equal(result.title, "You do not have one social mode.");
+  assert.equal(result.teachingTone, "permission-first");
+  assert.match(result.summary, /not a permanent type/i);
+  assert.match(result.cta, /one live decision/i);
+  const social = result.claims.find((c) => c.id === "claim:action-and-motive:social");
+  assert.ok(social);
+  assert.match(social.text, /suggested a different way to take part/i);
+  assert.match(social.text, /time, energy, or other plans/i);
+  assert.deepEqual(new Set(social.observations.map((r) => r.questionId)), new Set(["n07", "n08"]));
+  assert.equal(social.observations.length, 2);
+  assert.ok(social.observations.every((row) => row.d && row.answer));
+  const switchClaim = result.claims.find((c) => c.id === "claim:mode-switch:social-person");
+  assert.equal(switchClaim.observations.length, 2);
+  assert.ok(switchClaim.observations.every((row) => row.d === "D_MODE" && row.answer));
+  assert.match(switchClaim.text, /changed your social move/i);
+  assert.equal(switchClaim.evidenceStatus, "hypothetical_choice");
+  assert.ok(switchClaim.alternativeExplanations.length >= 2);
 });
 
-test("claim review records an immutable snapshot and cannot affect profile or evaluation", () => {
-  const state = freezeState();
+test("unscored authored catch-all motives cannot enter linked claims", () => {
+  const state = frozen({ n07: "a", n08: "f", n19: "a", n20: "e" });
+  const ids = portrait(state).claims.map((claim) => claim.id);
+  assert.equal(ids.includes("claim:action-and-motive:social"), false);
+  assert.equal(ids.includes("claim:action-and-motive:helping"), false);
+});
+
+test("inside feeling and outside action are quoted from the same event without inventing recovery", () => {
+  const state = frozen({ n23: "b", n24: "c" });
   const result = portrait(state);
-  const claim = result.claims[0];
-  if (!claim) return;
+  const claim = result.claims.find((c) => c.id === "claim:inside-outside:irritation");
+  assert.match(claim.text, /Strong; it took up real space/);
+  assert.match(claim.text, /stayed polite and dealt with it later/i);
+  assert.match(claim.lesson, /Quiet is not the same as calm/i);
+  assert.equal(claim.observations.length, 2);
+  assert.ok(claim.observations.every((row) => row.d && row.answer));
+  const emotion = result.emotions.find((item) => item.family === "frustration");
+  assert.equal(emotion.feeling.length, 1);
+  assert.equal(emotion.response.length, 1);
+  assert.equal(emotion.recovery.length, 0);
+});
+
+test("routine cards project direct values only and keep varied answers unknown", () => {
+  const state = frozen({ n27: "a", n28: "d", n29: "b", n30: "c", n31: "d", n32: "a" });
+  const result = portrait(state);
+  const axes = result.domains.flatMap((domain) => domain.axes);
+  const sleep = axes.find((axis) => axis.id === "sleep_restoration");
+  assert.equal(sleep.usual.label, "Most mornings");
+  assert.equal(sleep.recent, null);
+  const energy = axes.find((axis) => axis.id === "daytime_energy");
+  assert.equal(energy.usual, null);
+  assert.equal(energy.recent.label, "Most days");
+});
+
+test("an all-skipped route produces unknown, no claims, no measures, and no predictions", () => {
+  const state = fresh();
+  while (true) {
+    const question = routeQuestions(state).find((q) => !q.test && !Object.hasOwn(state.answers, q.id));
+    if (!question) break;
+    setAnswer(state, question.id, "skip");
+  }
+  state.locked = freeze(state);
+  answerAllChecks(state, "skip");
+  const result = portrait(state);
+  assert.equal(result.claims.length, 0);
+  assert.equal(result.domains.length, 0);
+  assert.match(result.summary, /Unknown is a real result/i);
+  assert.equal(stats(state).predicted, 0);
+});
+
+test("claim feedback is immutable metadata and cannot rewrite the portrait", () => {
+  const state = frozen({ n09: "c", n10: "a" });
+  const claim = portrait(state).claims.find((c) => c.id === "claim:mode-switch:social-person");
   const beforePortrait = JSON.stringify(portrait(state));
   const beforeLocked = JSON.stringify(state.locked);
-  const beforeStats = JSON.stringify(stats(state));
-  reviewClaim(state, claim.id, true, "This feels familiar.");
+  reviewClaim(state, claim.id, false, "Depends on the event");
   assert.equal(JSON.stringify(portrait(state)), beforePortrait);
   assert.equal(JSON.stringify(state.locked), beforeLocked);
-  assert.equal(JSON.stringify(stats(state)), beforeStats);
-  assert.equal(state.feedback[0].claim.id, claim.id);
-  assert.equal(state.feedback[0].resultVersion, VERSION);
-  assert.equal(
-    state.reviewed,
-    false,
-    "feedback is a snapshot and does not mark benchmark checks as practiced",
-  );
+  assert.equal(state.feedback[0].value, false);
+  assert.equal(state.feedback[0].claim.text, claim.text);
 });
 
-test("freeze records prior heldout exposure separately and export keeps that context", () => {
-  const first = fillTraining(context());
-  first.testSeen = true;
-  first.priorExposure = false;
-  first.locked = freeze(first);
-  assert.equal(first.locked.priorExposure, false);
-  assert.equal(
-    exportAttempt(first).attempt.evaluationContext,
-    "first_exposure",
-  );
-
-  const repeat = fillTraining(context());
-  repeat.testSeen = true;
-  repeat.priorExposure = true;
-  repeat.locked = freeze(repeat);
-  assert.equal(repeat.locked.priorExposure, true);
-  const restored = restore(JSON.parse(JSON.stringify(repeat)));
-  assert.equal(restored.locked.priorExposure, true);
-  assert.equal(
-    exportAttempt(restored).attempt.evaluationContext,
-    "practice_after_prior_exposure",
-  );
-});
-
-test("freeze owns a snapshot when the caller mutates its answer source afterwards", () => {
-  const state = fillTraining(context());
-  const source = { ...state.answers };
-  const locked = freeze(source);
-  const before = JSON.stringify(locked);
-  source.q01 = "e";
-  source.q03 = "d";
-  assert.equal(JSON.stringify(locked), before);
-  assert.equal(locked.training.q01, "c");
-});
-
-test("option text helper tolerates abstention or malformed option records", () => {
-  assert.equal(optionText(undefined, fresh()), "");
-  assert.equal(
-    optionText({ label: "fallback label" }, fresh()),
-    "fallback label",
-  );
-});
-
-test("stats keeps answered, skipped, no-example, other, abstention and baseline denominators separate", () => {
-  const state = freezeState();
-  const heldouts = routeQuestions(state).filter((q) => q.test);
-  if (heldouts.length < 3) return;
-  setAnswer(state, heldouts[0].id, "skip");
-  setAnswer(state, heldouts[1].id, "no_example");
-  setAnswer(state, heldouts[2].id, "other", { otherText: "Not this time" });
-  const result = stats(state);
-  assert.equal(result.skipped, 1);
-  // Current heldouts are hypothetical, so no-example remains unscored rather than an actual-event count.
-  assert.equal(result.noExample, 0);
-  assert.equal(result.other, 1);
-  assert.equal(result.unscored, 2);
-  assert.equal(result.answered, 0);
-  assert.equal(result.predicted, 0);
-  assert.equal(result.abstained, 0);
-});
-
-test("restore rejects malformed state and keeps only current eligible route answers", () => {
-  assert.deepEqual(restore("broken"), fresh());
-  const state = freezeState();
-  const raw = JSON.parse(JSON.stringify(state));
-  const hidden = QUESTIONS.find((q) => q.applicable === "close");
-  if (hidden) {
-    raw.answers[hidden.id] = raw.answers[hidden.id] || "a";
-    raw.answers.q01 = "e";
-    delete raw.bindings[hidden.id];
-  }
-  const restored = restore(raw);
-  assert.equal(restored.version, VERSION);
-  if (hidden) assert.equal(restored.answers[hidden.id], undefined);
-});
-
-test("restore rebuilds feedback from the validated frozen snapshot and drops nested arbitrary fields", () => {
-  const state = freezeState();
-  const claim = portrait(state).claims[0];
-  if (!claim) return;
-  reviewClaim(state, claim.id, true, "kept");
-  const raw = JSON.parse(JSON.stringify(state));
-  raw.feedback[0].claim.dimension = { evil: true };
-  raw.feedback[0].claim.target = { nested: { evil: true } };
-  raw.feedback[0].claim.observations = [
-    { id: { evil: true }, signal: { family: { evil: true } } },
-  ];
-  raw.feedback[0].evidenceSnapshot = [{ id: { evil: true }, extra: "drop" }];
-  const restored = restore(raw);
-  assert.equal(restored.feedback.length, 1);
-  assert.equal(restored.feedback[0].claim.id, claim.id);
-  assert.equal(typeof restored.feedback[0].claim.dimension, "string");
-  assert.equal(typeof restored.feedback[0].claim.target, "string");
-  assert.equal(
-    restored.feedback[0].claim.observations.some(
-      (row) => row.id === "[object Object]",
-    ),
-    false,
-  );
-  assert.equal(restored.feedback[0].evidenceSnapshot[0]?.extra, undefined);
-  assert.equal(
-    restored.feedback[0].resultId,
-    `portrait:${state.locked.signature}`,
-  );
-});
-
-test("restore drops forged historical training and feedback rather than trusting a matching version string", () => {
-  const state = freezeState();
-  const raw = JSON.parse(JSON.stringify(state));
-  raw.resultHistory = [
-    {
-      version: VERSION,
-      signature: "forged",
-      training: {},
-      profile: [
-        { d: "D1", target: "general", rows: [{ id: "forged-evidence" }] },
-      ],
-      observations: [{ id: "forged-evidence" }],
-      predictions: [],
-    },
-  ];
-  raw.feedback = [
-    {
-      claimId: "claim:D1:general",
-      value: true,
-      resultId: "portrait:forged",
-      claim: {
-        id: "claim:D1:general",
-        evidenceIds: ["forged-evidence"],
-        observations: [],
-      },
-    },
-  ];
-  const restored = restore(raw);
-  assert.equal(restored.resultHistory.length, 0);
-  assert.equal(restored.feedback.length, 0);
-});
-
-test("export filters hidden candidate answers and hides prediction scores until terminal checks resolve", () => {
-  const state = freezeState("e", "a");
-  const hidden = QUESTIONS.find((q) => q.applicable === "close");
-  if (hidden) state.answers[hidden.id] = "a";
-  const heldout = routeQuestions(state).find((q) => q.test);
-  assert.ok(heldout);
-  setAnswer(state, heldout.id, "skip");
+test("private export keeps receipts, 40-slot provenance, and hides unresolved check scores", () => {
+  const state = frozen({ n03: "d", n06: "c" });
+  setAnswer(state, "h01", "other", { otherText: "Depends on who is there" });
   const partial = exportAttempt(state);
-  if (hidden && !partial.route.ids.includes(hidden.id))
-    assert.equal(partial.answers[hidden.id], undefined);
-  assert.equal(
-    partial.answers[heldout.id],
-    "skip",
-    "private export retains the respondent-owned terminal response",
-  );
+  assert.equal(partial.provenance.routeSlots, 40);
   assert.equal(partial.heldoutsResolved, false);
-  assert.equal(partial.predictions[0].option, undefined);
   assert.equal(partial.predictions[0].scores, undefined);
-  assert.equal(Object.hasOwn(partial.predictions[0], "title"), false);
-  for (const q of routeQuestions(state).filter((item) => item.test))
-    if (!Object.hasOwn(state.answers, q.id)) setAnswer(state, q.id, "skip");
+  answerAllChecks(state, "skip");
   const full = exportAttempt(state);
   assert.equal(full.heldoutsResolved, true);
-  assert.equal(full.provenance.routeSlots, 64);
-  assert.ok(full.claimReviews);
+  assert.equal(full.other.h01, "Depends on who is there");
+  assert.equal(full.portrait.teachingTone, "funny");
+});
+
+test("restore validates the v3 frozen snapshot and drops forged history", () => {
+  const state = frozen({ n09: "c", n10: "a" });
+  const restored = restore(JSON.parse(JSON.stringify(state)));
+  assert.equal(restored.locked.signature, state.locked.signature);
+  const raw = JSON.parse(JSON.stringify(state));
+  raw.resultHistory = [{ version: VERSION, signature: "forged", training: {} }];
+  raw.feedback = [{ claimId: "claim:mode-switch:social-person", value: true, resultId: "portrait:forged" }];
+  const cleaned = restore(raw);
+  assert.equal(cleaned.resultHistory.length, 0);
+  assert.equal(cleaned.feedback.length, 0);
+});
+
+test("profile counts distinct questions rather than tags as independent support", () => {
+  const groups = profile({ n09: "a" });
+  for (const group of groups) assert.equal(group.n, 1);
 });

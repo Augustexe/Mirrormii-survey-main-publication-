@@ -3,7 +3,7 @@ import * as DATA from "./data.js";
 const { QUESTIONS, DIMS, VERSION } = DATA;
 export { VERSION };
 
-export const KEY = "genii.evidence64.v2";
+export const KEY = "genii.switch-modes.v3";
 const QUESTION_BY_ID = new Map(QUESTIONS.map((q) => [q.id, q]));
 const CLOSE_VALUES = new Set(["mother", "father", "partner", "friend", "none"]);
 const SPECIAL = new Set(["other", "skip", "no_example"]);
@@ -82,8 +82,18 @@ export function targetName(target, fact = {}) {
 }
 
 function eligibilityValue(question, answerMap) {
+  const source = sourceAnswers(answerMap) || {};
+  if (question?.dependsOn?.questionId) {
+    const parent = source[question.dependsOn.questionId];
+    const authored = parent !== undefined && !SPECIAL.has(parent);
+    if (question.dependsOn.authored && !authored)
+      return {
+        ok: false,
+        reason: `requires_authored_${question.dependsOn.questionId}`,
+      };
+  }
   if (!question?.applicable) return { ok: true, reason: null };
-  const f = facts(answerMap);
+  const f = facts(source);
   if (typeof question.applicable === "string") {
     if (question.applicable === "close")
       return {
@@ -548,24 +558,164 @@ function claimBehavior(value, dimension) {
     String(label(value, dimension)).replace(/^./, (char) => char.toLowerCase())
   );
 }
-function claimsFor(groups) {
-  return groups
-    .filter((group) => group.status === "Repeated pattern")
+const answerRecord = (source, id) => {
+  const question = questionFor(id);
+  const option = selected(question, source);
+  if (!question || !option) return null;
+  return { question, option };
+};
+
+function teachingTone(source) {
+  return (
+    {
+      feedback_gentle: "understanding",
+      feedback_direct: "direct",
+      feedback_playful: "funny",
+      feedback_permission_first: "permission-first",
+    }[facts(source).feedbackTone] || "understanding"
+  );
+}
+
+function linkedClaim(source, ids, config) {
+  const records = ids.map((id) => answerRecord(source, id));
+  if (records.some((record) => !record)) return null;
+  const allowedDimensions = config.rowDimensions || [config.dimension];
+  const allRows = observations(source).filter(
+    (row) =>
+      ids.includes(row.questionId) &&
+      row.d &&
+      allowedDimensions.includes(row.d),
+  );
+  if (new Set(allRows.map((row) => row.questionId)).size !== ids.length)
+    return null;
+  return {
+    id: config.id,
+    text: config.text(records),
+    lesson: config.lesson,
+    dimension: config.dimension,
+    target: config.target,
+    scope: config.scope,
+    tone: teachingTone(source),
+    confidence: config.confidence || "low",
+    evidenceStatus: config.evidenceStatus || "retrospective_self_report",
+    alternativeExplanations: config.alternativeExplanations || [],
+    nextValidation: config.nextValidation,
+    evidenceIds: allRows.map((row) => row.id),
+    observations: allRows,
+  };
+}
+
+function claimsFor(groups, source = {}) {
+  const claims = [];
+  const social = linkedClaim(source, ["n09", "n10"], {
+    id: "claim:mode-switch:social-person",
+    dimension: "D_MODE",
+    rowDimensions: ["D_MODE"],
+    target: "social context",
+    scope: "Two imagined low-key invitations with different relationship targets",
+    confidence: "medium",
+    evidenceStatus: "hypothetical_choice",
+    text: ([friend, newer]) =>
+      friend.option.id === newer.option.id
+        ? "The person changed, but your social move stayed similar."
+        : "Who is asking changed your social move.",
+    lesson:
+      "This is the central read: context can explain more than a permanent type.",
+    alternativeExplanations: [
+      "The difference may be about the event itself, not closeness.",
+      "An imagined choice may differ from what happens in real life.",
+    ],
+    nextValidation:
+      "Notice one real invitation: who asked, what the event meant, and what you actually chose.",
+  });
+  if (social) claims.push(social);
+
+  const actionMotive = linkedClaim(source, ["n07", "n08"], {
+    id: "claim:action-and-motive:social",
+    dimension: "D_MOTIVE",
+    rowDimensions: ["D_MODE", "D_MOTIVE"],
+    target: "latest social invitation",
+    scope: "One linked event in the past month",
+    text: ([action, motive]) =>
+      `For that invitation, your action was “${action.option.text}.” You said “${motive.option.text}” mattered most.`,
+
+    lesson:
+      "The action and the reason are related, but they are not the same evidence.",
+    alternativeExplanations: [
+      "A different invitation, person, or energy level could produce a different choice.",
+    ],
+    nextValidation:
+      "Compare this with a second real invitation instead of treating one event as a trait.",
+  });
+  if (actionMotive) claims.push(actionMotive);
+
+  const helping = linkedClaim(source, ["n19", "n20"], {
+    id: "claim:action-and-motive:helping",
+    dimension: "D_BOUNDARY",
+    rowDimensions: ["D_BOUNDARY", "D_HELP_MOTIVE"],
+    target: "latest request for help",
+    scope: "One linked capacity trade-off in the past month",
+    text: ([action, motive]) =>
+      `When help competed with your time or energy, your action was “${action.option.text}.” You said “${motive.option.text}” mattered most.`,
+
+    lesson:
+      "A boundary can come from care, principle, capacity, or pressure. The same action does not prove the same motive.",
+    alternativeExplanations: [
+      "Urgency, resources, and the requester may have shaped this one event.",
+    ],
+    nextValidation:
+      "Test whether the same reason appears with a different requester and a different cost.",
+  });
+  if (helping) claims.push(helping);
+
+  const emotion = linkedClaim(source, ["n23", "n24"], {
+    id: "claim:inside-outside:irritation",
+    dimension: "D_EXPRESSION",
+    rowDimensions: ["D_EXPRESSION", "D_INTENSITY"],
+    target: "latest irritation event",
+    scope: "Feeling and outward response from the same event",
+    text: ([outside, inside]) =>
+      `Inside, the irritation was “${inside.option.text}.” Outside, “${outside.option.text}.”`,
+    lesson:
+      "What you felt and what you showed can be different stories. Quiet is not the same as calm.",
+    alternativeExplanations: [
+      "Safety, power, timing, or relationship stakes may have shaped the outward response.",
+    ],
+    nextValidation:
+      "A later conversation can ask what helped the feeling settle; this survey did not assume it.",
+  });
+  if (emotion) claims.push(emotion);
+
+  const repeated = groups
+    .filter(
+      (group) =>
+        group.status === "Repeated pattern" &&
+        !["D_MODE", "D_MOTIVE", "D_BOUNDARY", "D_EXPRESSION"].includes(group.d),
+    )
     .map((group) => {
       const context =
         group.target && group.target !== "general"
-          ? ` about ${group.target}`
+          ? ` in ${group.target} situations`
           : "";
       return {
         id: `claim:${group.d}:${group.target}`,
-        text: `Across these answers${context}, you often chose to ${claimBehavior(group.top, group.d)}.`,
+        text: `Across distinct answers${context}, “${label(group.top, group.d)}” showed up more than once.`,
+        lesson: "Repeated does not mean universal; the receipts show where it appeared.",
         dimension: group.d,
         target: group.target,
+        scope: context || "Across answered survey situations",
+        tone: teachingTone(source),
         confidence: claimConfidence(group.rows),
+        evidenceStatus: "repeated_self_report",
+        alternativeExplanations: [
+          "The repeated choice may reflect the costs and opportunities in these particular scenes.",
+        ],
+        nextValidation: "Look for a counterexample in a different relationship or pressure level.",
         evidenceIds: group.rows.map((row) => row.id),
         observations: group.rows,
       };
     });
+  return [...claims, ...repeated];
 }
 function emotionsFor(source) {
   const rows = observations(source);
@@ -619,16 +769,39 @@ export function portrait(state) {
     }
     domain.axes.push({ ...bar });
   }
-  const claims = claimsFor(groups);
+  const claims = claimsFor(groups, source);
+  const direct = facts(source);
+  const title = claims.some((claim) => claim.id === "claim:mode-switch:social-person")
+    ? "You do not have one social mode."
+    : claims.length
+      ? "Your patterns have conditions."
+      : "Still getting to know you.";
+  const goalCta = {
+    understand_pattern:
+      "Bring one switch-mode pattern into MirrorMe and test where it holds—and where it does not.",
+    name_feeling:
+      "Bring one hard-to-name moment into MirrorMe and separate the feeling, the response, and what helped afterward.",
+    next_step:
+      "Bring one live decision into MirrorMe and turn this portrait into one small, reversible next step.",
+    playful_read:
+      "Bring the sharpest read into MirrorMe and see whether it survives another real example.",
+    none_specific:
+      "Bring this portrait into MirrorMe when a real moment gives you something worth testing.",
+  };
   return {
     id: `portrait:${state?.locked?.signature || signature(source)}`,
     version: VERSION,
-    title: claims.length
-      ? "A pattern in progress"
-      : "Still getting to know you",
+    title,
+    titleLead: title === "You do not have one social mode." ? "You do not have" : claims.length ? "Your patterns" : "Still getting",
+    titleEmphasis: title === "You do not have one social mode." ? "one social mode." : claims.length ? "have conditions." : "to know you.",
     summary: claims.length
-      ? "Specific answers are beginning to form a provisional portrait."
-      : "There is not enough scored evidence for a strong headline yet.",
+      ? "The useful answer is not a permanent type. It is the pattern between the situation, what mattered, and what you did."
+      : "Unknown is a real result. This survey will not invent a personality from skips, Other, or missing examples.",
+    thesis: "Recognition creates attention. Direct evidence creates credibility. A bounded prediction creates drama.",
+    teachingTone: teachingTone(source),
+    cta:
+      goalCta[direct.chosenGoal] ||
+      "MirrorMe can continue from one pattern you choose; this local build previews that handoff and does not claim ongoing support is already connected.",
     claims,
     groups,
     domains,
@@ -710,7 +883,8 @@ export function setAnswer(state, id, value, meta = {}) {
   else delete state.bindings[id];
   if (
     prior !== value &&
-    (id === "q01" || id === "q02" || question.meta?.contextKey)
+    (question.meta?.contextKey ||
+      QUESTIONS.some((candidate) => candidate.dependsOn?.questionId === id))
   )
     invalidateContext(state);
   state.route = routeFor(state.answers);
@@ -914,7 +1088,7 @@ function feedbackForSnapshots(items, snapshots) {
   const candidates = validSnapshots.map((snapshot) => ({
     snapshot,
     id: `portrait:${snapshot.signature}`,
-    claims: claimsFor(snapshot.profile),
+    claims: claimsFor(snapshot.profile, snapshot.training),
   }));
   const output = [];
   for (const raw of items) {

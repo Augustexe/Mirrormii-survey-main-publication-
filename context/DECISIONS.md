@@ -2,7 +2,23 @@
 
 # Decisions and remaining choices
 
-## Current implementation authorization - 2026-09-17
+## Switch Modes v3 implementation test — 2026-09-18
+
+Jerry authorized an actual implementation test limited to questions/options, evidence reasoning and routing, and final evidence/result content, teaching tone, message, and CTA. The approved template layout and visual treatment must not change.
+
+| ID | Decision |
+| --- | --- |
+| D-036 | The central result thesis is contextual: the useful portrait is not a permanent type; it is the pattern between the situation, what mattered, and what the person did. |
+| D-037 | V3 uses 32 profile/context candidates plus eight sealed checks. Four motive/intensity follow-ups are conditional on an authored parent answer, creating a 36–40 question route. |
+| D-038 | Six opening fields—friction, social context, desired help, tender topic, friend-challenge preference, and teaching tone—are locked literal facts, not personality evidence. |
+| D-039 | Linked action and motive stay one event. Claims require one literal scored receipt from each linked question, show low confidence, and never count those receipts as independent repeated-pattern support. |
+| D-040 | Every interpretation exposes exact receipts, evidence scope/status, plausible alternatives, and a next validation prompt. Feeling and outward response remain separate; recovery is not inferred. |
+| D-041 | Result teaching tone is selected from respondent preference. The CTA previews a goal-aligned continuation inside MirrorMe; it is not a claim that the product has produced benefit. |
+| D-042 | V3 is a reviewed implementation candidate, not a deployment decision, scientific validation, or proof of prediction lift. Promotion into the approved app remains explicit. |
+
+Implementation evidence is in run `20260918T225142Z-26f0b1b07248`. The v2 experiment and failed evaluations remain frozen rather than rewritten.
+
+## Prior implementation authorization - 2026-09-17
 
 Jerry explicitly requested implementation on the last build using the installed Taste skill, root management and Luna workers. This supersedes the earlier spec/interview pause. Work is isolated on `codex/genii-taste-survey`, based on `fd7c880` (the latest specification atop the verified `ec89aa7` app). Source, design and evidence contracts are under `quiz64/docs/`.
 
