@@ -1,3 +1,5 @@
+> Historical founder brief. Later [DECISIONS.md](DECISIONS.md) explicitly supersedes parts of its counts, health scope and feedback mechanics. Use [CURRENT.md](CURRENT.md) for current work.
+
 # Genie Personality Survey Campaign — Full Brief
 
 ## Core Concept

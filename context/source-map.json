@@ -6,7 +6,9 @@
   "founder_brief": {
     "authority": "survey project intent",
     "date": "2026-09-14",
-    "source": "current conversation"
+    "source": "docs/FOUNDER-BRIEF.md",
+    "source_sha256": "3dcc79069ce687d7abbfd2d0a2ba691bae714c4e8445713ab26a31b3c6de5389",
+    "latest_scope": "Local MVP implementation and generated project reference sheets; no push before user review"
   },
   "company_base": {
     "name": "MirrorMii OS",
@@ -24,8 +26,27 @@
   "canon_media": {
     "path": "/Users/jerryzhang/Workspace-Draft/assets/Genomii AI.library",
     "path_exists": true,
-    "selected_items": [],
-    "selection": "Eagle metadata, folder membership, descriptions, rights; founder direction pending"
+    "selected_items": [
+      {
+        "eagle_id": "MSF9HPVHMCG93",
+        "project_path": "public/assets/genii-alert.png",
+        "sha256": "e1af1d401278f31876602cf8e4963ce3c983e9c2ba9b0c68fdecd255db04a144",
+        "usage": "unchanged current V2 app-ui master"
+      },
+      {
+        "eagle_id": "MSF9HPVHMO5NX",
+        "project_path": "public/assets/genii-curious.png",
+        "sha256": "3011a29392be7c3f357c4b78915b74ab8d2cb27ce63f70e71ce6107f06b4ef3a",
+        "usage": "unchanged current V2 app-ui master"
+      },
+      {
+        "eagle_id": "MSF9HPVIWCZ4U",
+        "project_path": "public/assets/genii-skeptical.png",
+        "sha256": "365559010e225ad768c22561a5a45aa70a73393bb0ec79d1eceff69fa0b082e2",
+        "usage": "unchanged current V2 app-ui master"
+      }
+    ],
+    "selection": "Verified through Eagle metadata, current V2 folder membership, tags, rights, descriptions and visual inspection; one host, three original expressions. Generated reference drafts stay outside canon."
   },
   "survey_data_destination": {
     "base_id": null,
@@ -38,7 +59,7 @@
     "url": "https://github.com/Augustexe/mirrormii-survey",
     "git_url": "https://github.com/Augustexe/mirrormii-survey.git",
     "origin_configured": true,
-    "local_branch": "planning/genie-survey",
+    "local_branch": "mvp/genii-playground",
     "visibility": "unverified-existing-repository",
     "remote_contents_verified": false,
     "status": "existing-team-repository-designated; fetch-and-integration-blocked"
@@ -57,12 +78,25 @@
   ],
   "access_audit": {
     "date": "2026-09-14",
-    "run_id": "20260914T205815Z-c803359c5bf9",
+    "run_id": "20260914T214741Z-53aa82ae91a1",
     "browser_used": false,
     "managed_cli_route": "/Users/jerryzhang/Workspace-Draft/system/bin/dev",
-    "local_services_running_and_listening": true,
     "http_health_verified": false,
     "native_terminal_verification": "pending",
     "credentials_changed": false
+  },
+  "local_mvp": {
+    "build": "npm run build",
+    "source": "index.html + src/",
+    "standalone_output": "run output/mvp/index.html",
+    "network_required": false,
+    "business_backend_connected": false,
+    "remote_push_authorized": false
+  },
+  "snapshot_notice": {
+    "status": "historical-2026-09-14-snapshot",
+    "current_project_context": "README.md",
+    "current_code_map": "CODE-MAP.md",
+    "note": "Access blockers and remote status below are dated observations, not current checks. See CURRENT.md for later receipts. No fresh business read in filing audit."
   }
 }

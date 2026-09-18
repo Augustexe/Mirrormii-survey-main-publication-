@@ -1,8 +1,10 @@
+> Reconciled 2026-09-18 from the approved release documentation: [source checkpoint](../../runs/20260918T011159Z-16d23238fdf9/scratch/handoff/docs/PERSONALITY-HEALTH-SPEC.md). Implementation/team instructions below describe that historical task. Read [CURRENT.md](CURRENT.md) and [OPEN-QUESTIONS.md](OPEN-QUESTIONS.md) for later identity/ICP work and the experimental bank. Earlier canonical versions are preserved in the consolidation receipt.
+
 # Genii root survey — personality, emotion and health habits
 
 Version 0.3 · 2026-09-17 · Owner: Jerry Zhang · Status: implementation authorized; concrete contracts linked below
 
-This is the active core document for the survey revision. The latest user instruction authorizes implementing it on the previous build. The [implementation contract](../quiz64/docs/IMPLEMENTATION-CONTRACT.md) resolves local engineering defaults and supersedes the earlier interview pause. It records Jerry’s feedback and answers from the current interview. It is a specification, not a claim that the existing app implements these changes. The earlier founder brief and handoff remain source evidence; later explicit decisions in this document take precedence where they conflict.
+This is the active core document for the survey revision. The latest user instruction authorizes implementing it on the previous build. The [implementation contract](../../runs/20260918T011159Z-16d23238fdf9/scratch/handoff/quiz64/docs/IMPLEMENTATION-CONTRACT.md) resolves local engineering defaults and supersedes the earlier interview pause. It records Jerry’s feedback and answers from the current interview. It is a specification, not a claim that the existing app implements these changes. The earlier founder brief and handoff remain source evidence; later explicit decisions in this document take precedence where they conflict.
 
 ## 1. Confirmed product purpose
 

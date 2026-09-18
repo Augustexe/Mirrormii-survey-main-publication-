@@ -1,6 +1,12 @@
+## Shared current context — required startup
+
+Read `/Users/jerryzhang/Workspace-Draft/projects/mirrormii-genie-survey/project/context/README.md`, `CURRENT.md`, `WORKING-SET.md` and `OPEN-QUESTIONS.md` before project work, including work inside existing run worktrees. Read `CODE-MAP.md` before code or tests: the registered checkout contains the older prototype; the approved R6 React app is in a different worktree. Historical worktree docs do not override this maintained context.
+
+Keep ongoing evidence, questions, ICP and psychology work in the listed masters. Runs retain frozen experiments and receipts. At task completion, update the maintained current-state/decision pages and catalog the run; do not leave the only current context in a run output. Never promote an experiment to an approved requirement merely because it is recent or finalized.
+
 # Genie survey project instructions
 
-This is the canonical source for project `mirrormii-genie-survey`. The user authorized a new planning and collaboration environment on 2026-09-14. Product implementation and public launch have not been specified yet.
+This is the canonical source for project `mirrormii-genie-survey`. The user authorized local MVP implementation from docs/FOUNDER-BRIEF.md on 2026-09-14. Build and validate locally for review; do not push, deploy, or publish until the user reviews it.
 
 ## Begin here
 
@@ -25,4 +31,4 @@ Use explicit labels: confirmed, proposed, open, verified, blocked. Proposed ques
 
 Use Kun's research → visual planning → iteration workflow when requested. Keep drafts reviewable. Validate consequential changes with an independent reviewer. Do not install a new orchestration platform merely to plan this product.
 
-Current authorization covers local planning and environment setup, read-only company grounding, and connection to the founder-selected existing GitHub repository `https://github.com/Augustexe/mirrormii-survey.git`. Local `origin` is configured; remote contents and instructions have not been read. Inspect and reconcile existing team source before any integration or push; never force-push the independent local planning history. No Lark business mutation, permission expansion, payout, external message, or public launch is implied by this brief. Once the founder authorizes a concrete action, carry it through without repeated permission questions.
+Current authorization covers local product implementation and validation, planning and environment setup, read-only company grounding, and connection to the founder-selected existing GitHub repository `https://github.com/Augustexe/mirrormii-survey.git`. Local `origin` is configured; remote contents and instructions have not been read. Inspect and reconcile existing team source before any integration or push; never force-push the independent local planning history. No Lark business mutation, permission expansion, payout, external message, or public launch is implied by this brief. Once the founder authorizes a concrete action, carry it through without repeated permission questions.

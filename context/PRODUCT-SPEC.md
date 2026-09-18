@@ -1,3 +1,5 @@
+> Reconciled 2026-09-18 from the approved release documentation: [source checkpoint](../../runs/20260918T011159Z-16d23238fdf9/scratch/handoff/docs/PRODUCT-SPEC.md). Implementation/team instructions below describe that historical task. Read [CURRENT.md](CURRENT.md) and [OPEN-QUESTIONS.md](OPEN-QUESTIONS.md) for later identity/ICP work and the experimental bank. Earlier canonical versions are preserved in the consolidation receipt.
+
 # Genii Personality and Health Survey — Product Spec
 
 Version 0.6 · 2026-09-17 · Owner: Jerry Zhang · Status: local implementation authorized; verification recorded in the current handoff
@@ -16,7 +18,7 @@ The review baseline is the React quiz64 app at commit ec89aa7: 64 authored quest
 
 This revision concerns the root survey, evidence semantics and private result. It does not reactivate the earlier 12/30/96-depth implementation or require final Genii family names, one-liners or character matching. Each route should stay around 60 questions using relevant replacements from an expanded bank. Confirmed health scope includes habits plus body/skin experience and optional relevant context such as allergies, existing conditions or cycles. Hydration, toilet routines and stress-related eating are illustrative everyday examples, not a mandatory checklist. Optional context remains reported fact, not a personality score.
 
-Backend integration belongs to Desmond. Production accounts, Lark writes, payments, publication and remote integration remain separate work. Jerry explicitly authorized implementation on the last build with Taste guidance and Luna workers. The concrete [implementation contract](../quiz64/docs/IMPLEMENTATION-CONTRACT.md) selects 64 route slots, 56 context/profile questions plus eight frozen checks, with relevant alternatives. Current delivery status and verification belong in the implementation handoff; the older baseline below is historical.
+Backend integration belongs to Desmond. Production accounts, Lark writes, payments, publication and remote integration remain separate work. Jerry explicitly authorized implementation on the last build with Taste guidance and Luna workers. The concrete [implementation contract](../../runs/20260918T011159Z-16d23238fdf9/scratch/handoff/quiz64/docs/IMPLEMENTATION-CONTRACT.md) selects 64 route slots, 56 context/profile questions plus eight frozen checks, with relevant alternatives. Current delivery status and verification belong in the implementation handoff; the older baseline below is historical.
 
 ## Confirmed experience
 

@@ -8,7 +8,7 @@ Jerry approved the R6 website layout and design in this conversation. Preserve c
 
 ## Source under review
 
-The approved visual baseline is commit `b0d7a89b964e0c0d00adec1093435a570f606343`. Active application source is `quiz64/`. This review documents that baseline; its proposed engine changes have not been implemented.
+The current approved build is in runs/20260918T003758Z-1798bfab3e72/scratch/worktree/quiz64. The canonical project checkout contains unrelated in-progress work and is not assumed to be the serving build. This document and CONTEXT.md are additive documentation only.
 
 This is a local code and founder-decision review, not a fresh synthesis of company data. No new Lark business claims are made; earlier company-source references are historical provenance for this checkpoint.
 
@@ -30,7 +30,7 @@ This is a local code and founder-decision review, not a fresh synthesis of compa
 - q45: Finish it, then sleep later -> D14a:delay and D14d:obligation, hypothetical/scenario. This can support contextual behavior claims but does not alter reported sleep duration or regularity.
 - q72: Usually consistent -> sleep_regularity=2, past_month. q73 answers populate the separate last_7_days marker. A difference is a reported contrast, not proof of improvement or deterioration.
 
-The full author map is in [quiz64/docs/QUESTION-MAP.md](../quiz64/docs/QUESTION-MAP.md). It includes all answer mappings, not just these examples.
+The full existing author map is copied into this run's output/QUESTION-MAP.md for inspection. It includes all answer mappings, not just these examples.
 
 ## Meaningful gaps to decide
 

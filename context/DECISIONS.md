@@ -1,3 +1,5 @@
+> Reconciled 2026-09-18 from the approved release documentation: [source checkpoint](../../runs/20260918T011159Z-16d23238fdf9/scratch/handoff/docs/DECISIONS.md). Implementation/team instructions below describe that historical task. Read [CURRENT.md](CURRENT.md) and [OPEN-QUESTIONS.md](OPEN-QUESTIONS.md) for later identity/ICP work and the experimental bank. Earlier canonical versions are preserved in the consolidation receipt.
+
 # Decisions and remaining choices
 
 ## Current implementation authorization - 2026-09-17

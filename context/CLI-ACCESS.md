@@ -1,3 +1,5 @@
+> Historical access audit, not current authentication status. Recheck native access only when needed; use [CODE-MAP.md](CODE-MAP.md) to select the right app.
+
 # CLI routes and access diagnosis
 
 Checked 2026-09-14. Audit run: `20260914T205815Z-c803359c5bf9`.
