@@ -18,6 +18,8 @@ import "./preview.css";
 import "./world.css";
 import "./jewels.css";
 import "./living-world.css";
+import "./result-details.css";
+import "./micro-details.css";
 
 function Preview() {
   const [fixture, setFixture] = useState("complete");

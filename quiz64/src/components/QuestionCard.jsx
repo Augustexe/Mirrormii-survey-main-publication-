@@ -70,6 +70,11 @@ export function QuestionCard({
   return (
     <article
       className={`question-card ${readOnly ? "question-card--readonly" : ""}`}
+      data-role={q.role || "hypothetical"}
+      data-evidence={q.meta?.evidence || "unspecified"}
+      data-chapter={q.chapter ?? "unknown"}
+      data-test={q.test ? "true" : "false"}
+      data-readonly={readOnly ? "true" : "false"}
     >
       <div className="question-head">
         <div>
@@ -151,10 +156,17 @@ export function QuestionCard({
         </div>
       )}
       {selectedOption?.reaction && draft !== "other" && (
-        <div className="host-reaction" role="status">
+        <motion.div
+          key={selectedOption.id}
+          className="host-reaction"
+          role="status"
+          initial={staticMotion ? false : { opacity: 0, y: 8, scale: 0.985 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.32, ease: [0.2, 0.75, 0.25, 1] }}
+        >
           <MessageCircle size={15} aria-hidden="true" />
           <span>{interpolate(selectedOption.reaction, state)}</span>
-        </div>
+        </motion.div>
       )}
       <details className="context-details">
         <summary>

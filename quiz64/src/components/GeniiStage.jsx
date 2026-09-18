@@ -9,6 +9,7 @@ import {
 } from "motion/react";
 import { Sparkles } from "lucide-react";
 import { asset } from "../survey.js";
+import { IdeaSpark } from "./IdeaSpark.jsx";
 
 const moods = {
   attentive: asset("genii-opal-alert.webp"),
@@ -38,6 +39,11 @@ export function GeniiStage({
   const config = useContext(MotionConfigContext);
   const reduced = prefersReducedMotion || config.reducedMotion === "always";
   const imageSource = moods[mood] || moods.curious;
+  const imageSourceSmall = asset(
+    mood === "skeptical"
+      ? "genii-opal-thinking-480.webp"
+      : "genii-opal-alert-480.webp",
+  );
   const pointerX = useSpring(0, { stiffness: 110, damping: 22 });
   const pointerY = useSpring(0, { stiffness: 110, damping: 22 });
   const rotate = useTransform(pointerX, [-1, 1], [-5, 5]);
@@ -118,7 +124,7 @@ export function GeniiStage({
             <img
               className="genii-sprite"
               src={imageSource}
-              srcSet={`${imageSource.replace(".webp", "-480.webp")} 480w, ${imageSource} 800w`}
+              srcSet={`${imageSourceSmall} 480w, ${imageSource} 800w`}
               sizes={
                 compact
                   ? "(max-width: 760px) 74px, 240px"
@@ -132,6 +138,7 @@ export function GeniiStage({
           </div>
         </motion.div>
       </motion.div>
+      <IdeaSpark trigger={reactionKey} reduced={reduced} />
       {bubble && (
         <motion.div
           key={bubble}

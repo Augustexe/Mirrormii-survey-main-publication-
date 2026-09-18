@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef } from "react";
-import { MotionConfigContext, useReducedMotion } from "motion/react";
+import { motion, MotionConfigContext, useReducedMotion } from "motion/react";
 
 const SCENES = {
   landing: {
@@ -347,6 +347,7 @@ export function AmbientWorld({ scene = "landing", chapter = 1, pulseKey }) {
       aria-hidden="true"
     >
       <div className="ambient-world__atmosphere" />
+      <div className="ambient-world__illumination" />
       <div className="ambient-world__sculpture" />
       <canvas className="ambient-world__field" ref={canvasRef} />
       <div className="ambient-world__optics">
@@ -355,6 +356,13 @@ export function AmbientWorld({ scene = "landing", chapter = 1, pulseKey }) {
         <span className="ambient-world__sheen" />
       </div>
       <div className="ambient-world__veil" />
+      <motion.div
+        key={pulseKey}
+        className="ambient-world__response"
+        initial={motionOff ? false : { opacity: 0 }}
+        animate={motionOff ? { opacity: 0 } : { opacity: [0, 0.42, 0] }}
+        transition={{ duration: 1.4, ease: "easeOut" }}
+      />
     </div>
   );
 }

@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { MotionConfigContext, useReducedMotion } from "motion/react";
 import {
   Check,
   ChevronDown,
@@ -9,6 +10,7 @@ import {
 } from "lucide-react";
 import { PortraitIcon } from "./PortraitIcon.jsx";
 import { GeniiStage } from "./GeniiStage.jsx";
+import { RoutineTrack } from "./RoutineTrack.jsx";
 import * as Survey from "../survey.js";
 import * as Engine from "../engine.js";
 
@@ -86,6 +88,9 @@ export function EvidenceSummary({
   error = "",
 }) {
   const heading = useRef(null);
+  const prefersReducedMotion = useReducedMotion();
+  const { reducedMotion } = useContext(MotionConfigContext);
+  const reduced = prefersReducedMotion || reducedMotion === "always";
   const portrait = useMemo(
     () => Engine.portrait?.(state) || fallbackPortrait(state),
     [state],
@@ -117,7 +122,10 @@ export function EvidenceSummary({
 
   const hasEvidence = claims.length > 0;
   return (
-    <main className="completion-shell result-experience">
+    <main
+      className="completion-shell result-experience"
+      data-result-motion={reduced ? "off" : "on"}
+    >
       {error && (
         <p className="save-error" role="alert">
           {error}
@@ -613,17 +621,7 @@ function RoutineReading({ period, record, position }) {
     <div className={`routine-reading routine-reading--${period.toLowerCase()}`}>
       <span className="routine-period">{period}</span>
       <strong>{record?.label || "Not recorded"}</strong>
-      <div
-        className={`routine-track${position === null ? " routine-track--empty" : ""}`}
-        aria-hidden="true"
-      >
-        {[0, 33.333, 66.667, 100].map((tick) => (
-          <i key={tick} style={{ left: `${tick}%` }} />
-        ))}
-        {position !== null && (
-          <span className="routine-marker" style={{ left: position }} />
-        )}
-      </div>
+      <RoutineTrack period={period} position={position} />
     </div>
   );
 }

@@ -15,6 +15,7 @@ import * as Survey from "./survey.js";
 import * as Engine from "./engine.js";
 import { GeniiStage } from "./components/GeniiStage.jsx";
 import { AmbientWorld } from "./components/AmbientWorld.jsx";
+import { ConversationProgress } from "./components/ConversationProgress.jsx";
 import { QuestionCard } from "./components/QuestionCard.jsx";
 import {
   ChapterMap,
@@ -31,6 +32,9 @@ import "./result-visuals.css";
 import "./world.css";
 import "./jewels.css";
 import "./living-world.css";
+import "./question-surfaces.css";
+import "./result-details.css";
+import "./micro-details.css";
 import { ChapterRibbon } from "./components/ChapterRibbon.jsx";
 import { ChapterObject } from "./components/ChapterObject.jsx";
 
@@ -806,20 +810,7 @@ function QuizView({
           {totalResolved} / {route.length} explored
         </span>
       </div>
-      <div
-        className="progress-rail"
-        role="progressbar"
-        aria-label="Conversation progress"
-        aria-valuemin="0"
-        aria-valuemax={route.length || 64}
-        aria-valuenow={totalResolved}
-      >
-        <span
-          style={{
-            width: `${route.length ? (totalResolved / route.length) * 100 : 0}%`,
-          }}
-        />
-      </div>
+      <ConversationProgress value={totalResolved} total={route.length} />
       <div className="quiz-layout">
         <QuestionCard
           q={q}
