@@ -58,7 +58,7 @@ export function ChapterMap({
     >
       <div className="dialog-top">
         <div>
-          <span className="eyebrow">Your route through the weird</span>
+          <span className="eyebrow">Your conversation</span>
           <h2 id="map-title">Chapter map</h2>
         </div>
         <button
@@ -71,8 +71,8 @@ export function ChapterMap({
         </button>
       </div>
       <p className="dialog-lede">
-        A few chapters of specific scenes, then eight sealed checks. Context
-        changes which scenes belong on your route.
+        Questions about everyday situations, then eight final checks.
+        Some follow-ups depend on your earlier answers.
       </p>
       <div className="chapter-list">
         {chapters.map((chapter) => {
@@ -108,7 +108,7 @@ export function ChapterMap({
                 <small>{chapter.subtitle}</small>
               </span>
               <span className="chapter-count">
-                {resolved} of {qs.length} resolved
+                {resolved} of {qs.length} completed
               </span>
             </button>
           );
@@ -122,7 +122,7 @@ export function ChapterMap({
           onHow();
         }}
       >
-        <Info size={16} /> How the evidence works
+        <Info size={16} /> How we use your answers
       </button>
     </dialog>
   );
@@ -147,7 +147,7 @@ export function ReviewDialog({ open, onClose, state, route = [], onVisit }) {
     >
       <div className="dialog-top">
         <div>
-          <span className="eyebrow">Private answer trail</span>
+          <span className="eyebrow">Your saved answers</span>
           <h2 id="review-title">Review your answers</h2>
         </div>
         <button
@@ -160,8 +160,8 @@ export function ReviewDialog({ open, onClose, state, route = [], onVisit }) {
         </button>
       </div>
       <p className="dialog-lede">
-        Only eligible scenes on this attempt appear here. Sealed checks stay
-        read-only after you continue.
+        These are the questions included in this attempt. You cannot change
+        a final-check answer after pressing Continue.
       </p>
       <div className="review-list">
         {route.map((q, i) => {
@@ -186,11 +186,11 @@ export function ReviewDialog({ open, onClose, state, route = [], onVisit }) {
               <span>
                 <strong>
                   {q.test && !value
-                    ? `Sealed check ${i + 1}`
+                    ? `Final check ${i + 1}`
                     : titleFor(q, state)}
                 </strong>
                 <small>
-                  {q.test ? "Sealed check. " : ""}
+                  {q.test ? "Final check. " : ""}
                   {status}
                 </small>
               </span>
@@ -245,26 +245,26 @@ export function HowDialog({ open, onClose }) {
           <div>
             <b>44 + 8</b>
             <span>
-              Personality scenes build a provisional portrait. Eight sealed
-              checks follow.
+              Up to 44 questions help build a first impression. Eight final
+              questions check guesses made from your earlier answers.
             </span>
           </div>
           <div>
-            <b>Rule-based</b>
+            <b>No mind-reading</b>
             <span>
-              Every category comes from an authored choice. Thin or tied
-              evidence abstains.
+              Genii uses set rules to interpret the choices you select. If there
+              is too little to go on or a tie, it does not make a guess.
             </span>
           </div>
           <div>
-            <b>Unscored notes</b>
+            <b>Notes stay as notes</b>
             <span>
               Your optional context helps you remember why you chose something.
               It never changes the reading.
             </span>
           </div>
           <div>
-            <b>Context aware</b>
+            <b>Relevant questions</b>
             <span>
               Known irrelevant scenes are left out instead of asking you to
               invent an answer.
@@ -272,8 +272,8 @@ export function HowDialog({ open, onClose }) {
           </div>
         </div>
         <p className="how-boundary">
-          A selected action is not a hidden motive or emotion. The portrait can
-          only use the meaning attached to the answer you actually chose.
+          Choosing an action does not tell us why you chose it or how you felt.
+          We only use the answers you actually selected, without filling in a backstory.
         </p>
       </div>
     </dialog>
@@ -314,7 +314,7 @@ export function MoreDialog({
     >
       <div className="dialog-top">
         <div>
-          <span className="eyebrow">Small useful drawer</span>
+          <span className="eyebrow">More options</span>
           <h2 id="more-title">More</h2>
         </div>
         <button
@@ -331,28 +331,28 @@ export function MoreDialog({
           <Map size={17} />
           <span>
             <b>Chapter map</b>
-            <small>See the eligible scenes on your route</small>
+            <small>See the chapters in this conversation</small>
           </span>
         </button>
         <button type="button" onClick={() => action(onHow)}>
           <Info size={17} />
           <span>
             <b>How it works</b>
-            <small>Read the local evidence notes</small>
+            <small>See how your answers are used</small>
           </span>
         </button>
         <button type="button" onClick={() => action(onReview)}>
           <Check size={17} />
           <span>
             <b>Review answers</b>
-            <small>Open choices already committed</small>
+            <small>Revisit answers you have saved</small>
           </span>
         </button>
         <button type="button" onClick={() => action(onExport)}>
           <Map size={17} />
           <span>
             <b>Export current answers</b>
-            <small>Download a private JSON copy</small>
+            <small>Download a file containing your private answers. Be careful who you share it with.</small>
           </span>
         </button>
         <button type="button" onClick={() => action(onSave)}>

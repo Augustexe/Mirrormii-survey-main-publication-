@@ -18,6 +18,7 @@ import {
   optionAvailable,
 } from "../engine.js";
 import { HOST_REACTIONS } from "../host-reactions.js";
+import { CONTEXT_FIELD_LABELS, CONTEXT_VALUE_LABELS } from "../respondent-copy.js";
 
 const contextValueLabels = {
   close_friend: "A close friend",
@@ -60,7 +61,7 @@ const contextValueLabels = {
 };
 
 const contextValueLabel = (value) =>
-  contextValueLabels[value] || String(value).replaceAll("_", " ");
+  CONTEXT_VALUE_LABELS[value] || contextValueLabels[value] || "Not specified";
 
 export function QuestionCard({
   q,
@@ -99,7 +100,7 @@ export function QuestionCard({
     (note || "") !== committedNote ||
     (otherText || "") !== committedOther ||
     JSON.stringify(contextBinding || {}) !== JSON.stringify(state.bindings?.[q.id] || {});
-  const actual = q.role === "actual";
+  const actual = q.meta?.evidence === "actual_event" || q.role === "actual";
   const multi = q.responseFormat === "multi_select";
   const selectedOption = useMemo(
     () => q.options?.find((option) => currentDraft.includes(option.id)),
@@ -160,10 +161,10 @@ export function QuestionCard({
               <Lightbulb size={15} aria-hidden="true" />
             )}
             {q.test
-              ? "One last what-if"
-              : q.meta?.evidence === "self_report" || q.role === "context"
-                ? "Your everyday"
-                : q.meta?.evidence === "actual_event" || actual
+              ? "A final check"
+              : q.chapter === 1 || q.chapter === 8
+                ? "Your preferences"
+                : q.meta?.evidence === "actual_event" || actual || q.id === "V4-030"
                   ? "From your life"
                   : "Picture this"}
           </span>
@@ -178,18 +179,18 @@ export function QuestionCard({
       {contextFields.length > 0 && qApplicable && !readOnly && !selectedExit && (
         <section className="context-capture" aria-label="Required context for this scene">
           <p className="question-setup">
-            Quick scene check — because who, how safe, and how costly can change the whole answer.
+            A few details first. Who is involved and what is at stake can change your answer.
           </p>
           {contextFields.map((field) => (
             <label key={field.key} className="context-field">
-              <span>{field.label}</span>
+              <span>{CONTEXT_FIELD_LABELS[field.key] || field.label}</span>
               <select
                 value={contextBinding?.[field.key] || ""}
                 onChange={(e) => setContextBinding?.({ ...(contextBinding || {}), [field.key]: e.target.value })}
                 disabled={readOnly || (q.test && Boolean(committed))}
                 required
               >
-                <option value="">Choose context…</option>
+                <option value="">Choose an answer…</option>
                 {field.values
                   .filter((value) => contextValueAvailable(q.id, field.key, value, state))
                   .map((value) => (
@@ -256,7 +257,7 @@ export function QuestionCard({
             placeholder="A short answer is perfect."
           />
           <small>
-            {(otherText || "").length}/1200. Optional; saved without scoring.
+            {(otherText || "").length}/1200. Optional. Saved as a note, not used to interpret your personality.
           </small>
         </div>
       )}
@@ -276,7 +277,7 @@ export function QuestionCard({
       <details className="context-details">
         <summary>
           <ChevronDown size={16} aria-hidden="true" /> Add context{" "}
-          <span>Optional. Saved with your answer, never scored.</span>
+          <span>Optional. Saved with your answer, not used in your result.</span>
         </summary>
         <textarea
           value={note || ""}
@@ -294,7 +295,7 @@ export function QuestionCard({
           className="none-fit"
           onClick={() => onContinue("no_recent_example", { note: note || "" })}
         >
-          No recent example <span>This stays unknown, not negative evidence</span>
+          No recent example <span>We will not draw a conclusion from this</span>
         </button>
       )}
       <div className="question-actions">
@@ -339,7 +340,7 @@ export function QuestionCard({
               ? "Saved on this device"
               : "Saves when you continue"}{" "}
         {q.test
-          ? ". This check is read-only after Continue."
+          ? ". You cannot change this check after Continue."
           : ". You can revisit this answer later."}
       </p>
       {error && (

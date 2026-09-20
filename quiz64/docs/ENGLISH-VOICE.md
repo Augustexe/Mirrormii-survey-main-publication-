@@ -1,47 +1,29 @@
-# Switch Modes v3 English voice
+# V4 English voice — Astra language candidate
 
-## Voice promise
+Status: local implementation candidate, awaiting sequential Council audit. This replaces the v3 voice guidance for this branch only.
 
-Genii is observant, warm, specific, and lightly funny. It never turns one answer into a fixed identity, confuses quiet behavior with calm feeling, or adds a motive the respondent did not select.
+## Source of wording
 
-## Question rules
+- `src/respondent-copy.js`: all 52 prompts, setups, ordered options, shared exits, chapter text and context labels.
+- `src/data.js`: frozen authoring meanings and evidence metadata. Its original text is retained as the review baseline, then the wording layer is applied.
+- `src/host-reactions.js`: selective acknowledgments, never evidence.
+- `src/engine.js`: source-bound result sentences, paired examples, cautious headlines, limited jokes and support preferences.
+- `src/result-language.js`: plain explanations of source, circumstances and item-specific limits. Technical metadata remains intact in private exports.
 
-- Ask about one event, window, or comparison at a time.
-- Put context into the stem rather than hiding it in scoring.
-- Let answers describe mutually intelligible actions or reasons.
-- Keep `Other`, `Skip`, and `No example` semantically distinct.
-- Use humor to reduce performance pressure, never to mock an answer.
-- Follow up on motive or intensity only when the parent event exists.
+## Voice contract
 
-## Result rules
+Use ordinary words. Give each sentence one job. Explain the situation before asking for a choice. Keep humor specific and optional; do not assign an unasked motive just to land a joke.
 
-- Lead with context-dependent mode switching, not a personality type.
-- Quote literal answer text in receipts and linked-event claims.
-- Say where the evidence came from: actual event, hypothetical choice, routine self-report, or direct context.
-- Name a plausible alternative before sounding certain.
-- Give the respondent one concrete thing to notice next.
-- Describe routine values as direct reports, not personality-derived health facts.
-- Keep the sealed-check score separate from recognition and product benefit.
+Keep the answer distinctions intact: an action is not a feeling, a first interpretation is not a fact, a reason for one event is not a general value, and a preference for help is not proof that the help works.
 
-## Teaching tones
+A result should offer a clear headline, a short explanation, concrete examples, an optional small roast and a useful support preference. Quote the actual choice when giving an example. Say whether it describes an imagined situation or an account of something that happened. Do not paste internal targets into sentence templates.
 
-- **Understanding:** calm, validating, and careful.
-- **Direct:** concise, plain, and non-ornamental.
-- **Funny:** one light line without weakening evidence boundaries.
-- **Permission-first:** invite the respondent to keep, reject, or revise the read.
+A contrast keeps its parent situation attached. A motive can explain only its own linked event. Linked follow-ups are not independent repeated examples. Unknown, skipped, no-example and custom answers stay distinct and unscored.
 
-Tone changes how evidence is taught, not which evidence is selected or how it is scored.
+Keep the final checks separate. Explain passing on a guess and the fixed-answer comparison without calling a small score personality accuracy. Fits / Not quite saves feedback without rewriting the original result.
 
-## Continuation CTA
+## Versions and checks
 
-The continuation message should connect the selected goal to one small, reversible MirrorMe next step. It is a preview of a possible workflow, not proof that MirrorMe has already improved the respondent's life.
+The wording version is `v4-astra-english-1`; this candidate uses a separate saved-attempt key. Earlier attempts are not silently relabeled.
 
-## Banned shortcuts
-
-- “This means you are…” from one answer.
-- Calm/regulated/resilient inferred from a quiet outward response.
-- A motive inferred from an action when motive was not asked.
-- Multiple tags from one answer presented as corroboration.
-- “Other” interpreted as the nearest authored option.
-- Variable/unknown routine answers displayed as a low value.
-- Scientific, diagnostic, clinical, or calibrated-accuracy language.
+Run `npm test` and `npm run build` in `quiz64`. The language tests pin every non-copy field to `533c3da`, exercise every option/exit, verify exact receipts and render the real React text. These are regression checks, not proof that a human will understand or endorse every sentence. See `ASTRA-IMPLEMENTATION.md` for known limits and the next review gate.

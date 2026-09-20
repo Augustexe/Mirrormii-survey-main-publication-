@@ -1,50 +1,46 @@
-// Selective acknowledgments only. These do not become evidence or claims.
+// Acknowledgments only: never evidence, a new motive, or advice about the answer.
 export const HOST_REACTIONS = {
   "V4-001": {
-    A: "Roast requested. I will keep the roast on a leash and attach receipts.",
-    B: "Specific pattern read. Deliciously inconvenient, if the evidence earns it.",
-    E: "Surprise allowed, but only where the receipts stop me from freelancing.",
+    A: "A fair roast. No invented backstory to make the joke work.",
+    B: "Specific it is. I will show you which answers I am using.",
+    E: "A surprise, not a wild guess about your life.",
   },
   "V4-002": {
-    A: "Gentle mode. The sword gets a velvet cover.",
-    C: "Playful and pointed. Tiny dagger, rounded tip.",
-    E: "Receipts first. A courtroom drama, but cute.",
+    A: "Gentle and careful. Got it.",
+    C: "A little bite, without making things up.",
+    E: "Your answers first, my explanation second.",
   },
-  "V4-003": {
-    F: "No special boundary logged. Item exits still stay available.",
-  },
+  "V4-003": { F: "You can still skip any question along the way." },
   "V4-005": {
-    B: "Private correction: diplomacy with a paper trail.",
-    C: "Tiny public context. Not a speech, just a breadcrumb flare.",
-    E: "Investment drop noted. Motive still has to earn its own receipt.",
+    B: "Congratulations now, a private conversation later.",
+    C: "A quick clarification, not a keynote speech.",
+    E: "Less effort next time. I will ask what matters to you rather than guess why.",
   },
   "V4-011": {
-    A: "Acknowledged and moving. Clean little conversational parkour.",
-    D: "Quieter first. That tells me the move, not the feeling.",
-    E: "Joke as reset button. Risky device, often irresistible.",
+    A: "Acknowledge it and keep going. Got it.",
+    D: "Quieter for a while. That does not tell me how it feels inside.",
+    E: "A small joke to get the conversation moving again.",
   },
   "V4-017": {
-    A: "Light ask. Social lockpick, but make it casual.",
-    D: "Private clarity later. The group chat does not get every feeling live.",
+    A: "Ask one person directly. No group investigation required.",
+    D: "Some distance from the group for now.",
   },
   "V4-023": {
-    A: "Reason requested. Buy-in wants a receipt too.",
-    C: "Tone named. The instruction is on trial, not the whole person.",
+    A: "The reason matters before you decide.",
+    C: "You would address how they said it, not just the advice.",
   },
   "V4-029": {
-    B: "Bounded help. Generosity with office hours.",
-    E: "Clear no. Capacity is allowed to have a spine.",
+    B: "You helped and set a limit. Both parts count.",
+    E: "You waited until the moment passed. I will not guess the reason.",
   },
   "V4-035": {
-    A: "Story potential wins. Tomorrow has entered a formal complaint.",
-    C: "Commitment protected. The future-you lobby is strong today.",
+    A: "The fun option gets a yes. Tomorrow is still on the calendar.",
+    C: "The commitment first, the fun afterward.",
   },
-  "V4-041": {
-    D: "Permission gate installed. Genii will knock before going deep.",
-  },
+  "V4-041": { D: "Ask first. Got it." },
   "V4-044": {
-    A: "One no means no. Excellent, a boundary with a lock on it.",
-    E: "Receipts before advice. Honestly, fair.",
+    A: "One no is enough.",
+    E: "Public embarrassment is a topic to pause on.",
   },
 };
 export default HOST_REACTIONS;

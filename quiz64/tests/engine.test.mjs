@@ -62,7 +62,7 @@ function answerAllChecks(state, value = "abstain") {
 
 test("new storage/version boundary fails closed from v3 attempts", () => {
   assert.equal(VERSION, "genii-personality-game-v4");
-  assert.equal(KEY, "genii.personality-game.v4");
+  assert.equal(KEY, "genii.personality-game.v4.astra.v1");
   assert.deepEqual(restore({ version: "genii-switch-modes.v3", answers: {} }), fresh());
 });
 
@@ -154,7 +154,7 @@ test("portrait is identity-first, sectioned, audited, and source-faithful", () =
   const result = portrait(state);
   assert.ok(["Sharp Glimpse", "Velvet Clipboard", "Composed Firecracker", "Boundary Bouncer", "Choice Lawyer"].includes(result.publicName));
   assert.doesNotMatch(result.thesis, /fake personality type/);
-  assert.match(result.thesis, /mode changes|switch/i);
+  assert.match(result.thesis, /response might change with the situation/i);
   for (const key of ["action", "emotion", "value", "support"]) {
     assert.ok(result.sections.some((section) => section.key === key), `missing ${key}`);
   }
@@ -218,14 +218,14 @@ test("sections use semantically correct sources and dark-side roast is evidence-
   const desireResult = portrait(desireAction);
   assert.equal(desireResult.sections.some((section) => section.key === "desire"), false, "temptation action must not become Desire");
   assert.equal(desireResult.sections.some((section) => section.key === "fear"), false, "fear stays unknown without direct fear evidence");
-  assert.ok(desireResult.unknowns.some((line) => line.startsWith("fears:")));
+  assert.ok(desireResult.unknowns.some((line) => line.includes("not asked directly about your fears")));
 
   const roast = fresh();
   setAnswer(roast, "V4-008", "D");
   const roastResult = portrait(roast);
   const dark = roastResult.sections.find((section) => section.key === "dark_side");
   assert.ok(dark);
-  assert.match(dark.text, /receipt folder|get weirdly thick/);
+  assert.match(dark.text, /wait to see whether it happens again/);
   assert.equal(dark.evidenceIds.length, 1);
 
   const noRoast = fresh();
@@ -345,7 +345,7 @@ test("heldout transfer rules use explicit existing source pairs, never bare opti
 test("predict only uses pre-freeze evidence and abstains on ties", () => {
   const thin = predict(byId.get("V4-H01"), { "V4-001": "A" });
   assert.equal(thin.option, null);
-  assert.match(thin.reason, /Too few explicit/);
+  assert.match(thin.reason, /not enough relevant earlier answers/);
   const tied = predict(byId.get("V4-H06"), { "V4-035": "B", "V4-036": "A" });
   assert.equal(tied.option, null);
   assert.match(tied.reason, /tied/i);

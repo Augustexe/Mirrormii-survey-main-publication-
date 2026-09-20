@@ -1,12 +1,13 @@
 import * as DATA from "./data.js";
+import { WORDING_VERSION, ITEM_COPY } from "./respondent-copy.js";
 
 const { QUESTIONS, VERSION, BANK_VERSION, PACKET_ID } = DATA;
 export { VERSION };
 
-export const KEY = "genii.personality-game.v4";
+export const KEY = "genii.personality-game.v4.astra.v1";
 export const RESULT_VERSION = "genii-personality-game-v4";
 export const MAPPING_VERSION = "v4-mapping-2026-09-19";
-export const COPY_VERSION = "v4-copy-2026-09-19";
+export const COPY_VERSION = WORDING_VERSION;
 
 const QUESTION_BY_ID = new Map(QUESTIONS.map((q) => [q.id, q]));
 const SPECIAL = new Set([
@@ -231,6 +232,7 @@ function routeSlots() {
 export function fresh() {
   return {
     version: VERSION,
+    wordingVersion: WORDING_VERSION,
     attemptId: null,
     answers: {},
     notes: {},
@@ -507,6 +509,7 @@ export function observations(answers = {}) {
     if (raw === undefined) continue;
     if (isExitValue(raw)) {
       const exitId = Array.isArray(raw) ? raw.find((item) => EXIT_VALUES.has(item)) : raw;
+      const exitText = question.exits?.find((exit) => exit.id === exitId)?.text || EXIT_LABELS[exitId];
       rows.push({
         id: exitReceiptId(question, raw),
         kind: "missingness",
@@ -515,14 +518,15 @@ export function observations(answers = {}) {
         questionId: question.id,
         optionId: exitId,
         questionTitle: question.title,
-        answer: EXIT_LABELS[exitId] || exitId,
-        why: EXIT_LABELS[exitId] || exitId,
+        answer: exitText,
+        why: exitText,
         role: normalizedRole(question),
         window: windowFor(question),
         target: displayTarget(bindings[question.id]?.relationship_object || bindings[question.id]?.requester_object || bindings[question.id]?.target_role || question.meta?.target),
         linkedEventId: question.meta?.linkedEventId,
         version: VERSION,
         bankVersion: BANK_VERSION,
+        wordingVersion: WORDING_VERSION,
         mappingVersion: MAPPING_VERSION,
         source: question.meta?.source || PACKET_ID,
         sourceType: question.meta?.sourceType || null,
@@ -556,6 +560,7 @@ export function observations(answers = {}) {
           linkedEventId: question.meta?.linkedEventId,
           version: VERSION,
           bankVersion: BANK_VERSION,
+          wordingVersion: WORDING_VERSION,
           mappingVersion: MAPPING_VERSION,
           source: question.meta?.source || PACKET_ID,
           sourceType: question.meta?.sourceType || null,
@@ -658,7 +663,7 @@ export function predict(question, answers = {}) {
   const rule = HELDOUT_TRANSFER_MAP[question.id];
   const baseline = question.baseline || question.meta?.heldoutMetadata?.fixed_baseline?.option_id || question.options?.[0]?.id || null;
   if (!rule) {
-    return { question: question.id, option: null, reason: "No versioned transfer rule", sources: [], scores: [], baseline, heuristic: "No transfer rule.", frozenBeforeQuestion: true };
+    return { question: question.id, option: null, reason: "Genii has no rule for guessing this choice yet.", sources: [], scores: [], baseline, heuristic: "No transfer rule.", frozenBeforeQuestion: true };
   }
   const sourceIds = [...new Set(Object.values(rule.optionMap || {}).flat().map((pair) => pair.questionId))];
   const rows = sourceOptionRows(answers, sourceIds);
@@ -685,10 +690,10 @@ export function predict(question, answers = {}) {
     question: question.id,
     option,
     reason: !enough
-      ? "Too few explicit pre-freeze source pairs for this transfer rule"
+      ? "There were not enough relevant earlier answers to make a guess."
       : tied
-        ? `Abstained because explicit source pairs tied under ${rule.version}`
-        : `Selected by explicit source pairs under ${rule.version}`,
+        ? "Two or more choices were tied, so Genii did not guess."
+        : "Genii used your earlier answers to choose this before you saw the question.",
     sources: option ? winner.sources : [],
     eligibleSources: rows.map((row) => `${row.questionId}:${row.optionId}`),
     scores: scored,
@@ -797,6 +802,7 @@ function receiptRows(rows) {
     unsupportedInferences: row.unsupportedInferences || [],
     linkedEventId: row.linkedEventId,
     mappingVersion: row.mappingVersion || MAPPING_VERSION,
+    wordingVersion: row.wordingVersion || WORDING_VERSION,
     sourceType: row.sourceType,
     timeframe: row.time,
     cost: row.cost,
@@ -826,7 +832,7 @@ const ARCHETYPE_DEFINITIONS = [
   {
     id: "velvet-clipboard",
     publicName: "Velvet Clipboard",
-    spicyHook: "Warmth is available; the paperwork still matters.",
+    spicyHook: "A possible theme: you can keep things friendly while being clear about your part.",
     priority: 10,
     gates: [
       { questionId: "V4-005", options: ["B"] },
@@ -839,7 +845,7 @@ const ARCHETYPE_DEFINITIONS = [
   {
     id: "composed-firecracker",
     publicName: "Composed Firecracker",
-    spicyHook: "The outside can stay laminated while the inside files a spicy incident report.",
+    spicyHook: "A possible theme: what people see may not tell the whole story of your response.",
     priority: 20,
     gates: [
       { questionId: "V4-011", options: ["B", "C", "E"] },
@@ -852,7 +858,7 @@ const ARCHETYPE_DEFINITIONS = [
   {
     id: "boundary-bouncer",
     publicName: "Boundary Bouncer",
-    spicyHook: "Access is possible. Terms and conditions are also possible.",
+    spicyHook: "A possible theme: you look for ways to set limits without making every answer a flat no.",
     priority: 30,
     gates: [
       { questionId: "V4-027", options: ["B", "C", "D", "E"] },
@@ -865,7 +871,7 @@ const ARCHETYPE_DEFINITIONS = [
   {
     id: "quiet-cartographer",
     publicName: "Quiet Cartographer",
-    spicyHook: "You do not always chase the signal; sometimes you map the exits first.",
+    spicyHook: "A possible theme: you sometimes wait, step back or turn elsewhere rather than press for an answer.",
     priority: 40,
     gates: [
       { questionId: "V4-017", options: ["C", "D", "E"] },
@@ -879,7 +885,7 @@ const ARCHETYPE_DEFINITIONS = [
   {
     id: "spotlight-strategist",
     publicName: "Spotlight Strategist",
-    spicyHook: "You can share the stage, but you are absolutely tracking the lighting plot.",
+    spicyHook: "A possible theme: who sees a choice can matter alongside the choice itself.",
     priority: 50,
     gates: [
       { questionId: "V4-008", options: ["B", "C", "D", "E"] },
@@ -892,7 +898,7 @@ const ARCHETYPE_DEFINITIONS = [
   {
     id: "choice-lawyer",
     publicName: "Choice Lawyer",
-    spicyHook: "If someone hands you a rule, your first instinct is to inspect the fine print for an actual choice.",
+    spicyHook: "A possible theme: you want room to decide how to respond to someone else’s request.",
     priority: 60,
     gates: [
       { questionId: "V4-023", options: ["A", "B", "C", "D"] },
@@ -938,9 +944,9 @@ function chooseArchetype(source, groups) {
   const fallback = {
     id: units.size ? "sharp-glimpse" : "still-mysterious",
     publicName: units.size ? "Sharp Glimpse" : "Still Mysterious",
-    spicyHook: units.size ? "A first glimpse, not a whole prophecy." : "Still mysterious. Annoying for me, valid for you.",
+    spicyHook: units.size ? "A few answers give us a starting point, not a complete picture." : "Still mysterious — there is not enough here for a fair picture yet.",
     strength: units.size ? "Glimpse" : "Unknown",
-    sparseFallback: units.size ? "You gave me a sparkler, not a bonfire. I can point at the glint; I will not pretend it is a full constellation." : "You escaped the mirror with style. I have boundaries, exits, and preferences — not enough behavior to roast safely.",
+    sparseFallback: units.size ? "We can talk about these examples without turning them into a fixed type." : "Your preferences can guide the conversation, but they do not tell me how you act.",
     boundary,
     matchedRows: rows.slice(0, 2),
   };
@@ -961,26 +967,28 @@ function chooseArchetype(source, groups) {
   return {
     ...candidates[0],
     strength,
-    sparseFallback: "A first portrait with the receipt drawer closed until you ask.",
+    sparseFallback: "You can see the answers behind each part below.",
     boundary,
   };
 }
 
-function formatSourceCount(count) {
-  return count === 1 ? "one scene" : `${count} scenes`;
+function sceneFor(row) {
+  return ITEM_COPY[row.questionId]?.scene || "this situation";
 }
 
-function sectionResult(rows, section, textFactory) {
+function exampleSentence(row) {
+  const lead = row.role === "actual_event" ? "Looking back on" : "When asked about";
+  return `${lead} ${sceneFor(row)}, you chose: “${row.answer}”.`;
+}
+
+function sectionResult(rows, textFactory, limit) {
   if (!rows.length) return null;
-  const ordered = rows.slice().sort((a, b) => a.questionId.localeCompare(b.questionId));
-  const sourceCount = new Set(ordered.map(sourceUnit)).size;
-  const first = ordered[0];
-  const limits = first.unsupportedInferences?.slice(0, 3).join(", ") || "motive and whole-person certainty";
+  const unique = [...new Map(rows.map((row) => [`${row.questionId}:${row.optionId}`, row])).values()];
   return {
-    text: textFactory({ rows: ordered, first, sourceCount, sourceWord: formatSourceCount(sourceCount) }),
-    limit: `Evidence boundary: ${limits} stay unclaimed.`,
-    evidenceIds: ordered.map((row) => row.id),
-    observations: ordered,
+    text: textFactory(unique),
+    limit,
+    evidenceIds: unique.map((row) => row.id),
+    observations: unique,
   };
 }
 
@@ -999,25 +1007,27 @@ function supportRows(source) {
 }
 
 const MESSY_ACTION_COPY = {
-  "V4-008:D": "waiting for a pattern before you act can look calm, but it can also let the receipt folder get weirdly thick.",
-  "V4-010:E": "keeping a backup plan is useful; the messy version is quietly designing the sequel while everyone else thinks the first movie is still fine.",
-  "V4-017:D": "stepping back protects dignity; the messy version is making people pass an invisible re-entry exam.",
-  "V4-019:D": "drafting and holding a reply creates control; the messy version is turning one message into a courtroom exhibit.",
-  "V4-029:E": "not responding avoids a messy yes; the messy version is making silence carry the whole boundary.",
-  "V4-033:E": "civil distance keeps things clean; the messy version is a velvet rope with plausible deniability.",
-  "V4-038:E": "tracking a pattern is smart; the messy version is giving one subtle jab a subscription plan.",
-  "V4-039:D": "using the advantage once and recording why is disciplined; the messy version is notarizing your own loophole.",
+  "V4-008:D": "You would wait to see whether it happens again. One more repeat and this could need a folder.",
+  "V4-010:E": "You would line up a witness for later. The backup plan now has a supporting cast.",
+  "V4-017:D": "You would step back from the group for a while. Your group chat may briefly become a reading-only subscription.",
+  "V4-019:D": "You would draft the message without sending it. That draft may get more rehearsals than a wedding speech.",
+  "V4-029:E": "You put off answering until the moment passed. The unanswered message did a lot of work there.",
+  "V4-033:E": "You would stay polite and keep your distance. A friendly wave from the other end of the room.",
+  "V4-038:E": "You would keep the comment in mind in case it happens again. One remark, now with a possible sequel.",
+  "V4-039:D": "You would use the advantage once and write down why. Even your small scheduling exception gets meeting notes.",
 };
 
 function darkSideSection(source) {
+  const sourceMap = sourceAnswers(source) || {};
+  if (["A", "D"].includes(sourceMap["V4-002"]) || sourceMap["V4-041"] === "F" || sourceMap["V4-043"] === "F") return null;
   const row = substantiveRows(source).find((item) => MESSY_ACTION_COPY[`${item.questionId}:${item.optionId}`]);
   if (!row) return null;
   return {
     id: "section:dark-side",
     key: "dark_side",
-    title: "Bounded dark-side roast",
-    text: `The messy version: ${MESSY_ACTION_COPY[`${row.questionId}:${row.optionId}`]}`,
-    limit: `Receipt link: ${row.questionId}/${row.optionId}. This joke stops at the selected behavior; motive and morality stay off-limits.`,
+    title: "A small roast",
+    text: MESSY_ACTION_COPY[`${row.questionId}:${row.optionId}`],
+    limit: "This joke is about the response you chose in one situation. It is not a judgment about your character.",
     evidenceIds: [row.id],
     observations: [row],
   };
@@ -1034,11 +1044,14 @@ function buildSections(source) {
   const literalSupportRows = supportRows(source);
   const sections = [];
 
-  const action = sectionResult(actionRows, "action", ({ first }) => `First move: “${first.answer}.” Your default is not pure chaos; you pick a lane before the room gets to narrate you.`);
-  if (action) sections.push({ id: "section:action", key: "action", title: "First-move choreography", ...action });
+  const firstAction = actionRows.find((row) => row.role === "actual_event") || actionRows[0];
+  const action = sectionResult(firstAction ? [firstAction] : [], ([first]) => exampleSentence(first),
+    "This describes your answer to one situation, not how you always act. It does not tell us your reason unless you also gave one.");
+  if (action) sections.push({ id: "section:action", key: "action", title: "One response that stood out", ...action });
 
-  const emotion = sectionResult(emotionRows, "emotion", ({ first }) => `Inside/outside split: “${first.answer}.” The face, the spark, and the recovery clock are separate buttons — I only press the ones you actually selected.`);
-  if (emotion) sections.push({ id: "section:emotion", key: "emotion", title: "Room-temperature control", ...emotion });
+  const emotion = sectionResult(emotionRows.slice(0, 1), ([first]) => `${exampleSentence(first)} That describes this imagined moment, not how long the feeling would last.`,
+    "Your feeling and what others see are separate. We did not ask how long it would take you to recover.");
+  if (emotion) sections.push({ id: "section:emotion", key: "emotion", title: "What others might not see", ...emotion });
 
   if (patternUnits.size >= 2) {
     const buckets = new Map();
@@ -1050,19 +1063,26 @@ function buildSections(source) {
     }
     const bounded = [...buckets.values()].find((list) => new Set(list.map(sourceUnit)).size >= 2);
     if (bounded) {
-      const pattern = sectionResult(bounded, "pattern", ({ first }) => `Repeat behavior: “${first.answer}.” This is the part of the movie where Genii circles a habit in glitter pen.`);
-      if (pattern) sections.push({ id: "section:pattern", key: "pattern", title: "Glitter-pen repeat", ...pattern });
+      const pattern = sectionResult(bounded, (examples) => `${examples.slice(0, 2).map(exampleSentence).join(" ")} These answers suggest something worth checking in another real situation.`,
+        "Similar answers in different situations can suggest a pattern. They do not establish how often it happens in your life.");
+      if (pattern) sections.push({ id: "section:pattern", key: "pattern", title: "A possible pattern", ...pattern });
     }
   }
 
-  const value = sectionResult(valueRows, "value", ({ first }) => `Protected thing: “${first.answer}.” This is the value you put on the table in that scene, not a halo or a criminal record.`);
-  if (value) sections.push({ id: "section:value", key: "value", title: "What you guard", ...value });
+  const value = sectionResult(valueRows.slice(0, 1), ([first]) => `${exampleSentence(first)} That answer belongs to this situation; I would not assume it explains your other choices.`,
+    "This is the reason you selected for one situation. It is not an independently repeated pattern or a ranking of all your values.");
+  if (value) sections.push({ id: "section:value", key: "value", title: "What mattered there", ...value });
 
-  const desire = sectionResult(directDesireRows, "desire", ({ first }) => `Want line: “${first.answer}.” Small neon sign, not a full autobiography.`);
-  if (desire) sections.push({ id: "section:desire", key: "desire", title: "Tiny neon want", ...desire });
+  const desire = sectionResult(directDesireRows.slice(0, 1), ([first]) => `${exampleSentence(first)} Wanting your effort noticed was part of that answer.`,
+    "This is about the costly yes you described, not a general need for attention.");
+  if (desire) sections.push({ id: "section:desire", key: "desire", title: "What you wanted noticed", ...desire });
 
-  const support = sectionResult(literalSupportRows, "support", ({ first }) => `Handle-with-care line: “${first.answer}.” If someone wants to be useful to you, they should start there.`);
-  if (support) sections.push({ id: "section:support", key: "support", title: "How to handle me", ...support });
+  // Practical help first, then delivery style, then other literal preferences.
+  const supportOrder = ["V4-043", "V4-041", "V4-042", "V4-044", "V4-002", "V4-001", "V4-004"];
+  const supportFirst = supportOrder.map((id) => literalSupportRows.find((row) => row.questionId === id)).find(Boolean);
+  const support = sectionResult(supportFirst ? [supportFirst] : [], ([first]) => `${first.questionId === "V4-043" ? `When you are stuck, the help you asked for is: “${first.answer}”.` : exampleSentence(first)} That is a preference to respect, not something you need to justify.`,
+    "You told us what you prefer. We have not tested whether this approach will help you.");
+  if (support) sections.push({ id: "section:support", key: "support", title: "What would help", ...support });
 
   const dark = darkSideSection(source);
   if (dark) sections.push(dark);
@@ -1072,33 +1092,37 @@ function buildSections(source) {
 function unknownsFor(source, sections) {
   const answeredSections = new Set(sections.map((section) => section.key));
   const output = [];
-  if (!answeredSections.has("emotion")) output.push("emotions: unknown unless a direct inside/outside emotion pair was answered");
-  if (!answeredSections.has("value")) output.push("values: unknown until a motive/value row is directly selected");
-  if (!answeredSections.has("desire")) output.push("desires: omitted unless a direct want or goal was selected");
-  output.push("fears: unknown in this build unless a question asks fear directly");
+  if (!answeredSections.has("emotion")) output.push("I do not have a direct answer about both your feelings and what others would see.");
+  if (!answeredSections.has("value")) output.push("I do not have a selected reason for your choices, so I will not invent one.");
+  if (!answeredSections.has("desire")) output.push("I do not have an answer about wanting your effort noticed in a costly favor.");
+  output.push("I have not asked directly about your fears, so they are not part of this result.");
   const missingRows = observations(source).filter((item) => item.kind === "missingness");
-  if (missingRows.length) output.push(`${missingRows.length} skipped, exit, or unscored answer${missingRows.length === 1 ? "" : "s"} stayed private/missing instead of becoming trait evidence`);
+  if (missingRows.length) output.push(`${missingRows.length} answer${missingRows.length === 1 ? " was" : "s were"} left out of the interpretation. Skips, missing examples and custom answers are not personality clues.`);
   return output.slice(0, 5);
 }
 
 function thesisFor(archetype, sections, source) {
-  const action = sections.find((section) => section.key === "action");
-  const value = sections.find((section) => section.key === "value");
-  const rows = substantiveRows(source).filter((row) => row.d !== "value");
-  if (!action) {
-    return "You slipped through the mirror with excellent boundary work. I have a few preference crumbs, but not enough behavioral cake to serve a full personality slice.";
+  const rows = substantiveRows(source).filter((row) => !["value", "emotion", "appraisal"].includes(row.section));
+  for (const [childId, parentId] of Object.entries(MATCHED_CONTRAST_PARENTS)) {
+    const first = rows.find((row) => row.questionId === parentId);
+    const second = rows.find((row) => row.questionId === childId);
+    if (!first || !second || first.linkedEventId !== second.linkedEventId) continue;
+    // This pair is one imagined event, not repeated real-world evidence.
+    return {
+      text: `${exampleSentence(first)} ${exampleSentence(second)} This is a look at how your response might change with the situation, not a rule about who you are.`,
+      evidenceIds: [first.id, second.id],
+    };
   }
-  const boundaryRows = archetype.boundary?.eventId ? rows.filter((row) => row.linkedEventId === archetype.boundary.eventId) : rows;
-  const first = boundaryRows[0] || action.observations[0];
-  const second =
-    boundaryRows.find((row) => row.id !== first?.id && row.section !== "emotion" && (row.target !== first?.target || row.questionId !== first?.questionId)) ||
-    rows.find((row) => row.id !== first?.id && row.section !== "emotion") ||
-    rows.find((row) => row.id !== first?.id);
-  const context = first?.target || first?.questionTitle || "a high-stakes scene";
-  const response = first?.answer || action.observations[0]?.answer;
-  const motive = value ? `while protecting “${value.observations[0]?.answer}”` : "while the motive is still unknown";
-  const boundaryClause = second ? ` But when the context shifts toward ${second.target || second.questionTitle}, you chose “${second.answer}.”` : " The boundary is still provisional because I only have a narrow context shift.";
-  return `When ${context} puts a cost on your next move, you tend to choose “${response},” ${motive}.${boundaryClause} The thesis: your personality read lives in the switch — what changes when the target, stakes, or room rules change.`;
+  const action = sections.find((section) => section.key === "action")?.observations[0];
+  if (!action) return {
+    text: "There is not enough here to describe how you respond to situations. We can still use any preferences you shared to keep the conversation comfortable.",
+    evidenceIds: [],
+  };
+  const motive = evidence(source).find((row) => row.d === "value" && row.linkedEventId === action.linkedEventId);
+  return {
+    text: `${exampleSentence(action)}${motive ? ` In that same situation, what mattered to you was: “${motive.answer}”.` : " I do not have a reason for that choice, so I will not guess one."} One example is a starting point, not a fixed personality type.`,
+    evidenceIds: [action.id, ...(motive ? [motive.id] : [])],
+  };
 }
 
 function claimFromSection(section, portraitId) {
@@ -1109,14 +1133,14 @@ function claimFromSection(section, portraitId) {
     lesson: section.limit,
     dimension: section.key,
     target: section.observations[0]?.target || "recorded target",
-    scope: section.observations[0]?.time || section.observations[0]?.window || "recorded scenario",
+    scope: `This part is about ${sceneFor(section.observations[0])}.`,
     confidence: new Set(section.observations.map(sourceUnit)).size >= 2 ? "medium" : "low",
     evidenceStatus: section.observations.some((row) => row.role === "actual_event") ? "self_reported_event" : "authored_scenario",
     alternativeExplanations: [
-      "The answer may reflect this scene's costs rather than a stable global pattern.",
-      "Unasked motives, recovery time, and private context remain unknown unless directly answered.",
+      "The situation may explain this choice better than a lasting pattern does.",
+      "There may be circumstances we did not ask about.",
     ],
-    nextValidation: "Use a future real example to test whether this mode repeats with a different target and cost.",
+    nextValidation: "Next time something similar happens, notice what you do and what is different about the situation.",
     evidenceIds: section.evidenceIds,
     observations: section.observations,
   };
@@ -1137,16 +1161,16 @@ function buildShareCards(result) {
   const support = (result.literalSupportFields || [])[0];
   if (support) {
     cards.push({
-      title: "Handle me like this",
-      line: `Start with: “${support.text}.”`,
+      title: "A preference you shared",
+      line: `You chose: “${support.text}”.`,
       evidenceIds: [`${VERSION}:${support.questionId}:${support.optionId}:0`],
       source: "literal_field",
     });
   }
   if (!cards.length) {
     cards.push({
-      title: "Mirror dodger",
-      line: "I skipped enough that Genii refused to invent lore. Honestly iconic.",
+      title: "Not enough to go on yet",
+      line: "There are not enough answers for a fair picture. Nothing needs to be invented to fill the gaps.",
       evidenceIds: [],
       source: "low_evidence_exit",
     });
@@ -1185,9 +1209,10 @@ function auditClauses(portrait) {
     });
   };
   const portraitEvidence = portrait.sections.flatMap((s) => s.evidenceIds);
-  const emptyUnknown = portraitEvidence.length === 0 && portrait.strength === "Unknown";
-  add("archetype-hook", portrait.spicyHook, portraitEvidence.slice(0, 4), emptyUnknown ? "unknown" : "joke");
-  add("thesis", portrait.thesis, portraitEvidence.slice(0, 8), emptyUnknown ? "unknown" : "bounded_interpretation");
+  const hookEvidence = portrait.archetypeEvidenceIds || portraitEvidence.slice(0, 4);
+  add("archetype-hook", portrait.spicyHook, hookEvidence, !hookEvidence.length ? "unknown" : "joke");
+  const thesisIds = portrait.thesisEvidenceIds || portraitEvidence.slice(0, 8);
+  add("thesis", portrait.thesis, thesisIds, !thesisIds.length ? "unknown" : "bounded_interpretation");
   for (const section of portrait.sections) add(section.id, section.text, section.evidenceIds, section.key === "support" || section.key === "desire" ? "literal" : "bounded_interpretation");
   for (const [i, unknown] of portrait.unknowns.entries()) add(`unknown:${i}`, unknown, [], "unknown");
   return clauses;
@@ -1216,17 +1241,30 @@ export function portrait(state) {
     copyVersion: COPY_VERSION,
     packetId: PACKET_ID,
     title: archetype.publicName,
-    titleLead: archetype.publicName.split(",")[0],
-    titleEmphasis: archetype.strength,
+    titleLead: ({
+      "velvet-clipboard": "Clear about your part",
+      "composed-firecracker": "More than a first reaction",
+      "boundary-bouncer": "Room for limits",
+      "quiet-cartographer": "Space before a response",
+      "spotlight-strategist": "Who sees it can matter",
+      "choice-lawyer": "Room to decide",
+      "sharp-glimpse": "A few things stand out",
+      "still-mysterious": "Still getting to know you",
+    })[archetype.id],
+    titleEmphasis: archetype.strength === "Unknown" ? "Not enough to go on" : "A first impression",
     publicName: archetype.publicName,
     spicyHook: archetype.spicyHook,
+    archetypeEvidenceIds: (archetype.matchedRows || []).map((row) => row.id),
     strength: archetype.strength,
-    summary: `${archetype.spicyHook} ${archetype.strength === "Unknown" ? archetype.sparseFallback : "The receipt drawer exists, but the headline gets to be fun first."}`,
-    thesis,
+    summary: `${archetype.spicyHook} ${archetype.strength === "Unknown" ? archetype.sparseFallback : "This is a first impression from your answers, not a fixed type."}`,
+    thesis: thesis.text,
+    thesisEvidenceIds: thesis.evidenceIds,
     teachingTone: facts(source).toneBoundary || "receipts-first",
     shareSummary: `${archetype.publicName}: ${archetype.spicyHook}`,
     shareCards: [],
-    cta: "Bring one real future scene back later if you want to see whether the mode switch repeats.",
+    cta: facts(source).supportPreferences.includes("hands_off") || facts(source).supportPreferences.includes("only_if_asked")
+      ? "You do not need to do anything next. You asked for help only when you request it."
+      : "If you want to explore this further, notice one similar situation in real life. What did you do, and what mattered to you then?",
     sections,
     claims,
     groups,
@@ -1339,7 +1377,7 @@ export function setAnswer(state, id, value, meta = {}) {
 }
 
 function validRaw(raw) {
-  if (!raw || typeof raw !== "object" || Array.isArray(raw) || raw.version !== VERSION) return false;
+  if (!raw || typeof raw !== "object" || Array.isArray(raw) || raw.version !== VERSION || raw.wordingVersion !== WORDING_VERSION) return false;
   if (raw.answers !== undefined && (!raw.answers || typeof raw.answers !== "object" || Array.isArray(raw.answers))) return false;
   for (const [id, value] of Object.entries(raw.answers || {})) if (!validValue(questionFor(id), value)) return false;
   return true;
@@ -1367,6 +1405,7 @@ function safeObservation(row) {
     "linkedEventId",
     "version",
     "bankVersion",
+    "wordingVersion",
     "mappingVersion",
     "source",
     "sourceType",
@@ -1385,7 +1424,7 @@ function safeObservation(row) {
 }
 
 function validFrozenSnapshot(item) {
-  if (!item || typeof item !== "object" || item.version !== VERSION || typeof item.signature !== "string") return null;
+  if (!item || typeof item !== "object" || item.version !== VERSION || item.copyVersion !== COPY_VERSION || typeof item.signature !== "string") return null;
   try {
     const training = normalizeTraining(item.training);
     const bindings = cloneBindings(item.bindings || {});
@@ -1482,7 +1521,7 @@ export function restore(raw) {
   state.resultHistory = Array.isArray(parsed.resultHistory) ? parsed.resultHistory.map(validFrozenSnapshot).filter(Boolean) : [];
   const parsedPriorExposure = typeof parsed.locked?.priorExposure === "boolean" ? parsed.locked.priorExposure : false;
   state.priorExposure = parsedPriorExposure;
-  if (trainingDone(state) && parsed.locked?.signature === signature({ answers: state.answers, bindings: state.bindings })) state.locked = freeze({ ...state, priorExposure: parsedPriorExposure });
+  if (trainingDone(state) && parsed.locked?.copyVersion === COPY_VERSION && parsed.locked?.signature === signature({ answers: state.answers, bindings: state.bindings })) state.locked = freeze({ ...state, priorExposure: parsedPriorExposure });
   else clearTests(state);
   state.feedback = Array.isArray(parsed.feedback) ? feedbackForSnapshots(parsed.feedback, [state.locked, ...state.resultHistory]) : [];
   state.cursor = Math.min(state.cursor, state.route?.ids?.length || 0);
@@ -1532,6 +1571,9 @@ export function stats(state) {
     return {
       ...prediction,
       actual: answered ? option.id : null,
+      questionText: question.title,
+      answerText: option?.text || question.exits?.find((exit) => exit.id === raw)?.text || null,
+      wordingVersion: WORDING_VERSION,
       skipped,
       abstained,
       other,
@@ -1587,6 +1629,7 @@ export function exportAttempt(state) {
   const safeAnswers = Object.fromEntries(
     Object.entries(state?.answers || {}).filter(([id, value]) => activeIds.has(id) && questionFor(id) && validValue(questionFor(id), value)),
   );
+  const safePacket = { answers: safeAnswers, bindings: state?.bindings || {} };
   const base = {
     version: VERSION,
     resultVersion: RESULT_VERSION,
@@ -1597,10 +1640,10 @@ export function exportAttempt(state) {
     copyVersion: COPY_VERSION,
     route: activeRoute,
     facts: locked?.facts || facts(safeAnswers),
-    evidence: locked?.observations || observations(safeAnswers),
-    observations: locked?.observations || observations(safeAnswers),
-    evidenceReceipts: locked?.evidenceReceipts || receiptRows(evidence(safeAnswers)),
-    profile: locked?.profile || profile(safeAnswers),
+    evidence: locked?.observations || observations(safePacket),
+    observations: locked?.observations || observations(safePacket),
+    evidenceReceipts: locked?.evidenceReceipts || receiptRows(evidence(safePacket)),
+    profile: locked?.profile || profile(safePacket),
     portrait: portrait(state || fresh()),
     answers: safeAnswers,
     trainingAnswers: trainingAnswers(safeAnswers),

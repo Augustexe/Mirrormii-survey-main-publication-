@@ -1,5 +1,7 @@
 # Switch Modes v3 implementation contract
 
+**Historical v3 contract.** For the V4 language candidate based on `533c3da`, use `ASTRA-IMPLEMENTATION.md`, the V4 question map and the executable bank/engine contracts. The v3 counts and storage keys below are not current for that candidate.
+
 Status: local implementation test, not deployment approval or scientific validation.
 
 ## Product thesis

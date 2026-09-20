@@ -30,7 +30,7 @@ export function ChapterRibbon({ current, onOpen }) {
       aria-label={`Chapter map. ${CHAPTERS.find((c) => c.id === current)?.title || "Your conversation"}`}
     >
       {CHAPTERS.map((chapter, index) => {
-        const Icon = icons[index];
+        const Icon = icons[index] || Sparkles;
         return (
           <span
             key={chapter.id}

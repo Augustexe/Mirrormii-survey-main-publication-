@@ -1,6 +1,8 @@
 // Generated from genii-personality-game-v4-authoring-packet (v4-authoring-packet-2026-09-19).
 // V4 first-session personality game: no wellness/routine/clinical collection.
 
+import { applyItemCopy, CHAPTER_COPY } from "./respondent-copy.js";
+
 export const VERSION = "genii-personality-game-v4";
 export const BANK_VERSION = "v4-authoring-packet-2026-09-19";
 export const PACKET_ID = "genii-personality-game-v4-authoring-packet";
@@ -37,7 +39,7 @@ export const DIMS = {
   "explicit-no and topic pause boundaries": "Support preferences",
   "heldout": "Sealed checks"
 };
-export const CHAPTERS = [
+const AUTHORED_CHAPTERS = [
   {
     "id": 1,
     "title": "Frame and literal preferences",
@@ -93,8 +95,14 @@ export const CHAPTERS = [
     "kicker": "SEALED CHECKS"
   }
 ];
+export const CHAPTERS = AUTHORED_CHAPTERS.map((chapter, index) => ({
+  ...chapter,
+  title: CHAPTER_COPY[index][0],
+  subtitle: CHAPTER_COPY[index][1],
+  kicker: CHAPTER_COPY[index][0].toUpperCase(),
+}));
 export const MEASURES = {};
-export const QUESTIONS = [
+const AUTHORED_QUESTIONS = [
   {
     "id": "V4-001",
     "chapter": 1,
@@ -8247,6 +8255,7 @@ export const QUESTIONS = [
     }
   }
 ];
+export const QUESTIONS = AUTHORED_QUESTIONS.map(applyItemCopy);
 export const ROUTE_SLOTS = [
   {
     "id": "slot:V4-001",

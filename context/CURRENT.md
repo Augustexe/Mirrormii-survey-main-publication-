@@ -1,5 +1,9 @@
 # Current state and next work
 
+## Local V4 language candidate — Astra
+
+Status: local-only implementation based on `533c3da`, not a replacement for the historical approval record below. Respondent wording across the 52-item V4 bank, host, result and disclosures is revised in `fm/genii-language-astra`; see [implementation and validation](../quiz64/docs/ASTRA-IMPLEMENTATION.md) and the [pre-edit audit](../quiz64/docs/ASTRA-LANGUAGE-AUDIT.md). Evidence metadata and prediction mappings are pinned to the base commit. Sequential Council audit remains pending; no merge, push, deployment, production-readiness or human-validation claim is implied.
+
 As of 2026-09-18. The Switch Modes v3 implementation test is complete on isolated branch `codex/evidence-first-survey-implementation`; it is not deployed or automatically approved as the replacement survey.
 
 ## What we are building

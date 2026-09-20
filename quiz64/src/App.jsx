@@ -455,6 +455,8 @@ export default function App() {
               setNote={setNote}
               otherText={otherText}
               setOtherText={setOtherText}
+              contextBinding={contextBinding}
+              setContextBinding={setContextBinding}
               onContinue={commit}
               onBack={state.cursor > 0 ? back : null}
               onSkip={commit}
@@ -598,15 +600,15 @@ function Landing({ state, onBegin, onHow }) {
     >
       <section className="landing-hero">
         <div className="hero-copy">
-          <span className="eyebrow">Your lore. My favorite subject.</span>
+          <span className="eyebrow">A conversation about what makes you, you.</span>
           <h1>
             Let’s get
             <br />
             <em>oddly specific.</em>
           </h1>
           <p className="hero-promise">
-            The group-chat you. The 1 a.m. you. The “I'm fine” you. Let's get to
-            know the whole situation.
+            Everyday situations. Tricky choices. A few awkward moments.
+            Let’s see what your answers say about how you respond.
           </p>
           <div className="hero-actions">
             <button
@@ -674,15 +676,15 @@ function ChapterJourney() {
     <section className="chapter-journey" aria-label="Conversation details">
       <div className="journey-intro">
         <strong>Bring the real version of you.</strong>
-        <small>Get a vivid read on your reactions, motives, and mode switches.</small>
+        <small>Explore how your responses can change with the situation.</small>
       </div>
       <div className="journey-fact">
         <b>52 max</b>
-        <span>44 profile scenes plus 8 sealed checks; linked follow-ups appear only when relevant</span>
+        <span>Up to 44 questions about you, then 8 final checks. Some follow-ups depend on your answers.</span>
       </div>
       <div className="journey-fact">
-        <b>6</b>
-        <span>chapters to wander through</span>
+        <b>{Survey.CHAPTERS.length}</b>
+        <span>short chapters</span>
       </div>
       <div className="journey-fact">
         <b>Other or Skip</b>
@@ -716,13 +718,13 @@ function Interlude({ chapter, state, route, onContinue, onSave }) {
           scene="chapter"
           mood={chapter.id % 2 ? "attentive" : "curious"}
           bubble={
-            chapter.title === "Sealed checks"
-              ? "The guesses are sealed before you answer."
+            chapter.id === 9
+              ? "My guesses are saved before you answer."
               : chapter.id === 4
-                ? "Power, pressure, and choice are sharing the mic."
+                ? "The person and the situation both matter."
                 : chapter.id === 5
-                  ? "The private edge gets receipts too."
-                  : "Okay, there’s more to this story."
+                  ? "Good advice can still be badly delivered."
+                  : "Let’s try a different situation."
           }
         />
       </div>
@@ -737,7 +739,7 @@ function Interlude({ chapter, state, route, onContinue, onSave }) {
         <p>{chapter.subtitle}</p>
         <div className="interlude-progress">
           <span>
-            <b>{count.resolved || 0}</b> scenes resolved in this chapter
+            <b>{count.resolved || 0}</b> questions completed in this chapter
           </span>
           <div>
             {Array.from({ length: dots }, (_, i) => (
@@ -779,6 +781,8 @@ function QuizView({
   setNote,
   otherText,
   setOtherText,
+  contextBinding,
+  setContextBinding,
   onContinue,
   onBack,
   onSkip,
@@ -807,7 +811,7 @@ function QuizView({
           <span className="eyebrow">{chapter?.title || "Your route"}</span>
           <strong>
             {q.test
-              ? "A sealed check"
+              ? "A final check"
               : `Scene ${sceneNumber} of ${chapterQs.length || 8}`}
           </strong>
         </div>
@@ -848,14 +852,12 @@ function QuizView({
             reactionKey={draft ? `${q.id}-${Array.isArray(draft) ? draft.join("+") : draft}` : undefined}
             bubble={
               q.test
-                ? "No peeking. I sealed the envelope."
-                : chapter?.title === "Sealed checks"
-                  ? "No peeking. The reading is already frozen."
-                  : chapter?.id === 4
-                    ? "What happened inside and outside may be different."
-                    : chapter?.id === 5
-                      ? "The private edge gets receipts too."
-                      : "The honest answer is the interesting one."
+                ? "My guess is already saved. No changing it now."
+                : chapter?.id === 4
+                  ? "It matters who you have in mind."
+                  : chapter?.id === 5
+                    ? "What you can do and what you want to do may differ."
+                    : "Pick what fits, not what sounds impressive."
             }
             chapter={chapter?.id}
             progress={
@@ -867,7 +869,7 @@ function QuizView({
             <p>
               <b>{totalResolved}</b> of {route.length} scenes explored
             </p>
-            <small>Pick what fits. “Other” and Skip are always welcome.</small>
+            <small>Pick what fits. You can always leave a question unanswered.</small>
           </div>
         </aside>
       </div>
@@ -903,13 +905,13 @@ function Gateway({ state, trainingDone, onSeal, onSave, onReview, error }) {
         <p>
           {practice
             ? "You have seen these checks before. This attempt is practice, with the same careful reading rules."
-            : "Genii will seal eight guesses now. You will meet new situations afterward, and the reading will stay frozen while you answer."}
+            : "Genii will save its guesses before you see the final eight questions. Those answers will check the guesses, but will not change your portrait."}
         </p>
         <div className="freeze-note">
-          <b>What gets frozen?</b>
+          <b>What stays unchanged?</b>
           <span>
-            Your pre-check profile evidence, exact receipts, and predictions. Test answers are
-            read-only after Continue. Thin evidence can abstain.
+            Your earlier answers, the portrait based on them, and Genii’s guesses.
+            Genii may pass if there is not enough to go on. You cannot change a final-check answer after pressing Continue.
           </span>
         </div>
         {error && (
@@ -924,7 +926,7 @@ function Gateway({ state, trainingDone, onSeal, onSave, onReview, error }) {
             onClick={onSeal}
             disabled={!trainingDone}
           >
-            Seal guesses and continue <ArrowRight size={19} />
+            Save guesses and continue <ArrowRight size={19} />
           </button>
           <button
             type="button"
@@ -942,8 +944,7 @@ function Gateway({ state, trainingDone, onSeal, onSave, onReview, error }) {
           </button>
         </div>
         <small className="boundary-note">
-          These are internally authored checks, not proof of scientific
-          accuracy.
+          These checks compare a few choices. They do not prove that the portrait is accurate.
         </small>
       </div>
     </motion.main>

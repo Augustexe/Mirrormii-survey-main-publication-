@@ -1,5 +1,7 @@
 # Genii personality-game v4 question map
 
+**Frozen authoring reference.** The original packet wording below is retained for comparison. The Astra candidate renders `src/respondent-copy.js`; its unchanged meanings and metadata are checked against `tests/fixtures/v4-semantics-533c3da.json`. See `ASTRA-IMPLEMENTATION.md` for wording/version boundaries and validation.
+
 Version: genii-personality-game-v4
 
 Bank: v4-authoring-packet-2026-09-19
