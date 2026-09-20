@@ -96,6 +96,7 @@ export default function App() {
   const [draft, setDraft] = useState(null);
   const [note, setNote] = useState("");
   const [otherText, setOtherText] = useState("");
+  const [contextBinding, setContextBinding] = useState({});
   const [mapOpen, setMapOpen] = useState(false);
   const [howOpen, setHowOpen] = useState(false);
   const [reviewOpen, setReviewOpen] = useState(false);
@@ -210,9 +211,10 @@ export default function App() {
         ).length
       : 0;
     const changed =
-      before !== value ||
+      JSON.stringify(before ?? null) !== JSON.stringify(value ?? null) ||
       (meta.note || "") !== (state.notes?.[currentQuestion.id] || "") ||
-      (meta.otherText || "") !== (state.other?.[currentQuestion.id] || "");
+      (meta.otherText || "") !== (state.other?.[currentQuestion.id] || "") ||
+      JSON.stringify(meta.bindings || {}) !== JSON.stringify(state.bindings?.[currentQuestion.id] || {});
     if (
       context &&
       changed &&
@@ -245,6 +247,7 @@ export default function App() {
       const result = Engine.setAnswer(next, currentQuestion.id, value, {
         otherText: meta.otherText,
         note: meta.note,
+        bindings: meta.bindings,
       });
       if (result && typeof result === "object") Object.assign(next, result);
     } catch {
@@ -379,6 +382,7 @@ export default function App() {
       setDraft(state.answers?.[currentQuestion.id] || null);
       setNote(state.notes?.[currentQuestion.id] || "");
       setOtherText(state.other?.[currentQuestion.id] || "");
+      setContextBinding(state.bindings?.[currentQuestion.id] || {});
     }
   }, [screen, currentQuestion?.id]);
 
@@ -388,7 +392,7 @@ export default function App() {
         <AmbientWorld
           scene={screen}
           chapter={currentChapter?.id || 1}
-          pulseKey={`${screen}-${currentQuestion?.id || ""}-${draft || ""}`}
+          pulseKey={`${screen}-${currentQuestion?.id || ""}-${Array.isArray(draft) ? draft.join("+") : draft || ""}`}
         />
         <Header
           state={state}
@@ -670,11 +674,11 @@ function ChapterJourney() {
     <section className="chapter-journey" aria-label="Conversation details">
       <div className="journey-intro">
         <strong>Bring the real version of you.</strong>
-        <small>Get to know your patterns. Find small habits that fit.</small>
+        <small>Get a vivid read on your reactions, motives, and mode switches.</small>
       </div>
       <div className="journey-fact">
-        <b>40 max</b>
-        <span>specific scenes; linked follow-ups appear only when relevant</span>
+        <b>52 max</b>
+        <span>44 profile scenes plus 8 sealed checks; linked follow-ups appear only when relevant</span>
       </div>
       <div className="journey-fact">
         <b>6</b>
@@ -712,12 +716,12 @@ function Interlude({ chapter, state, route, onContinue, onSave }) {
           scene="chapter"
           mood={chapter.id % 2 ? "attentive" : "curious"}
           bubble={
-            chapter.id === 4
-              ? "Capacity and feelings both get a vote."
-              : chapter.id === 5
-                ? "Usual month. Actual week. Both count."
-                : chapter.id === 6
-                  ? "The guesses are sealed before you answer."
+            chapter.title === "Sealed checks"
+              ? "The guesses are sealed before you answer."
+              : chapter.id === 4
+                ? "Power, pressure, and choice are sharing the mic."
+                : chapter.id === 5
+                  ? "The private edge gets receipts too."
                   : "Okay, there’s more to this story."
           }
         />
@@ -822,6 +826,8 @@ function QuizView({
           setNote={setNote}
           otherText={otherText}
           setOtherText={setOtherText}
+          contextBinding={contextBinding}
+          setContextBinding={setContextBinding}
           onContinue={onContinue}
           onBack={onBack}
           onSkip={onSkip}
@@ -839,16 +845,16 @@ function QuizView({
                   : "curious"
             }
             compact
-            reactionKey={draft ? `${q.id}-${draft}` : undefined}
+            reactionKey={draft ? `${q.id}-${Array.isArray(draft) ? draft.join("+") : draft}` : undefined}
             bubble={
               q.test
                 ? "No peeking. I sealed the envelope."
-                : chapter?.id === 4
-                  ? "What happened inside and outside may be different."
-                  : chapter?.id === 5
-                    ? "Your actual week. No highlight reel needed."
-                    : chapter?.id === 6
-                      ? "No peeking. The reading is already frozen."
+                : chapter?.title === "Sealed checks"
+                  ? "No peeking. The reading is already frozen."
+                  : chapter?.id === 4
+                    ? "What happened inside and outside may be different."
+                    : chapter?.id === 5
+                      ? "The private edge gets receipts too."
                       : "The honest answer is the interesting one."
             }
             chapter={chapter?.id}
@@ -902,7 +908,7 @@ function Gateway({ state, trainingDone, onSeal, onSave, onReview, error }) {
         <div className="freeze-note">
           <b>What gets frozen?</b>
           <span>
-            Your evidence, context facts, and predictions. Test answers are
+            Your pre-check profile evidence, exact receipts, and predictions. Test answers are
             read-only after Continue. Thin evidence can abstain.
           </span>
         </div>

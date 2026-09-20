@@ -10,46 +10,60 @@ import {
 } from "lucide-react";
 import { PortraitIcon } from "./PortraitIcon.jsx";
 import { GeniiStage } from "./GeniiStage.jsx";
-import { RoutineTrack } from "./RoutineTrack.jsx";
 import * as Survey from "../survey.js";
 import * as Engine from "../engine.js";
 
-const labelFor = (value, dimension) =>
-  Survey.label?.(value, dimension) || value || "No repeated direction";
 const titleFor = (q, state) =>
   Survey.safeTitle?.(q, state) ||
   Survey.interpolate?.(q?.title, state) ||
   q?.title ||
   "";
+
+const exitLabels = {
+  skip: "Skipped",
+  prefer_not: "Prefer not to answer",
+  no_recent_example: "No recent example",
+  no_example: "No example",
+  other_unscored: "Other / depends",
+  other: "Other",
+  abstain: "Abstained",
+  not_enough_experience: "Not enough experience",
+};
+
 const optionFor = (q, id, state) => {
-  if (id === "skip") return "Skipped";
-  if (id === "no_example") return "No example";
-  if (id === "other") return "Other";
-  if (!id) return "Abstained";
+  if (Array.isArray(id)) return id.map((value) => optionFor(q, value, state)).join(", ");
+  if (exitLabels[id]) return exitLabels[id];
+  if (!id) return "Unanswered";
   const option = q?.options?.find((item) => item.id === id);
-  if (!option) return "Abstained";
-  return Survey.optionText?.(option, state) || option.text || "Abstained";
+  const exit = q?.exits?.find((item) => item.id === id);
+  if (!option && !exit) return "Unanswered";
+  return Survey.optionText?.(option || exit, state) || option?.text || exit?.text || "Unanswered";
 };
+
 const windowLabels = {
-  past_month: "Past month",
-  last_7_days: "Last 7 days",
-  latest_instance_past_month: "Most recent time in the past month",
-  scenario: "Imagined scenario",
+  current: "Current preference",
+  latest_instance_past_month: "Recent recalled example",
+  scenario: "Authored scenario",
+  post_freeze_scenario: "Post-freeze sealed check",
 };
+
 const roleLabels = {
-  actual_event: "Real life example",
-  hypothetical: "Imagined scenario",
-  self_report: "Self report",
+  actual_event: "Recalled example",
+  hypothetical: "Authored scenario",
+  self_report: "Direct self-report",
   self_description: "Self description",
   context: "Context",
+  heldout: "Sealed check",
 };
+
 const receiptMeta = (row, hasQuestion) =>
   [
     roleLabels[row.role] || "Source",
-    windowLabels[row.window] || "Window not recorded",
-    !hasQuestion && (row.questionId || row.question)
-      ? row.questionId || row.question
-      : null,
+    windowLabels[row.window] || "Recorded window",
+    row.target ? `Target: ${row.target}` : null,
+    row.time ? `Time: ${row.time}` : null,
+    row.cost ? `Cost: ${row.cost}` : null,
+    !hasQuestion && (row.questionId || row.question) ? row.questionId || row.question : null,
   ]
     .filter(Boolean)
     .join(" · ");
@@ -57,24 +71,19 @@ const receiptMeta = (row, hasQuestion) =>
 function fallbackPortrait(state) {
   const groups = Engine.profile?.(state.answers || {}) || [];
   return {
-    title: "A provisional reading",
-    summary: groups.length
-      ? "A few directions repeated across your answers."
-      : "Your answers stayed open and varied.",
-    claims: groups
-      .filter((g) => g.status === "Repeated pattern")
-      .slice(0, 4)
-      .map((g, i) => ({
-        id: `legacy-${i}`,
-        text: `${labelFor(g.top, g.d)} showed up more than once.`,
-        confidence: g.status,
-        dimension: g.d,
-        target: g.target,
-        evidenceIds: (g.rows || []).map((r) => r.question),
-        observations: g.rows || [],
-      })),
-    domains: [],
-    emotions: [],
+    id: "portrait:fallback",
+    title: "Still Mysterious, With One Sharp Edge",
+    titleLead: "Still Mysterious",
+    titleEmphasis: "Unknown",
+    summary: "You gave Genii a glint, not a whole museum.",
+    thesis:
+      "Skipped, prefer-not, no-example, and Other answers do not become secret trait evidence.",
+    claims: [],
+    sections: [],
+    groups,
+    receipts: [],
+    unknowns: ["No safe portrait section has enough scored evidence yet."],
+    clauseAudit: [],
     facts: Engine.facts?.(state.answers || {}) || {},
   };
 }
@@ -96,31 +105,18 @@ export function EvidenceSummary({
     [state],
   );
   const stats = state._stats || Engine.stats?.(state);
-  const allClaims = portrait.claims || [];
-  const claims = allClaims.slice(0, 5);
+  const claims = portrait.claims || [];
   const sourceAnswers = state.locked?.training || state.answers || {};
   const evidenceGroups = Array.isArray(portrait.groups)
     ? portrait.groups
     : Engine.profile?.(sourceAnswers) || [];
-  const domainOrder = [
-    "sleep",
-    "eating",
-    "movement",
-    "recovery",
-    "hydration",
-    "body",
-    "skin",
-  ];
-  const domains = [...(portrait.domains || [])].sort(
-    (a, b) => domainOrder.indexOf(a.id) - domainOrder.indexOf(b.id),
-  );
-  const emotions = portrait.emotions || [];
-  const facts = portrait.facts || {};
+  const receipts = portrait.receipts || portrait.evidenceReceipts || [];
+  const unknowns = portrait.unknowns || [];
+
   useEffect(() => {
     heading.current?.focus({ preventScroll: true });
   }, []);
 
-  const hasEvidence = claims.length > 0;
   return (
     <main
       className="completion-shell result-experience"
@@ -137,27 +133,17 @@ export function EvidenceSummary({
             <Check size={14} /> Your first portrait
           </span>
           <h1 ref={heading} tabIndex="-1">
-            {portrait.titleLead || (hasEvidence ? "Your patterns" : "Still getting")}
+            {portrait.titleLead || portrait.title || "Still Mysterious"}
             <br />
-            <em>
-              {portrait.titleEmphasis ||
-                (hasEvidence ? "have conditions." : "to know you.")}
-            </em>
+            <em>{portrait.titleEmphasis || portrait.strength || "Unknown"}</em>
           </h1>
           <p className="completion-lede">{portrait.summary}</p>
+          <p className="completion-lede">{portrait.thesis}</p>
           <div className="completion-actions">
-            <button
-              type="button"
-              className="button button--primary"
-              onClick={onExport}
-            >
-              <Download size={17} /> Export my answers
+            <button type="button" className="button button--primary" onClick={onExport}>
+              <Download size={17} /> Export private receipt bundle
             </button>
-            <button
-              type="button"
-              className="button button--secondary"
-              onClick={onReview}
-            >
+            <button type="button" className="button button--secondary" onClick={onReview}>
               Review your answers
             </button>
           </div>
@@ -166,143 +152,113 @@ export function EvidenceSummary({
           <GeniiStage
             mood="curious"
             compact={false}
-            bubble="“You brought the lore. I brought notes.”"
+            bubble="“I said portrait, not prophecy. Receipts below.”"
           />
         </div>
       </section>
-      {domains.length > 0 && (
-        <nav className="portrait-nav" aria-label="Explore your routines">
-          {domains.map((domain) => (
-            <a key={domain.id} href={`#rhythm-${domain.id}`}>
-              <PortraitIcon kind={domain.id} small />
-              <span>{domain.label || domain.id}</span>
-            </a>
-          ))}
-        </nav>
-      )}
-      {domains.length > 0 && (
-        <section className="domain-section result-domain-section">
-          <div className="section-intro">
-            <span className="eyebrow">The everyday you</span>
-            <h2>Your everyday rhythm.</h2>
-            <p>
-              Your usual month, next to your actual week. Because one chaotic
-              Tuesday doesn't get to define you.
-            </p>
-            <p className="rhythm-explainer">
-              These bars describe routines, not a health score. Evidence
-              coverage is shown separately.
-            </p>
-            <div className="domain-legend">
-              <span>
-                <i className="legend-dot legend-dot--usual" /> Usual · past
-                month
-              </span>
-              <span>
-                <i className="legend-dot legend-dot--recent" /> Recent · last 7
-                days
-              </span>
-            </div>
-          </div>
-          <div className="domain-list result-domain-list">
-            {domains.map((domain) => (
-              <Domain
-                key={domain.id}
-                domain={domain}
-                state={state}
-                observations={Engine.observations?.(sourceAnswers) || []}
-              />
-            ))}
-          </div>
-        </section>
-      )}
-      <section className="portrait-section">
-        <div className="section-intro">
-          <span className="eyebrow">Teach · {portrait.teachingTone || "understanding"}</span>
-          <h2>
-            What this can
-            <br />
-            teach you.
-          </h2>
-          <p>
-            {portrait.thesis ||
-              "The point is not a permanent type. It is seeing what changes your move."}{" "}
-            True or False records your take; the original reading and receipts stay intact.
-          </p>
-        </div>
-        <div className="claim-list">
-          {claims.length ? (
-            claims.map((claim) => (
-              <Claim
-                key={claim.id}
-                claim={claim}
-                state={state}
-                portraitId={portrait.id}
-                onReviewClaim={onReviewClaim}
-              />
-            ))
-          ) : (
-            <div className="empty-state">
-              <h3>Still a little mysterious.</h3>
-              <p>
-                There is not enough repeated evidence for a strong pattern. That
-                is a valid result too.
-              </p>
-            </div>
-          )}
-        </div>
-      </section>
-      {emotions.length > 0 && (
+
+      {(portrait.sections || []).length > 0 ? (
         <section className="emotion-section">
           <div className="section-intro">
-            <span className="eyebrow">Inside voice, outside face</span>
-            <h2>More than “I'm fine.”</h2>
-            <p>
-              What you felt, what you did, and how you recovered can tell
-              different stories. Here are the pieces you shared.
-            </p>
+            <span className="eyebrow">Your tells</span>
+            <h2>The read, in a few acts.</h2>
+            <p>The first move, the inside/outside split, what you guard, how to handle you, and the lovingly bounded roast.</p>
           </div>
           <div className="emotion-list">
-            {emotions.map((emotion) => (
-              <article className="emotion-item" key={emotion.family}>
+            {portrait.sections.map((section) => (
+              <article className="emotion-item" key={section.id}>
                 <h3>
-                  <PortraitIcon kind={emotion.family} small />
-                  {emotion.label || emotion.family}
+                  <PortraitIcon kind={section.key || "spark"} small />
+                  {section.title}
                 </h3>
-                <div>
-                  <EmotionLayer title="Feeling" rows={emotion.feeling} />
-                  <EmotionLayer title="Response" rows={emotion.response} />
-                  <EmotionLayer title="Recovery" rows={emotion.recovery} />
-                </div>
+                <p>{section.text}</p>
               </article>
             ))}
           </div>
         </section>
+      ) : (
+        <section className="portrait-section">
+          <div className="empty-state">
+            <h3>You escaped the mirror with style.</h3>
+            <p>There was not enough behavioral sparkle for a fair roast, so Genii declined to invent lore.</p>
+          </div>
+        </section>
       )}
-      {Object.keys(facts).length > 0 && (
+
+      {(portrait.shareCards || []).length > 0 && (
         <section className="fact-section">
           <div className="section-intro">
-            <h2>Facts you reported</h2>
-            <p>These stay separate from interpretation.</p>
+            <span className="eyebrow">Share cards</span>
+            <h2>Small public-safe chaos.</h2>
+            <p>The lines you can show people without handing them your private answer file.</p>
           </div>
           <div className="fact-list">
-            {Object.entries(facts).map(([key, value]) => (
-              <div key={key}>
-                <b>{factLabel(key)}</b>
-                <span>{factValue(value)}</span>
+            {portrait.shareCards.map((card, index) => (
+              <div key={`${card.title}-${index}`}>
+                <b>{card.title}</b>
+                <span>{card.line}</span>
               </div>
             ))}
           </div>
         </section>
       )}
+
+      {(claims.length > 0 || unknowns.length > 0 || Object.keys(portrait.facts || {}).length > 0) && (
+        <section className="evidence-details">
+          <details>
+            <summary>
+              <span>
+                <b>Fine print, boundaries, and corrections</b>
+                <small>What stayed unknown, what was literal, and where you can tell Genii “not quite”</small>
+              </span>
+              <ChevronDown size={19} />
+            </summary>
+            <div className="details-content">
+              {claims.length > 0 && (
+                <div className="claim-list">
+                  {claims.map((claim) => (
+                    <Claim
+                      key={claim.id}
+                      claim={claim}
+                      state={state}
+                      portraitId={portrait.id}
+                      onReviewClaim={onReviewClaim}
+                    />
+                  ))}
+                </div>
+              )}
+              {unknowns.length > 0 && (
+                <div className="fact-list">
+                  {unknowns.map((unknown, index) => (
+                    <div key={`${unknown}-${index}`}>
+                      <b>Still unknown</b>
+                      <span>{unknown}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {Object.keys(portrait.facts || {}).length > 0 && (
+                <div className="fact-list">
+                  {Object.entries(portrait.facts || {}).map(([key, value]) => (
+                    <div key={key}>
+                      <b>{factLabel(key)}</b>
+                      <span>{factValue(value)}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </details>
+        </section>
+      )}
+
       {stats && (
         <section className="check-result">
           <div>
-            <span className="eyebrow">The sealed checks</span>
-            <h2>Did the reading meet you there?</h2>
+            <span className="eyebrow">Sealed checks</span>
+            <h2>Plot twist: Genii guessed before peeking.</h2>
             <p>
-              Predictions were frozen before the final checks. This is an
-              internal authored comparison, not independent validation.
+              These guesses were locked before you answered the check scenes. Abstentions are honest “not enough signal” moments; the baseline is just a simple comparison, not a validation claim.
             </p>
           </div>
           <div className="check-numbers">
@@ -310,76 +266,90 @@ export function EvidenceSummary({
               <strong>
                 {stats.hits} <small>/ {stats.predicted}</small>
               </strong>
-              <span>matched predictions</span>
+              <span>frozen guesses matched</span>
             </div>
             <div>
-              <strong>{stats.abstained}</strong>
-              <span>abstentions</span>
+              <strong>{stats.answered}</strong>
+              <span>checks you answered</span>
             </div>
             <div>
-              <strong>{stats.skipped}</strong>
-              <span>skipped</span>
+              <strong>{stats.predictionAbstentions}</strong>
+              <span>Genii passed</span>
             </div>
           </div>
           <p className="check-caption">
-            Same answered subset baseline: {stats.baselineHits ?? 0} /{" "}
-            {stats.predicted || 0} matched.{" "}
-            {stats.predicted === 0
-              ? "No match rate is calculated with zero predicted items."
-              : `${stats.predicted} of ${stats.answered} answered checks had a prediction.`}
+            Baseline on the same attempted checks: {stats.baselineHits ?? 0} / {stats.predicted || 0}. Eligible checks: {stats.eligible}; unresolved: {stats.unresolved}; skipped/prefer-not: {stats.skipped}; prediction abstentions: {stats.predictionAbstentions}.
           </p>
           <details className="check-breakdown">
             <summary>
-              See the eight checks <ChevronDown size={17} />
+              See the sealed checks <ChevronDown size={17} />
             </summary>
             <div>
               {(stats.trials || []).map((trial, i) => (
-                <CheckRow
-                  key={trial.question}
-                  trial={trial}
-                  state={state}
-                  number={i + 1}
-                />
+                <CheckRow key={trial.question} trial={trial} state={state} number={i + 1} />
               ))}
             </div>
           </details>
         </section>
       )}
+
       <section className="evidence-details">
         <details>
           <summary>
             <span>
-              <b>Show every evidence group</b>
-              <small>Thin, mixed, and repeated observations</small>
+              <b>Show exact receipts</b>
+              <small>Question, option, role, target, time, cost, and limits</small>
+            </span>
+            <ChevronDown size={19} />
+          </summary>
+          <div className="details-content">
+            {receipts.length ? (
+              receipts.map((row) => <Receipt key={row.evidenceId} row={row} state={state} />)
+            ) : (
+              <p>No scored receipts recorded.</p>
+            )}
+          </div>
+        </details>
+      </section>
+
+      <section className="evidence-details">
+        <details>
+          <summary>
+            <span>
+              <b>Show evidence groups and clause audit</b>
+              <small>Source fidelity guardrails</small>
             </span>
             <ChevronDown size={19} />
           </summary>
           <div className="details-content">
             {evidenceGroups.length ? (
               evidenceGroups.map((group) => (
-                <EvidenceGroup
-                  key={`detail-${group.d}-${group.target}`}
-                  group={group}
-                  state={state}
-                />
+                <EvidenceGroup key={`detail-${group.section}-${group.d}`} group={group} state={state} />
               ))
             ) : (
               <p>No behavioral evidence recorded.</p>
             )}
+            {(portrait.clauseAudit || []).map((clause) => (
+              <article className="evidence-group" key={clause.clauseId}>
+                <div className="claim-top">
+                  <div>
+                    <span className="eyebrow">{clause.claimType} · {clause.verdict}</span>
+                    <h3>{clause.renderedText}</h3>
+                    <p>{clause.entailment}</p>
+                  </div>
+                  <span className="claim-confidence">{clause.evidenceIds.length} receipts</span>
+                </div>
+              </article>
+            ))}
           </div>
         </details>
       </section>
+
       <section className="completion-footer">
         <p>
-          <strong>Your next move:</strong>{" "}
-          {portrait.cta ||
-            "Choose one pattern worth testing in a future conversation."}
+          <strong>Your next move:</strong> {portrait.cta || "Pick one claim worth testing against a future real scene."}
         </p>
-        <button
-          type="button"
-          className="button button--quiet"
-          onClick={onReset}
-        >
+        <button type="button" className="button button--quiet" onClick={onReset}>
           <RotateCcw size={16} /> Start again
         </button>
       </section>
@@ -392,11 +362,7 @@ function Claim({ claim, state, portraitId, onReviewClaim }) {
   const feedback = Array.isArray(state.feedback)
     ? [...state.feedback]
         .reverse()
-        .find(
-          (item) =>
-            item.claimId === claim.id &&
-            (!portraitId || item.resultId === portraitId),
-        )?.value
+        .find((item) => item.claimId === claim.id && (!portraitId || item.resultId === portraitId))?.value
     : state.feedback?.[claim.id];
   const rows = claim.observations || claim.rows || [];
   return (
@@ -404,51 +370,33 @@ function Claim({ claim, state, portraitId, onReviewClaim }) {
       <div className="claim-top">
         <div>
           <span className="eyebrow">
-            {claim.tone || "understanding"} · {dimensionLabel(claim.dimension)}
+            {claim.evidenceStatus || "bounded"} · {dimensionLabel(claim.dimension)}
           </span>
           <h3>{claim.text}</h3>
-          <p>
-            {claim.lesson ||
-              (claim.target ? targetLabel(claim.target) : "Across your answers")}
-          </p>
         </div>
-        <span className="claim-confidence">
-          Evidence: {claim.confidence || "observed"}
-        </span>
+        <span className="claim-confidence">Evidence: {claim.confidence || "observed"}</span>
       </div>
       <div className="claim-actions">
         <button
           type="button"
-          className={
-            feedback === true ? "feedback feedback--selected" : "feedback"
-          }
+          className={feedback === true ? "feedback feedback--selected" : "feedback"}
           aria-pressed={feedback === true}
           onClick={() => onReviewClaim?.(claim, true)}
         >
-          <ThumbsUp size={15} /> True (fits me)
+          <ThumbsUp size={15} /> Fits
         </button>
         <button
           type="button"
-          className={
-            feedback === false ? "feedback feedback--selected" : "feedback"
-          }
+          className={feedback === false ? "feedback feedback--selected" : "feedback"}
           aria-pressed={feedback === false}
           onClick={() => onReviewClaim?.(claim, false)}
         >
-          <ThumbsDown size={15} /> False (not quite)
+          <ThumbsDown size={15} /> Not quite
         </button>
-        {feedback !== undefined && (
-          <small className="feedback-saved">Saved to this portrait</small>
-        )}
+        {feedback !== undefined && <small className="feedback-saved">Correction saved; original read unchanged</small>}
         {rows.length > 0 && (
-          <button
-            type="button"
-            className="receipt-toggle"
-            onClick={() => setOpen(!open)}
-            aria-expanded={open}
-          >
-            {open ? "Hide evidence" : "See evidence"}{" "}
-            <ChevronDown size={15} className={open ? "rotated" : ""} />
+          <button type="button" className="receipt-toggle" onClick={() => setOpen(!open)} aria-expanded={open}>
+            {open ? "Hide evidence" : "See evidence"} <ChevronDown size={15} className={open ? "rotated" : ""} />
           </button>
         )}
       </div>
@@ -468,22 +416,10 @@ function Claim({ claim, state, portraitId, onReviewClaim }) {
               <small>Kept open, not silently scored away</small>
             </div>
           ))}
-          {claim.nextValidation && (
-            <div className="receipt">
-              <b>What would test this next</b>
-              <span>{claim.nextValidation}</span>
-              <small>A validation prompt, not a prescription</small>
-            </div>
-          )}
           {rows.map((row, i) => {
-            const q = Survey.QUESTIONS?.find(
-              (item) => item.id === (row.questionId || row.question),
-            );
+            const q = Survey.QUESTIONS?.find((item) => item.id === (row.questionId || row.question));
             return (
-              <div
-                className="receipt"
-                key={`${row.question || row.questionId}-${i}`}
-              >
+              <div className="receipt" key={`${row.question || row.questionId}-${i}`}>
                 <b>{q ? titleFor(q, state) : row.question || row.questionId}</b>
                 <span>{row.answer || row.label || row.value || ""}</span>
                 <small>{receiptMeta(row, Boolean(q))}</small>
@@ -492,42 +428,59 @@ function Claim({ claim, state, portraitId, onReviewClaim }) {
           })}
         </div>
       )}
+    </article>
+  );
+}
+
+function Receipt({ row, state }) {
+  const q = Survey.QUESTIONS?.find((item) => item.id === row.questionId);
+  return (
+    <article className="evidence-group">
+      <div className="claim-top">
+        <div>
+          <span className="eyebrow">{row.questionId} · {row.optionId}</span>
+          <h3>{q ? titleFor(q, state) : row.questionText}</h3>
+          <p>{row.optionText}</p>
+        </div>
+        <span className="claim-confidence">{row.mappingVersion}</span>
+      </div>
+      <div className="receipt-list">
+        <div className="receipt">
+          <b>Literal observation</b>
+          <span>{row.literalObservation}</span>
+          <small>{receiptMeta(row, Boolean(q))}</small>
+        </div>
+        <div className="receipt">
+          <b>Does not support</b>
+          <span>{(row.unsupportedInferences || []).join(", ") || "Unstated motive or whole-person certainty"}</span>
+          <small>{row.claimLimit || "Question claim limit applies"}</small>
+        </div>
+      </div>
     </article>
   );
 }
 
 function EvidenceGroup({ group, state }) {
   const rows = group.rows || [];
-  const repeated = group.status === "Repeated pattern" && group.top;
-  const text = repeated
-    ? `${labelFor(group.top, group.d)} in ${group.target}`
-    : `${group.status || "Observed evidence"} in ${group.target}`;
+  const text = group.top
+    ? `${dimensionLabel(group.d)} · ${Engine.label?.(group.top, group.d) || group.top}`
+    : `${group.status || "Observed evidence"} · ${dimensionLabel(group.d)}`;
   return (
     <article className="evidence-group">
       <div className="claim-top">
         <div>
-          <span className="eyebrow">{dimensionLabel(group.d)}</span>
+          <span className="eyebrow">{group.section || "evidence"}</span>
           <h3>{text}</h3>
-          <p>
-            {group.status || "Evidence coverage"}
-            {group.target ? ` · ${targetLabel(group.target)}` : ""}
-          </p>
+          <p>{group.status || "Evidence coverage"}</p>
         </div>
-        <span className="claim-confidence">
-          {rows.length} source{rows.length === 1 ? "" : "s"}
-        </span>
+        <span className="claim-confidence">{group.n || rows.length} source unit{(group.n || rows.length) === 1 ? "" : "s"}</span>
       </div>
       {rows.length > 0 && (
         <div className="receipt-list">
           {rows.map((row, i) => {
-            const q = Survey.QUESTIONS?.find(
-              (item) => item.id === (row.questionId || row.question),
-            );
+            const q = Survey.QUESTIONS?.find((item) => item.id === (row.questionId || row.question));
             return (
-              <div
-                className="receipt"
-                key={`${row.question || row.questionId}-${i}`}
-              >
+              <div className="receipt" key={`${row.id || row.questionId}-${i}`}>
                 <b>{q ? titleFor(q, state) : row.question || row.questionId}</b>
                 <span>{row.answer || row.label || row.value || ""}</span>
                 <small>{receiptMeta(row, Boolean(q))}</small>
@@ -540,227 +493,38 @@ function EvidenceGroup({ group, state }) {
   );
 }
 
-function Domain({ domain, state, observations = [] }) {
+function CheckRow({ trial, state, number }) {
+  const q = Survey.QUESTIONS?.find((item) => item.id === trial.question);
   return (
-    <article
-      className={`domain-item result-domain-item result-domain-item--${domain.id}`}
-      id={`rhythm-${domain.id}`}
-      tabIndex="-1"
-    >
-      <div className="domain-head">
-        <PortraitIcon kind={domain.id} />
-        <div>
-          <h3>{domain.label || domain.id}</h3>
-          {domain.description && domain.description !== domain.label && (
-            <p>{domain.description}</p>
-          )}
-        </div>
-        {domain.confidence && <span>Evidence: {domain.confidence}</span>}
+    <article className="check-row">
+      <div>
+        <span className="eyebrow">Check {number}</span>
+        <h3>{q ? titleFor(q, state) : trial.question}</h3>
+        <p>
+          Frozen guess: <b>{optionFor(q, trial.option, state)}</b>
+        </p>
+        <small>{trial.reason}</small>
       </div>
-      <div className="axis-list">
-        {(domain.axes || []).map((axis) => {
-          const position = (record) => {
-            const value = Number(record?.value);
-            const min = Number(axis.min ?? 0);
-            const max = Number(axis.max ?? 1);
-            return Number.isFinite(value) && max > min
-              ? `${Math.max(0, Math.min(100, ((value - min) / (max - min)) * 100))}%`
-              : null;
-          };
-          const usual = position(axis.usual);
-          const recent = position(axis.recent);
-          const axisRows = observations.filter((row) =>
-            axis.evidenceIds?.includes(row.id),
-          );
-          return (
-            <div className="axis" key={axis.id}>
-              <div className="axis-label">
-                <b>{axis.label || axis.id}</b>
-                <span className="axis-confidence">
-                  Evidence: {axis.confidence || "not recorded"}
-                </span>
-              </div>
-              <div className="axis-readings">
-                <RoutineReading
-                  period="Usual"
-                  record={axis.usual}
-                  position={usual}
-                />
-                <RoutineReading
-                  period="Recent"
-                  record={axis.recent}
-                  position={recent}
-                />
-              </div>
-              <div className="axis-endpoints">
-                <span>{axis.low || "No lower endpoint"}</span>
-                <span>{axis.high || "No upper endpoint"}</span>
-              </div>
-              {axis.unit && axis.unit !== "ordinal" && (
-                <small>{axis.unit}</small>
-              )}
-              {axisRows.length > 0 && (
-                <details className="axis-receipts">
-                  <summary>See source scenes</summary>
-                  <div>
-                    {axisRows.map((row) => {
-                      const q = Survey.QUESTIONS?.find(
-                        (item) => item.id === row.questionId,
-                      );
-                      return (
-                        <div className="axis-receipt" key={row.id}>
-                          <b>{q ? titleFor(q, state) : row.questionId}</b>
-                          <span>
-                            {row.answer ||
-                              row.measure?.label ||
-                              row.signal?.label ||
-                              "Recorded signal"}
-                          </span>
-                          <small>{receiptMeta(row, Boolean(q))}</small>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </details>
-              )}
-            </div>
-          );
-        })}
+      <div>
+        <span>Actual: {optionFor(q, trial.actual, state)}</span>
+        <span>Baseline: {optionFor(q, trial.baseline, state)}</span>
+        <b>{trial.hit ? "Matched" : trial.actual ? "Missed" : trial.unscored ? "Unscored" : "Unanswered"}</b>
       </div>
     </article>
   );
 }
 
-function RoutineReading({ period, record, position }) {
-  return (
-    <div className={`routine-reading routine-reading--${period.toLowerCase()}`}>
-      <span className="routine-period">{period}</span>
-      <strong>{record?.label || "Not recorded"}</strong>
-      <RoutineTrack period={period} position={position} />
-    </div>
-  );
+function dimensionLabel(value) {
+  if (!value) return "Evidence";
+  return String(value).replaceAll("_", " ").replace(/^./, (char) => char.toUpperCase());
 }
 
-function dimensionLabel(dimension) {
-  return Survey.DIMS?.[dimension] || dimension || "Observed direction";
+function factLabel(value) {
+  return dimensionLabel(value);
 }
-const factNames = {
-  close: "Close person",
-  household: "Household",
-  bedtime: "Bedtime",
-  takeaway: "Takeaway days",
-  movement: "Movement days",
-  healthContext: "Health context",
-  wake: "Wake time",
-  sleepDuration: "Sleep duration",
-  currentFriction: "Current chapter",
-  socialContext: "Social context",
-  chosenGoal: "What you want from Genii",
-  tenderTopic: "Optional tender topic",
-  friendChallengePreference: "Friend challenge preference",
-  feedbackTone: "Preferred teaching tone",
-};
-const factValues = {
-  none: "No specific person",
-  alone: "Lives alone",
-  shared: "Shares a home",
-  family: "Lives with family",
-  unspecified: "Household left unspecified",
-  "none-or-prefer-not-to-say": "None or prefer not to say",
-  "before 23:00": "Before 11 pm",
-  "23:00-01:00": "11 pm to 1 am",
-  "after 01:00": "After 1 am",
-  "variable-or-shifts": "Variable or shift work",
-  "0 days / last 7": "0 days in the last 7",
-  "1-2 days / last 7": "1 to 2 days in the last 7",
-  "3-4 days / last 7": "3 to 4 days in the last 7",
-  "5-7 days / last 7": "5 to 7 days in the last 7",
-  "under-6-hours": "Under 6 hours",
-  "6-to-under-7-hours": "6 to under 7 hours",
-  "7-to-under-9-hours": "7 to under 9 hours",
-  "9-hours-or-more": "9 hours or more",
-};
-function factLabel(key) {
-  const raw = String(key)
-    .replaceAll("_", " ")
-    .replace(/([a-z])([A-Z])/g, "$1 $2");
-  return (
-    factNames[key] || raw.replace(/\b\w/g, (letter) => letter.toUpperCase())
-  );
-}
+
 function factValue(value) {
-  return (
-    factValues[value] ||
-    String(value)
-      .replaceAll("_", " ")
-      .replace(/\b\w/g, (letter) => letter.toUpperCase())
-  );
-}
-function targetLabel(target) {
-  return String(target || "")
-    .replace(/^chosen /, "")
-    .replace(/^household \((.*)\)$/, "$1")
-    .replace(/\b\w/g, (letter) => letter.toUpperCase());
-}
-
-function EmotionLayer({ title, rows = [] }) {
-  return (
-    <div className="emotion-layer">
-      <b>{title}</b>
-      {rows.length ? (
-        rows.map((row) => (
-          <span key={`${row.questionId}-${row.value}`}>
-            {row.label || row.value}
-          </span>
-        ))
-      ) : (
-        <small>Not recorded</small>
-      )}
-    </div>
-  );
-}
-
-function CheckRow({ trial, state, number }) {
-  const q = (Survey.QUESTIONS || []).find(
-    (question) => question.id === trial.question,
-  );
-  const status = trial.skipped
-    ? "Skipped"
-    : trial.noExample
-      ? "No example"
-      : trial.other
-        ? "Other"
-        : trial.unresolved
-          ? "Unresolved"
-          : trial.option
-            ? trial.hit
-              ? "Matched"
-              : "Missed"
-            : "Abstained";
-  const actualLabel = trial.skipped
-    ? "Skipped"
-    : trial.noExample
-      ? "No example"
-      : trial.other
-        ? "Other"
-        : optionFor(q, trial.actual, state);
-  return (
-    <div className="check-row">
-      <div>
-        <b>Check {number}</b>
-        <span>{status}</span>
-      </div>
-      <p>
-        <strong>Scenario:</strong> {q ? titleFor(q, state) : "Sealed scenario"}
-        <br />
-        <strong>Guess:</strong> {optionFor(q, trial.option, state)}
-        <br />
-        <strong>You:</strong> {actualLabel}
-      </p>
-      <small>
-        {trial.reason || "No additional note"} · Sources:{" "}
-        {trial.sources?.length ? trial.sources.join(", ") : "none"}
-      </small>
-    </div>
-  );
+  if (Array.isArray(value)) return value.join(", ") || "None recorded";
+  if (value && typeof value === "object") return JSON.stringify(value);
+  return String(value ?? "None recorded").replaceAll("_", " ");
 }

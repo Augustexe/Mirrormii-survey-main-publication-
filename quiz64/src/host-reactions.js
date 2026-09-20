@@ -1,52 +1,50 @@
 // Selective acknowledgments only. These do not become evidence or claims.
 export const HOST_REACTIONS = {
-  n01: {
-    a: "Friends and fit. Starting where the social plot actually lives.",
-    d: "Routines and body. We can stay concrete.",
-    e: "Not naming it yet is still useful context.",
+  "V4-001": {
+    A: "Roast requested. I will keep the roast on a leash and attach receipts.",
+    B: "Specific pattern read. Deliciously inconvenient, if the evidence earns it.",
+    E: "Surprise allowed, but only where the receipts stop me from freelancing.",
   },
-  n02: {
-    a: "People around, and at least a few places to exhale.",
-    b: "People around; some editing still happening.",
-    c: "Small can be settled. Not every circle needs expansion.",
-    e: "Wanting more access is different from failing at connection.",
-    f: "None of the boxes gets custody of your social life.",
+  "V4-002": {
+    A: "Gentle mode. The sword gets a velvet cover.",
+    C: "Playful and pointed. Tiny dagger, rounded tip.",
+    E: "Receipts first. A courtroom drama, but cute.",
   },
-  n06: {
-    a: "Gentle and brief. No twelve-slide emotional deck.",
-    b: "Direct, with veto power still yours.",
-    c: "Playful, but the joke does not outrank the truth.",
-    d: "Permission first. The door stays yours.",
+  "V4-003": {
+    F: "No special boundary logged. Item exits still stay available.",
   },
-  n07: {
-    a: "Attended. Motive is a separate question—not a guess.",
-    b: "A partial yes is still its own answer.",
-    c: "You changed the shape, not necessarily the relationship.",
-    d: "A clean no. No morality play attached.",
+  "V4-005": {
+    B: "Private correction: diplomacy with a paper trail.",
+    C: "Tiny public context. Not a speech, just a breadcrumb flare.",
+    E: "Investment drop noted. Motive still has to earn its own receipt.",
   },
-  n09: {
-    c: "Liking the person does not make every plan your plan.",
-    d: "You checked what support meant before volunteering a version of it.",
+  "V4-011": {
+    A: "Acknowledged and moving. Clean little conversational parkour.",
+    D: "Quieter first. That tells me the move, not the feeling.",
+    E: "Joke as reset button. Risky device, often irresistible.",
   },
-  n13: {
-    c: "A pause before deciding what the feedback deserves.",
-    d: "One useful piece can be enough to keep.",
+  "V4-017": {
+    A: "Light ask. Social lockpick, but make it casual.",
+    D: "Private clarity later. The group chat does not get every feeling live.",
   },
-  n19: {
-    b: "Help, resized to fit an actual human calendar.",
-    d: "No is a capacity answer, not a character indictment.",
+  "V4-023": {
+    A: "Reason requested. Buy-in wants a receipt too.",
+    C: "Tone named. The instruction is on trial, not the whole person.",
   },
-  n23: {
-    b: "Polite outside does not automatically mean peaceful inside.",
-    d: "Stepping away tells us the action, not the intensity.",
+  "V4-029": {
+    B: "Bounded help. Generosity with office hours.",
+    E: "Clear no. Capacity is allowed to have a spine.",
   },
-  n24: {
-    c: "Strong on the inside. Keeping that separate from what showed.",
-    d: "Hard to tell now is more honest than invented precision.",
+  "V4-035": {
+    A: "Story potential wins. Tomorrow has entered a formal complaint.",
+    C: "Commitment protected. The future-you lobby is strong today.",
   },
-  n27: { d: "Variation is data. It is not secretly the bottom of the scale." },
-  n28: { d: "A variable week stays variable—not zero, not worse." },
-  n29: { d: "No usual pattern is different from an irregularity score." },
-  n31: { d: "The days varied. We are keeping the cause unknown." },
+  "V4-041": {
+    D: "Permission gate installed. Genii will knock before going deep.",
+  },
+  "V4-044": {
+    A: "One no means no. Excellent, a boundary with a lock on it.",
+    E: "Receipts before advice. Honestly, fair.",
+  },
 };
 export default HOST_REACTIONS;

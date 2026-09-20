@@ -243,10 +243,10 @@ export function HowDialog({ open, onClose }) {
         </p>
         <div className="how-grid">
           <div>
-            <b>56 + 8</b>
+            <b>44 + 8</b>
             <span>
-              Training scenes build a provisional reading. Eight sealed checks
-              follow.
+              Personality scenes build a provisional portrait. Eight sealed
+              checks follow.
             </span>
           </div>
           <div>
@@ -272,8 +272,8 @@ export function HowDialog({ open, onClose }) {
           </div>
         </div>
         <p className="how-boundary">
-          A self-reported bedtime, meal frequency, or movement count stays a
-          fact. It is not silently turned into a judgment.
+          A selected action is not a hidden motive or emotion. The portrait can
+          only use the meaning attached to the answer you actually chose.
         </p>
       </div>
     </dialog>
