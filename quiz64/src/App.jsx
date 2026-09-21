@@ -36,6 +36,7 @@ import "./question-surfaces.css";
 import "./result-details.css";
 import "./micro-details.css";
 import "./domain-surfaces.css";
+import "./result-final.css";
 import { ChapterRibbon } from "./components/ChapterRibbon.jsx";
 import { ChapterObject } from "./components/ChapterObject.jsx";
 
@@ -476,6 +477,7 @@ export default function App() {
               onReview={() => setReviewOpen(true)}
               onReset={() => setResetOpen(true)}
               onReviewClaim={reviewClaim}
+              storageOK={storageOK}
               error={saveError}
             />
           )}

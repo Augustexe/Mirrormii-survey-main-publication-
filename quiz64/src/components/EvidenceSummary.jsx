@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { MotionConfigContext, useReducedMotion } from "motion/react";
-import { Check, ChevronDown, Download, RotateCcw, ThumbsDown, ThumbsUp } from "lucide-react";
+import { ArrowUpRight, Check, ChevronDown, Download, Eye, Layers3, LockKeyhole, RotateCcw, Sparkles, ThumbsDown, ThumbsUp } from "lucide-react";
 import { PortraitIcon } from "./PortraitIcon.jsx";
 import { GeniiStage } from "./GeniiStage.jsx";
 import * as Survey from "../survey.js";
@@ -19,8 +19,9 @@ const optionFor = (q, id, state) => {
   return option ? Survey.optionText(option, state) : id === "skip" ? "Skipped" : "No answer chosen";
 };
 
-export function EvidenceSummary({ state, onExport, onReview, onReset, onReviewClaim, error = "" }) {
+export function EvidenceSummary({ state, onExport, onReview, onReset, onReviewClaim, storageOK = true, error = "" }) {
   const heading = useRef(null);
+  const evidenceDisclosure = useRef(null);
   const prefersReducedMotion = useReducedMotion();
   const { reducedMotion } = useContext(MotionConfigContext);
   const reduced = prefersReducedMotion || reducedMotion === "always";
@@ -32,41 +33,62 @@ export function EvidenceSummary({ state, onExport, onReview, onReset, onReviewCl
   const receipts = portrait.receipts;
   const unknowns = portrait.unknowns;
   const preferences = literalPreferences(sourceAnswers);
+  const usedReceipts = receipts.filter((row) => !row.missingness);
+  const evidenceCount = new Set(usedReceipts.map((row) => row.questionId)).size;
+  const situationCount = new Set(usedReceipts.map((row) => row.linkedEventId || row.questionId)).size;
+  const scrollToEvidence = () => {
+    if (evidenceDisclosure.current) evidenceDisclosure.current.open = true;
+    document.getElementById("evidence")?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+    window.setTimeout(() => evidenceDisclosure.current?.querySelector("summary")?.focus({ preventScroll: true }), reduced ? 0 : 450);
+  };
   useEffect(() => { heading.current?.focus({ preventScroll: true }); }, []);
 
   return (
     <main className="completion-shell result-experience" data-result-motion={reduced ? "off" : "on"}>
       {error && <p className="save-error" role="alert">{error}</p>}
-      <section className="completion-hero">
-        <div className="completion-copy">
-          <span className="eyebrow"><Check size={14} /> Your first portrait</span>
+      <section className="completion-hero result-cover">
+        <div className="completion-copy result-cover__copy">
+          <span className="eyebrow"><Sparkles size={14} /> Your Genii reading</span>
           <h1 ref={heading} tabIndex="-1">
             {portrait.titleLead}<br /><em>{portrait.titleEmphasis}</em>
           </h1>
-          <p className="completion-lede">{portrait.summary}</p>
-          <p className="completion-lede">{portrait.thesis}</p>
+          <p className="completion-lede result-cover__summary">{portrait.summary}</p>
+          <p className="result-cover__thesis">{portrait.thesis}</p>
           <div className="completion-actions">
-            <button type="button" className="button button--primary" onClick={onExport}>
-              <Download size={17} /> Download your answers and result
+            <button type="button" className="button button--primary" onClick={scrollToEvidence}>
+              See your receipts <ArrowUpRight size={17} />
             </button>
-            <button type="button" className="button button--secondary" onClick={onReview}>Review your answers</button>
+            <button type="button" className="button button--secondary" onClick={onExport}>
+              <Download size={17} /> Keep a private copy
+            </button>
           </div>
         </div>
-        <div className="completion-orb">
-          <GeniiStage mood="curious" compact={false} bubble="“You can check every part against what you actually said.”" />
+        <div className="completion-orb result-cover__portrait">
+          <GeniiStage mood="curious" compact={false} bubble="I kept the receipts." />
+          <div className="result-seal" aria-label={`${evidenceCount} answers used across ${situationCount} situations`}>
+            <span>{evidenceCount}</span>
+            <small>answers used</small>
+          </div>
         </div>
       </section>
 
+      <nav className="result-index" aria-label="Result sections">
+        <a href="#reading"><Eye size={16} /><span><b>Your reading</b><small>What stood out</small></span></a>
+        <a href="#evidence"><Layers3 size={16} /><span><b>Evidence</b><small>{evidenceCount} answer receipts</small></span></a>
+        <a href="#checks"><Check size={16} /><span><b>Final checks</b><small>{stats ? `${stats.predicted} guesses made` : "Kept separate"}</small></span></a>
+        <span><LockKeyhole size={16} /><span><b>Private by default</b><small>{storageOK ? "Stored on this device" : "Keep this tab open"}</small></span></span>
+      </nav>
+
       {portrait.sections.length > 0 ? (
-        <section className="emotion-section">
-          <div className="section-intro">
-            <span className="eyebrow">A closer look</span>
-            <h2>Here is what stood out.</h2>
-            <p>A few examples, what they might mean, and the preferences you want respected.</p>
+        <section className="emotion-section result-reading" id="reading">
+          <div className="section-intro result-section-heading">
+            <h2>The version of you that showed up here.</h2>
+            <p>Patterns first. The exact answers and limits stay one layer below.</p>
           </div>
-          <div className="emotion-list">
-            {portrait.sections.map((section) => (
-              <article className="emotion-item" key={section.id}>
+          <div className="emotion-list result-reading__grid">
+            {portrait.sections.map((section, index) => (
+              <article className={`emotion-item result-signal result-signal--${(index % 4) + 1}`} key={section.id}>
+                <span className="result-signal__number">{String(index + 1).padStart(2, "0")}</span>
                 <h3><PortraitIcon kind={section.key || "spark"} small />{section.title}</h3>
                 <p>{section.text}</p>
               </article>
@@ -74,7 +96,7 @@ export function EvidenceSummary({ state, onExport, onReview, onReset, onReviewCl
           </div>
         </section>
       ) : (
-        <section className="portrait-section">
+        <section className="portrait-section" id="reading">
           <div className="empty-state">
             <h3>Not enough to go on yet.</h3>
             <p>There are not enough answers for a fair interpretation or roast. That is okay.</p>
@@ -83,13 +105,12 @@ export function EvidenceSummary({ state, onExport, onReview, onReset, onReviewCl
       )}
 
       {portrait.shareCards.length > 0 && (
-        <section className="fact-section">
-          <div className="section-intro">
-            <span className="eyebrow">Your highlights</span>
-            <h2>A few lines to keep.</h2>
-            <p>These may include your private answers. Only share them if you are comfortable with others reading them.</p>
+        <section className="fact-section result-keepsakes">
+          <div className="section-intro result-section-heading">
+            <h2>The lines worth keeping.</h2>
+            <p>Private answers may appear here. Only share them if you are comfortable with others reading them.</p>
           </div>
-          <div className="fact-list">
+          <div className="fact-list result-keepsakes__list">
             {portrait.shareCards.map((card, index) => (
               <div key={`${card.title}-${index}`}><b>{card.title}</b><span>{card.line}</span></div>
             ))}
@@ -120,7 +141,7 @@ export function EvidenceSummary({ state, onExport, onReview, onReset, onReviewCl
       )}
 
       {stats && (
-        <section className="check-result">
+        <section className="check-result" id="checks">
           <div>
             <span className="eyebrow">The final checks</span>
             <h2>How did the guesses compare?</h2>
@@ -143,10 +164,10 @@ export function EvidenceSummary({ state, onExport, onReview, onReset, onReviewCl
         </section>
       )}
 
-      <section className="evidence-details">
-        <details>
+      <section className="evidence-details evidence-vault" id="evidence">
+        <details ref={evidenceDisclosure}>
           <summary>
-            <span><b>See the answers behind your result</b><small>Your exact questions and choices, their circumstances, and what we cannot conclude</small></span>
+            <span><b>Open your evidence vault</b><small>See the answers behind your result, their circumstances, and what we cannot conclude</small></span>
             <ChevronDown size={19} />
           </summary>
           <div className="details-content">
@@ -181,7 +202,10 @@ export function EvidenceSummary({ state, onExport, onReview, onReset, onReviewCl
 
       <section className="completion-footer">
         <p><strong>Your next move:</strong> {portrait.cta}</p>
-        <button type="button" className="button button--quiet" onClick={onReset}><RotateCcw size={16} /> Start again</button>
+        <div className="completion-footer__actions">
+          <button type="button" className="button button--secondary" onClick={onReview}>Review answers</button>
+          <button type="button" className="button button--quiet" onClick={onReset}><RotateCcw size={16} /> Start again</button>
+        </div>
       </section>
     </main>
   );
