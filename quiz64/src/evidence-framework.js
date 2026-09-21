@@ -214,6 +214,9 @@ export function defineQuestionTemplate(input) {
   for (const [key, values] of Object.entries(contextSchema)) {
     invariant(Array.isArray(values) && values.length > 0 && values.every((value) => typeof value === "string"), `Context schema ${key} requires allowed string values`);
   }
+  const authoredContext = clone(input.authoredContext || {});
+  invariant(Object.keys(authoredContext).every((key) => Object.hasOwn(contextSchema, key)), `Authored context keys must exist in the context schema for ${input.itemId}`);
+  invariant(Object.entries(authoredContext).every(([key, value]) => contextSchema[key].includes(value)), `Authored context contains an invalid value for ${input.itemId}`);
   const projectionContextKeys = unique(input.projectionContextKeys || []);
   invariant(projectionContextKeys.every((key) => Object.hasOwn(contextSchema, key)), `Projection context keys must exist in the context schema for ${input.itemId}`);
   const rankWeights = input.responseFormat === "rank" ? input.rankWeights : null;
@@ -252,6 +255,7 @@ export function defineQuestionTemplate(input) {
     },
     eligibleAxes,
     contextSchema,
+    authoredContext,
     projectionContextKeys,
     rankWeights: rankWeights ? [...rankWeights] : null,
     options,
@@ -290,6 +294,7 @@ export function createBankManifest(templates, options = {}) {
       rankWeights: clone(template.rankWeights),
       eligibleAxes: [...template.eligibleAxes],
       contextSchema: clone(template.contextSchema),
+      authoredContext: clone(template.authoredContext),
       projectionContextKeys: [...template.projectionContextKeys],
       options: clone(template.options),
       exits: clone(template.exits),
@@ -323,9 +328,11 @@ export function compileResponse(template, response) {
   invariant(response.sourceUnitId === undefined && response.eventInstanceId === undefined && response.occurrenceId === undefined, "Source-unit identity is derived, not caller-assigned");
   invariant(response.contextKey === undefined, "Projection context identity is derived, not caller-assigned");
   const eventInstanceId = `${response.attemptId}:${template.event.id}`;
-  const context = clone(response.context || {});
-  invariant(Object.keys(context).every((key) => Object.hasOwn(template.contextSchema, key)), `Response contains undeclared context for ${template.itemId}`);
-  invariant(Object.entries(context).every(([key, value]) => template.contextSchema[key].includes(value)), `Response contains invalid context value for ${template.itemId}`);
+  const responseContext = clone(response.context || {});
+  invariant(Object.keys(responseContext).every((key) => Object.hasOwn(template.contextSchema, key)), `Response contains undeclared context for ${template.itemId}`);
+  invariant(Object.entries(responseContext).every(([key, value]) => template.contextSchema[key].includes(value)), `Response contains invalid context value for ${template.itemId}`);
+  invariant(Object.keys(responseContext).every((key) => !Object.hasOwn(template.authoredContext || {}, key)), `Response cannot override authored context for ${template.itemId}`);
+  const context = { ...clone(template.authoredContext || {}), ...responseContext };
   const projectionContext = Object.fromEntries(template.projectionContextKeys
     .filter((key) => context[key] !== undefined)
     .map((key) => [key, context[key]]));
@@ -693,6 +700,7 @@ function validateEventAgainstManifest(event, bankManifest) {
   invariant(event.eventInstanceId === `${event.attemptId}:${item.eventId}` && event.sourceUnitId === event.eventInstanceId, `Source-unit identity mismatch for ${event.itemId}`);
   invariant(Object.keys(event.context || {}).every((key) => Object.hasOwn(item.contextSchema, key)), `Undeclared context for ${event.itemId}`);
   invariant(Object.entries(event.context || {}).every(([key, value]) => item.contextSchema[key].includes(value)), `Invalid context for ${event.itemId}`);
+  invariant(Object.entries(item.authoredContext || {}).every(([key, value]) => event.context?.[key] === value), `Authored context mismatch for ${event.itemId}`);
   const projectionContext = Object.fromEntries(item.projectionContextKeys
     .filter((key) => event.context?.[key] !== undefined)
     .map((key) => [key, event.context[key]]));

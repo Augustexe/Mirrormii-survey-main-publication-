@@ -2,7 +2,7 @@
 
 Maintained home for this project's decisions, evidence, questions, ICP and psychology. Updated 2026-09-21. This folder is Git-owned. All agents and humans use the same files.
 
-**Current work: build questions and answers against the stable [evidence framework](EVIDENCE-FRAMEWORK.md).** Questions are replaceable adapters; `ProfileSnapshot` is canonical; axes and result cards are derived and versioned. The framework is implemented locally but is not yet wired into the respondent result or validated with humans. The V4 candidate, 40-item experiment and approved R6 app remain distinct versions.
+**Current work: review the first [playful-disclosure question bank](QUESTION-BANK-V1.md) against the stable [evidence framework](EVIDENCE-FRAMEWORK.md).** Questions are replaceable adapters; `ProfileSnapshot` is canonical; axes and result cards are derived and versioned. The framework and 23-item base bank are implemented locally but are not wired into the respondent result or validated with humans. The V4 candidate, 40-item experiment and approved R6 app remain distinct versions.
 
 Read [CURRENT.md](CURRENT.md) first, then [WORKING-SET.md](WORKING-SET.md) for the exact files to edit. Read [DECISIONS.md](DECISIONS.md) for confirmed founder requirements, with [OPEN-QUESTIONS.md](OPEN-QUESTIONS.md) for unresolved choices and conflicts. Check [CODE-MAP.md](CODE-MAP.md) before any source edit or test.
 
@@ -10,7 +10,7 @@ Read [CURRENT.md](CURRENT.md) first, then [WORKING-SET.md](WORKING-SET.md) for t
 |---|---|---|
 | Evidence framework | [Stable contract](EVIDENCE-FRAMEWORK.md) | Question adapters → events → claims → immutable snapshot → projections → result cards |
 | Evidence and evaluation | [Evidence guide](evidence/README.md) | Literal response → observation → bounded interpretation; existing failed and successful checks |
-| Questions | [Question guide](questions/README.md) | Approved-bank source map, experimental bank and narrow next revision |
+| Questions and result | [Playful-disclosure bank V1](QUESTION-BANK-V1.md), [Evidence Display V1](RESULT-DISPLAY-V1.md), [question guide](questions/README.md) | Current 23-item candidate, progressive result contract, approved-bank source map and prior experiments |
 | ICP and product thesis | [ICP guide](icp/README.md) | Broad audience versus proposed launch cohort; what has not been validated |
 | Psychology and voice | [Psychology guide](psychology/README.md) | Facets, context, motives, humor and research limitations |
 | Product contracts | [Product spec](PRODUCT-SPEC.md), [personality/health](PERSONALITY-HEALTH-SPEC.md), [host](HOST-EXPERIENCE.md) | Confirmed requirements plus clearly marked proposals; older implementation-status sentences are checkpoints |

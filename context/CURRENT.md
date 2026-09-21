@@ -1,10 +1,12 @@
 # Current state and next work
 
-## Evidence framework V1 candidate
+## Evidence framework and question-bank candidates
 
-Status: local implementation candidate on `codex/evidence-framework-v1`, not wired into the respondent UI and not a validated personality instrument. The maintained [evidence framework](EVIDENCE-FRAMEWORK.md) now defines the stable pipeline `Response → EvidenceEvent → Predicate → AuditedClaim → ProfileSnapshot → ProductProjection → ResultCard`. Questions and visual renderers are replaceable adapters; the immutable profile snapshot is canonical. The first module and owned tests live in `quiz64/src/evidence-framework.js` and `quiz64/tests/evidence-framework.test.mjs`.
+Status: local implementation candidates, not wired into the respondent UI and not validated personality instruments. The maintained [evidence framework](EVIDENCE-FRAMEWORK.md) defines `Response → EvidenceEvent → Predicate → AuditedClaim → ProfileSnapshot → ProductProjection → ResultCard`. Questions and renderers are replaceable adapters; the immutable profile snapshot is canonical.
 
-The framework borrows 16Personalities' stable-axis compression, not its opaque scoring or authority. Five product-only axes are implemented as reviewable defaults. Current V4 observations can be preserved but do not receive axis predicates until Jerry and the agent approve explicit question/answer mappings. No merge, deployment, backend mutation, psychometric validity, human usefulness, archetype validity or production approval is implied.
+The first sectioned [playful-disclosure bank](QUESTION-BANK-V1.md) is now implemented on `codex/question-bank-v1`: 3 permission/presentation inputs, 15 profile/disclosure items and 5 exploratory held-out checks. Sections vary tone and distinguish reported actions, emotions, fantasies, temptations and desires. Topic permissions and lower-disclosure mode mechanically omit sensitive prompts. Categorical answers use reviewed directional classes rather than a false equal-interval 0–5 score; ordered 0–5 remains available for future items that genuinely form a continuum.
+
+The framework borrows 16Personalities' stable-axis compression, not its opaque scoring or authority. Five product-only axes remain reviewable defaults. Current V4 observations can be preserved but do not receive predicates from the new bank. No merge, deployment, backend mutation, psychometric validity, human usefulness, archetype validity or production approval is implied.
 
 ## Local V4 language candidate — Astra
 
@@ -35,11 +37,11 @@ The prior [single-persona evaluation](../../runs/20260918T022609Z-a8f52a6beecf/o
 
 ## Next bounded work
 
-1. Review the five product axes, endpoint language and support gates in [EVIDENCE-FRAMEWORK.md](EVIDENCE-FRAMEWORK.md).
-2. Jerry and the agent design a versioned question/answer bank whose options compile into explicit predicates, exits and claim limits.
-3. Audit and map the V4 bank only where semantics genuinely match; never infer a mapping from prose tags or wording similarity.
-4. Wire the approved mappings through `ProfileSnapshot`, projection and result-card views while preserving held-out separation and source-unit deduplication.
-5. Run a fresh evaluation whose scorer reads machine-owned fields/receipts, then conduct real respondent comprehension and usefulness sessions.
+1. Jerry reviews the exact prompts, answer choices, section order and evidence receipts in [QUESTION-BANK-V1.md](QUESTION-BANK-V1.md).
+2. Run moderated comprehension sessions for answer distinction, shame/bias, disclosure consent and whether the humor earns rather than pressures honesty.
+3. Review the five product axes, endpoint language and support gates in [EVIDENCE-FRAMEWORK.md](EVIDENCE-FRAMEWORK.md).
+4. Expand and preregister held-out transfer items before making any prediction-performance claim.
+5. Wire an approved bank through `ProfileSnapshot`, projection and result-card views without silently changing the current respondent app.
 6. Keep merge, deployment, publication and production approval as separate explicit decisions.
 
 ## Preserve across every revision

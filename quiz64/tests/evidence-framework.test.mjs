@@ -179,6 +179,35 @@ test("single choice, Likert, and ranked adapters compile into one stable Evidenc
   }), /not eligible/);
 });
 
+test("authored context is compiled, immutable and revalidated on restored events", () => {
+  const question = rememberTemplate(defineQuestionTemplate({
+    itemId: "authored-context",
+    surveyVersion: "survey-v1",
+    bankVersion: "bank-v1",
+    semanticVersion: "semantic-v1",
+    wordingVersion: "wording-v1",
+    mappingVersion: "mapping-v1",
+    adapterVersion: "adapter-v1",
+    responseFormat: "single_choice",
+    eligibleAxes: ["activation_tempo"],
+    contextSchema: { setting: ["work", "social"], stakes: ["low", "high"] },
+    authoredContext: { setting: "work" },
+    projectionContextKeys: ["setting", "stakes"],
+    event: { id: "authored-context-event", sourceStatus: "retrospective_self_report" },
+    options: [{
+      id: "move",
+      text: "Move",
+      predicates: [{ id: "authored-context:move", construct: "tempo", claimText: "Moved in the authored work context.", claimTemplateId: "authored-context-v1", allowedInferenceKeys: ["bounded_behavior"], allowedScopeIds: ["selected_situation"], axisId: "activation_tempo", direction: "right" }],
+    }],
+  }));
+  const event = answer(question, "move", { context: { stakes: "high" } });
+  assert.deepEqual(event.context, { setting: "work", stakes: "high" });
+  assert.deepEqual(event.projectionContext, { setting: "work", stakes: "high" });
+  assert.throws(() => answer(question, "move", { context: { setting: "social" } }), /cannot override authored context/);
+  const tampered = { ...event, context: { stakes: "high" }, projectionContext: { stakes: "high" }, contextKey: JSON.stringify([["stakes", "high"]]) };
+  assert.throws(() => snapshotFor([tampered], "tampered-authored-context"), /Authored context mismatch/);
+});
+
 test("linked action and motive enrich one source unit instead of manufacturing corroboration", () => {
   const action = template({ itemId: "action", eventId: "shared-event", sourceStatus: "retrospective_self_report" });
   const motive = template({ itemId: "motive", eventId: "shared-event", sourceStatus: "retrospective_self_report" });

@@ -54,6 +54,8 @@ A versioned semantic adapter independent of its visual presentation. It defines:
 
 A Likert statement, scenario choice, multi-select, ranking or follow-up may all compile into the same event contract. Reviewed Git-owned templates compile into a trusted bank manifest; restored events must exactly match its item/options, predicates, source-unit identity, phase, source, versions, context schema and axis eligibility. The manifest also owns the public-axis allowlist.
 
+Runtime context is not trusted merely because it is present. A template declares allowed context dimensions and values, may bind prompt-authored context that responses cannot override, and separately allowlists dimensions that may create projection context splits.
+
 ### EvidenceEvent
 
 One answer-derived observation. It contains exact answer text, source status, target, timeframe, context, predicates, claim limits and version provenance. It is not proof of objective behavior.
@@ -175,8 +177,9 @@ const template = defineQuestionTemplate({
   construct: "credit response",
   prompt: "A teammate gets the applause for work you helped build. What do you do?",
   eligibleAxes: ["social_signal_style", "friction_posture"],
-  contextSchema: { audience: ["private", "group"] },
-  projectionContextKeys: ["audience"],
+  contextSchema: { audience: ["private", "group"], stakes: ["low", "medium"] },
+  authoredContext: { stakes: "medium" },
+  projectionContextKeys: ["audience", "stakes"],
   event: {
     id: "credit-event-01",
     kind: "scenario",
@@ -220,7 +223,7 @@ const template = defineQuestionTemplate({
 });
 ```
 
-Changing the prompt does not change `itemId` or semantic mapping. Changing what an option means requires a new semantic/mapping version. Rank templates must provide explicit descending positional weights; rank order is preserved in emitted predicates rather than treated like an unordered multi-select.
+Changing the prompt does not change `itemId` or semantic mapping. Changing what an option means requires a new semantic/mapping version. Rank templates must provide explicit descending positional weights; rank order is preserved in emitted predicates rather than treated like an unordered multi-select. A 0–5 item signal is permitted only when its options form a reviewed ordered continuum; categorical strategies use explicit directional classes instead of invented equal spacing.
 
 ## ProfileSnapshot template
 

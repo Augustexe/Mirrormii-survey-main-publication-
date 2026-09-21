@@ -8,11 +8,15 @@ The stable language for answers, evidence, provisional interpretations, projecti
 
 **Context fact**: An explicitly reported circumstance, such as audience, relationship target, stakes, capacity or recent disruption. It scopes evidence and is not personality support by itself.
 
+**Authored context**: A setting, audience or stakes value established by the reviewed prompt itself. It is template-bound, cannot be overwritten by response state and may scope a context split without becoming personality evidence.
+
 **EvidenceEvent**: One normalized, versioned answer-derived observation with exact answer text, source status, target, timeframe, context, claim limits and predicates.
 
 **SourceUnit**: The independence boundary used for aggregation. Several answers about one event may enrich one SourceUnit but do not count as repeated corroboration.
 
 **Predicate**: A normalized assertion emitted by a question adapter, such as a reported action, explicit motive, context signature, preference or product-axis direction.
+
+**Projective report**: A selected fantasy, temptation, desire or imagined response used to make disclosure easier. It records only the selected imagined content; it does not establish conduct, intent, morality, attachment or diagnosis.
 
 **AuditedClaim**: A bounded interpretation that passed evidence and language checks and retains support, counterevidence, alternatives, scope, uncertainty and next validation.
 

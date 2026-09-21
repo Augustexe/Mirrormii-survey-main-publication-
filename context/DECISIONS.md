@@ -19,6 +19,21 @@ Jerry directed the team to finalize and implement a replaceable question/context
 
 Implementation contract: [EVIDENCE-FRAMEWORK.md](EVIDENCE-FRAMEWORK.md). Council evidence remains in run `20260921T010441Z-9b6762ef7b77`.
 
+## Playful-disclosure authoring direction — 2026-09-21
+
+Jerry confirmed that both questions and answers may be funny, that subsections may use different tones, and that prompts should make fantasies, temptations, emotions and actions easier to communicate than a direct questionnaire normally would. These decisions govern the local bank candidate; they do not approve its exact wording or mappings for production.
+
+| ID | Decision |
+| --- | --- |
+| D-051 | Humor is a disclosure surface, not merely decoration. Use recognizable comic distance to make awkward information easier to report, while preserving clear topic choice, Skip/Other exits and truthful privacy language. |
+| D-052 | The bank may shift tone by section and respondent preference. Tone selection changes approved presentation variants, not evidence meaning, and quieter or indirect answers must not be humiliated into looking inferior. |
+| D-053 | Fantasy, temptation, desired understanding, emotion and reported action are separate evidence kinds. Projective content never establishes conduct, intent, morality, attachment or diagnosis. |
+| D-054 | Topic permissions and lower-disclosure mode mechanically omit sensitive prompts. Permission is stored as context and never personality evidence. |
+| D-055 | Do not force categorical strategies onto 0–5. Use 0–5 only for a reviewed ordered continuum; otherwise use explicit directional classes and preserve incomparable strategies. |
+| D-056 | The first base candidate pairs a 23-item sectioned bank with one progressive evidence display covering identity, patterns, inside/outside content, receipts, unknowns, exploratory prediction checks and corrections. Exact items, public labels and support gates remain review candidates. |
+
+Candidate contract: [QUESTION-BANK-V1.md](QUESTION-BANK-V1.md).
+
 ## Switch Modes v3 implementation test — 2026-09-18
 
 Jerry authorized an actual implementation test limited to questions/options, evidence reasoning and routing, and final evidence/result content, teaching tone, message, and CTA. The approved template layout and visual treatment must not change.
