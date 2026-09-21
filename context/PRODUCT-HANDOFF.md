@@ -44,4 +44,4 @@ From `quiz64`, use `npm ci`, `npm test`, `npm run build`, then `npm run dev` for
 - Review comprehension, humor, shareability and real-user outcome quality; tests do not establish virality or predictive validity.
 - Decide production persistence, analytics, performance budget and publication. Current storage/export is local; the share card excludes private answers.
 
-No publication or merge is part of this handoff. The separate publication repository is not this branch’s target.
+No publication or merge is part of this handoff. The authoritative repository is Augustexe/Mirrormii-survey-main-publication-. The earlier push to Augustexe/mirrormii-survey was a routing mistake; do not use that outdated repository.
