@@ -40,3 +40,23 @@
 @media(max-width:760px) { .ds-character-layout,.ds-scene-grid {grid-template-columns:1fr} .ds-tabs { grid-template-columns:1fr 1fr;gap:10px } .ds-tabs button {padding:14px;gap:8px; min-height:120px;flex-direction:column;align-items:start} .ds-tabs button>b {display:none} .ds-tabs .chapter-object {width:36px;height:36px} .ds-tabs strong {font-size:13px} .ds-facet {padding:28px;min-height:0} .ds-opening {padding:20px;margin-bottom:50px} .ds-world p {font-size:15px} }
 @media(prefers-reduced-motion:reduce) { .ds-world * {animation:none!important;transition:none!important} }
 body[data-motion=off] .ds-world * {animation:none!important;transition:none!important}
+
+/* Editorial formats inside the approved character panel. */
+.ds-format-label,.ds-hearing dt,.ds-curiosity-menu dt {display:block;font:700 10px/1.4 ui-monospace,monospace;letter-spacing:.09em;text-transform:uppercase;color:#745598;margin-bottom:9px}
+.ds-replay {list-style:none;padding:0 0 0 18px;border-left:1px solid #d8c9e6;margin:24px 0}
+.ds-replay li {position:relative;padding:0 0 14px 12px}
+.ds-replay li:before {content:"";position:absolute;left:-23px;top:3px;width:8px;height:8px;border-radius:50%;background:#8b66ae;border:2px solid #fff}
+.ds-transmission {display:grid;gap:14px;margin:24px 0}
+.ds-transmission section {padding:18px 22px;background:#f4eff9;border-radius:20px 20px 20px 5px;margin-right:22px}
+.ds-transmission section:nth-child(even) {margin-right:0;margin-left:22px;background:#fff;border:1px solid #e3d8ed;border-radius:20px 20px 5px 20px}
+.ds-transmission p,.ds-plan p {margin:0}
+.ds-hearing {margin:24px 0;border-top:2px solid #5d407d}
+.ds-hearing>div {padding:19px 0;border-bottom:1px solid #e1d7eb}
+.ds-hearing dd,.ds-curiosity-menu dd {margin:0;font-size:17px;line-height:1.8;color:#51465b}
+.ds-plan {display:grid;gap:22px;margin:24px 0}
+.ds-plan section {display:flex;align-items:flex-start;gap:15px}
+.ds-plan-number {font:700 12px/1 ui-monospace,monospace;padding:8px;border:1px solid #d6c6e5;border-radius:6px;color:#795299}
+.ds-curiosity-menu {margin:24px 0;padding:22px;border:1px dashed #c5afd9;border-radius:18px}
+.ds-curiosity-menu>div+div {border-top:1px dotted #cfbedf;padding-top:18px;margin-top:18px}
+.ds-curiosity-menu dt {letter-spacing:.12em}
+@media(max-width:760px){.ds-hearing dd,.ds-curiosity-menu dd{font-size:15px}.ds-transmission section{padding:16px;margin-right:10px}.ds-transmission section:nth-child(even){margin-left:10px}.ds-curiosity-menu{padding:17px}}

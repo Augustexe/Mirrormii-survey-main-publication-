@@ -9,6 +9,12 @@ test('expanded story cites only scored profile receipts across every edition and
     const result = getResult(makeDossierFixture(fixture,{route,voice}));
     const before = JSON.stringify(result);
     const story = buildDossierStory(result);
+    assert.equal(story.chapters.length,5,`${fixture}/${route}/${voice}: expected five facet chapters`);
+    for(const facet of story.chapters){
+      assert.equal(facet.paragraphLabels?.length,facet.paragraphs.length,`${fixture}/${route}/${voice}/${facet.id}: every paragraph needs a label`);
+      assert.equal(new Set(facet.paragraphLabels).size,facet.paragraphLabels.length,`${fixture}/${route}/${voice}/${facet.id}: paragraph labels must be distinct`);
+      assert.ok(facet.paragraphLabels.every(label=>typeof label==='string'&&label.trim()),`${fixture}/${route}/${voice}/${facet.id}: paragraph labels must be non-empty text`);
+    }
     const allowed = new Set(result.receipts.filter(row=>!row.missingness && row.phase !== 'heldout').map(row=>row.evidenceId));
     for(const section of [story.opening,...story.chapters,...story.caseFiles]) {
       for(const id of section.evidenceIds) assert.ok(allowed.has(id),`${fixture}/${route}/${voice}: ${id}`);
@@ -38,4 +44,11 @@ test('restored question-card notes survive saving without becoming evidence', ()
   assert.equal(restored.responses[q.itemId].note,'A private, unscored context note.');
   assert.deepEqual(noted.events.map(e=>e.predicates),plain.events.map(e=>e.predicates));
   assert.ok(!JSON.stringify(noted.events).includes('private, unscored context note'));
+});
+
+test('thin facets do not open with a broad personality claim', () => {
+  const result = getResult(makeDossierFixture('complete'));
+  const projection = {...result.projection, axes: result.projection.axes.map(axis=>({...axis,supportLevel:'thin'}))};
+  const story = buildDossierStory({...result,projection});
+  for(const chapter of story.chapters) assert.match(chapter.paragraphs[0],/early clue/i);
 });

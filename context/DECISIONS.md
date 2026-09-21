@@ -185,3 +185,5 @@ Jerry approved the dimensional evidence-screen layout and explicitly requested r
 
 ## 2026-09-21 — final demo refinement and commit authorization
 Jerry requested an end-to-end final survey demo and explicitly said "commit after". Preserve approved visuals. Consolidate duplicate guess displays into one result reveal; keep scoring inspectable. Viewing completed answers must not create revisions; only actual edits do. Old wording-bound saves fail closed with export recovery. Current verification: 94 tests and build pass, real UI complete/save/review flows and mobile result checked. No push or publication is authorized.
+
+2026-09-21: Jerry rejected polite generic names and requested distinct section voice/format while preserving approved visuals. Fifty unique v2 nicknames and five editorial formats now replace the previous naming copy. Gentle remains warm; sarcasm follows selected tone. User authorized commit to GitHub; target origin/codex/final-survey-dossier, not publication/main.

@@ -365,7 +365,7 @@ function axisList(result) {
   const projection = projectionFor(result);
   const direct = Array.isArray(projection.axes) ? projection.axes : [];
   const fallback = Array.isArray(result?.axes) ? result.axes : [];
-  const byId = new Map([...direct, ...fallback].map((axis) => [axis.axisId, axis]));
+  const byId = new Map([...fallback, ...direct].map((axis) => [axis.axisId, axis]));
   return AXIS_ORDER.map((id) => byId.get(id) || { axisId: id, supportLevel: "unknown", direction: null, coverage: "no_interpretable_answer", supportingEvidenceIds: [], counterevidenceIds: [] });
 }
 
@@ -473,11 +473,17 @@ function naturalJoin(values) {
   return `${items.slice(0, -1).join(", ")}, and ${items[items.length - 1]}`;
 }
 
-function selectedSceneLine(sources, voice) {
-  const actions = sources.slice(0, 3).map((receipt) => {
+function sceneActions(sources) {
+  return sources.slice(0, 3).map((receipt, index) => {
     const choice = OPTION_RIFFS[receipt.itemId]?.[receipt.optionIds?.[0]];
-    return (choice || answerText(receipt)).replace(/[.!?]+$/, "");
+    let line = (choice || answerText(receipt)).replace(/[.!?]+$/, "");
+    if (sourceStatus(receipt) === "hypothetical_choice") line = `In the imagined scene, your choice was “${answerText(receipt).replace(/[.!?]+$/, "")}”`;
+    return index ? line.replace(/^You /, "you ").replace(/^In /, "in ") : line;
   });
+}
+
+function selectedSceneLine(sources, voice) {
+  const actions = sceneActions(sources);
   if (!actions.length) {
     return voice === "gentle"
       ? "There is not a concrete scene here yet, so this chapter can stay quiet."
@@ -492,6 +498,39 @@ function selectedSceneLine(sources, voice) {
       : "The scenes are gloriously ordinary and concrete";
   return `${lead}: ${naturalJoin(actions)}.`;
 }
+
+const AXIS_FORMATS = {
+  activation_tempo: {
+    label: "Action replay",
+    open: "Action replay is waiting for a first move.",
+    detail: (actions, context) => actions.length ? `The tape catches this: ${naturalJoin(actions)}. ${context}` : context,
+    labels: ["the replay", "what keeps happening", "the tape", "the next beat"],
+  },
+  social_signal_style: {
+    label: "Outgoing message",
+    open: "Outgoing message: the channel is still undecided.",
+    detail: (actions, context) => actions.length ? `Channel log: ${naturalJoin(actions)}. ${context}` : `Channel log: no usable message yet. ${context}`,
+    labels: ["the message", "signal strength", "channel log", "the next send"],
+  },
+  friction_posture: {
+    label: "Tiny hearing",
+    open: "The tiny hearing is still waiting for an exhibit.",
+    detail: (actions, context) => actions.length ? `Exhibit A: ${naturalJoin(actions)}. ${context}` : `Exhibit A is still missing. ${context}`,
+    labels: ["the opening statement", "the finding", "exhibit A", "the next hearing"],
+  },
+  structure_reliance: {
+    label: "Plan versus plot twist",
+    open: "Plan versus plot twist is still an open case.",
+    detail: (actions, context) => actions.length ? `Plot twist notes: ${naturalJoin(actions)}. ${context}` : `The plot has not supplied a usable revision yet. ${context}`,
+    labels: ["the plan", "the tension", "plot twist notes", "the stress test"],
+  },
+  novelty_aperture: {
+    label: "The curiosity menu",
+    open: "The menu is open. There is not enough here yet to guess your order.",
+    detail: (actions, context) => actions.length ? `On your tray: ${naturalJoin(actions)}. ${context}` : `No order to read yet. ${context}`,
+    labels: ["first pick", "tasting notes", "what you chose", "off-menu question"],
+  },
+};
 
 function chapterContextLine(axis, level, voice) {
   if (level === "mixed" && axis.contextSplits?.length) {
@@ -598,22 +637,27 @@ function axisChapter(axis, receipts, snapshot, voice, seed) {
   const editorial = AXIS_EDITORIAL[axis.axisId];
   const sources = axisSourceReceipts(axis, receipts, snapshot);
   const evidenceIds = axisEvidenceIds(axis, snapshot);
-  const direction = !["unknown","mixed"].includes(axis.supportLevel) && (axis.direction === "left" || axis.direction === "right") ? axis.direction : null;
+  const direction = ["supported","strongly_supported"].includes(axis.supportLevel) && (axis.direction === "left" || axis.direction === "right") ? axis.direction : null;
   const level = axis.supportLevel || "unknown";
+  const format = AXIS_FORMATS[axis.axisId] || AXIS_FORMATS.activation_tempo;
   const directionLine = direction
     ? variant(seed, `${axis.axisId}:direction`, [editorial[direction], AXIS_DIRECTION_ALTERNATES[axis.axisId]?.[direction]?.[voice] || editorial[direction]])
-    : "There is no settled direction in the current record.";
+    : level === "mixed" ? "Different situations got different versions of you. The interesting part is the switch; there is no single direction to stamp on this page."
+      : ["thin", "limited_evidence"].includes(level) ? (voice === "gentle" ? "This is an early clue from the scenes you shared. Another example would help before calling it a pattern." : "One early clue has arrived. It gets a place on the board, but it has not earned the right to introduce you at parties.")
+        : format.open;
   const contextLineText = chapterContextLine(axis, level, voice);
+  const actions = sceneActions(sources);
   return {
     id: axis.axisId,
     title: editorial.title,
-    kicker: editorial.kicker,
+    kicker: format.label,
     paragraphs: [
-      direction ? directionLine : `${editorial.title} is still open in this file.`,
+      directionLine,
       statusSentence(axis, sources, voice, seed),
-      `${selectedSceneLine(sources, voice)} ${contextLineText}`,
+      format.detail(actions, contextLineText),
       nextSceneLine(axis, level, voice),
     ],
+    paragraphLabels: format.labels,
     evidenceIds,
   };
 }
@@ -651,7 +695,8 @@ function predicateAxis(receipt) {
 
 function caseFile(receipt, axisById, voice) {
   const status = sourceStatus(receipt);
-  const chosen = OPTION_RIFFS[receipt.itemId]?.[receipt.optionIds?.[0]];
+  const riff = OPTION_RIFFS[receipt.itemId]?.[receipt.optionIds?.[0]];
+  const chosen = riff && status === "hypothetical_choice" ? `In this thought experiment, ${riff.replace(/^You /, "you ")}` : riff;
   const scene = CASE_READINGS[receipt.itemId] || framing(receipt);
   const intro = status === "hypothetical_choice" ? "In this imaginary version of the scene" : status === "stated_preference" ? "When you described what suits you" : "In the moment you told us about";
   const codas = {
@@ -752,7 +797,7 @@ function opening(result, receipts, axes, snapshot, voice) {
   const seed = answerSeed(receipts);
   const firstScenes = pickCaseReceipts(receipts).slice(0, 2);
   const sceneLine = firstScenes.length
-    ? `${voice === "gentle" ? "The first scenes are wonderfully specific" : voice === "sharp" ? "The first scenes are usefully specific" : "The first scenes are specific in the way real life insists on being"}: ${naturalJoin(firstScenes.map((receipt, index) => (OPTION_RIFFS[receipt.itemId]?.[receipt.optionIds?.[0]] || answerText(receipt)).replace(/[.!?]+$/, "").replace(/^You /, index ? "you " : "You ")))}.`
+    ? `${voice === "gentle" ? "The first scenes are wonderfully specific" : voice === "sharp" ? "The first scenes are usefully specific" : "The first scenes are specific in the way real life insists on being"}: ${naturalJoin(sceneActions(firstScenes))}.`
     : "There is not yet a scene with enough detail to make the opening personal.";
   const evidenceIds = unique([...(result?.gameTitle?.evidenceIds || []), ...supported.slice(0,2).flatMap(axis=>axisEvidenceIds(axis,snapshot)), ...firstScenes.map((receipt) => receipt.evidenceId)]);
   const paragraph = stats.sourceUnits

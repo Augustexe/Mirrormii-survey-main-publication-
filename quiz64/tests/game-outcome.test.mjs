@@ -7,16 +7,18 @@ const axes=['activation_tempo','social_signal_style','friction_posture','structu
 const axis=(i,d)=>({axisId:axes[i],direction:d,supportLevel:'supported',supportingEvidenceIds:[`profile-${i}`]});
 test('all 40 pair rules and 10 single rules produce bounded deterministic identities',()=>{
  const rules=new Set();
+ const labels=new Set();
  for(let i=0;i<5;i++)for(const d of ['left','right']){
-  const a=axis(i,d); const single=buildGameOutcome({axes:[a]});rules.add(single.ruleId);assert.deepEqual(single.evidenceIds,[`profile-${i}`]);
+  const a=axis(i,d); const single=buildGameOutcome({axes:[a]});rules.add(single.ruleId);labels.add(single.label);assert.deepEqual(single.evidenceIds,[`profile-${i}`]);
   for(let j=i+1;j<5;j++)for(const e of ['left','right']){
-   const projection={axes:[a,axis(j,e)]}; const result=buildGameOutcome(projection);rules.add(result.ruleId);
+   const projection={axes:[a,axis(j,e)]}; const result=buildGameOutcome(projection);rules.add(result.ruleId);labels.add(result.label);
    assert.deepEqual(result,buildGameOutcome({axes:[...projection.axes].reverse()}));
    assert.deepEqual(result.evidenceIds,[`profile-${i}`,`profile-${j}`]);
    assert.ok(result.label && !result.label.includes('undefined'));
   }
  }
  assert.equal(rules.size,50);
+ assert.equal(labels.size,50,'every supported rule needs a distinct game nickname');
 });
 test('thin signals cannot win titles; stronger support ranks first; voice does not rescore',()=>{
  const a={...axis(0,'right'),supportLevel:'thin'};

@@ -814,7 +814,7 @@ export function QuizView({
           <span className="eyebrow">{chapter?.title || "Your route"}</span>
           <strong>
             {q.test
-              ? "A final check"
+              ? "A sealed check"
               : `Scene ${sceneNumber} of ${chapterQs.length || 8}`}
           </strong>
         </div>
@@ -860,7 +860,7 @@ export function QuizView({
                   ? "It matters who you have in mind."
                   : chapter?.id === 5
                     ? "What you can do and what you want to do may differ."
-                    : "Pick what fits, not what sounds impressive."
+                    : "Pick the scene that fits. Perfect answers are suspicious."
             }
             chapter={chapter?.id}
             progress={
@@ -868,11 +868,11 @@ export function QuizView({
             }
           />
           <div className="guide-copy">
-            <span className="eyebrow">A little more of the story</span>
+            <span className="eyebrow">A clue from this chapter</span>
             <p>
               <b>{totalResolved}</b> of {route.length} scenes explored
             </p>
-            <small>Pick what fits. You can always leave a question unanswered.</small>
+            <small>Choose what fits your scene. Skip if the answer is not yours.</small>
           </div>
         </aside>
       </div>

@@ -558,3 +558,5 @@ Cleanup deliverable: [CLEANUP-REPORT.md](../../../runs/20260918T183120Z-c0d3445e
 - `20260921T090615Z-5961d04b0ec0` — approved-layout refinement: language/identity variation, reveal mechanics, share card, placeholder handoff; 89 tests/build pass; local only.
 
 - `20260921T092946Z-4bc2cb0594ca` — final full-demo pass, single prediction reveal, sharper language, review/recovery fixes; 94 tests/build pass; full-flow browser verification; user-authorized commit. Handoff: /Users/jerryzhang/Workspace-Draft/projects/mirrormii-genie-survey/runs/20260921T092946Z-4bc2cb0594ca/output/FINAL-DEMO-HANDOFF.md
+
+20260921T183726Z-f823a2b3afe9 — product language handoff, v2 names, section formats and final source push; 95 tests/build pass. See PRODUCT-HANDOFF.md.
