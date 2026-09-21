@@ -2,6 +2,23 @@
 
 # Decisions and remaining choices
 
+## Evidence framework direction — 2026-09-21
+
+Jerry directed the team to finalize and implement a replaceable question/context layer feeding stable evidence scoring and a parseable result card. A multi-perspective Council review covered construct boundaries, normalized context/evidence, measurement and validation, and result rendering. The decisions below govern the bounded framework implementation; exact question wording, option mappings, public labels and human validity remain review tasks.
+
+| ID | Decision |
+| --- | --- |
+| D-043 | Questions are versioned adapters into stable `EvidenceEvent` records. Frontend wording and response format may change without changing evidence meaning unless the semantic/mapping version changes. |
+| D-044 | The binding pipeline is `Response → EvidenceEvent → Predicate → AuditedClaim → ProfileSnapshot → ProductProjection → ResultCard`. `ProfileSnapshot` is canonical; generated prose, archetypes and visual cards are derived. |
+| D-045 | Projection aggregates independent `SourceUnit`s, not tag counts. Linked action/motive/context answers enrich one unit. Missingness, Other and held-out responses cannot become neutral or directional evidence. |
+| D-046 | Q, E and P remain separate. Product axes may summarize E as bounded support but cannot be presented as formal traits, percentiles, calibrated probabilities or “X% of your personality.” |
+| D-047 | Five product-only axes—activation tempo, social signal style, friction posture, structure reliance and novelty aperture—are implementation defaults for review. Their public labels and question mappings remain proposed; they do not authorize sensitive or formal-trait inference. |
+| D-048 | One frozen snapshot may feed compact, private-evidence, playful Genii, comparison, share-safe and internal-debug views. Renderers may change layout and tone but cannot create new evidence or inference. |
+| D-049 | Corrections are append-only overlays. Fits / Not quite does not mutate a snapshot; explicit answer edits create a child snapshot. Comparisons fail closed across incompatible projection versions. |
+| D-050 | The immediate next product task is joint human/agent design of versioned questions and answers against the evidence template, followed by mapping audit and human validation. Existing V4 observations are preserved but receive no invented axis mappings. |
+
+Implementation contract: [EVIDENCE-FRAMEWORK.md](EVIDENCE-FRAMEWORK.md). Council evidence remains in run `20260921T010441Z-9b6762ef7b77`.
+
 ## Switch Modes v3 implementation test — 2026-09-18
 
 Jerry authorized an actual implementation test limited to questions/options, evidence reasoning and routing, and final evidence/result content, teaching tone, message, and CTA. The approved template layout and visual treatment must not change.

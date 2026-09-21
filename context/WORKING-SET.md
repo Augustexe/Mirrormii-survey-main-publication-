@@ -6,8 +6,9 @@ Edit these maintained files instead of starting another disconnected specificati
 |---|---|---|
 | Current task and handoff | [CURRENT.md](CURRENT.md) | Update after each substantial run |
 | Founder decisions | [DECISIONS.md](DECISIONS.md) | Add date, authority and superseded decision; retain unresolved proposals separately |
-| Evidence vocabulary | [GLOSSARY.md](GLOSSARY.md) | Literal response, observation, claim, feedback, prediction |
-| Evidence facets and identity | [IDENTITY-EVIDENCE-FRAMEWORK.md](IDENTITY-EVIDENCE-FRAMEWORK.md) | [EVIDENCE-REVIEW.md](EVIDENCE-REVIEW.md) describes current R6 engine limitations |
+| Evidence vocabulary | [GLOSSARY.md](GLOSSARY.md) | Literal response, event, source unit, claim, snapshot, projection, feedback and prediction |
+| Stable evidence and result contract | [EVIDENCE-FRAMEWORK.md](EVIDENCE-FRAMEWORK.md) | `quiz64/src/evidence-framework.js`; Council run `20260921T010441Z-9b6762ef7b77` |
+| Historical evidence facets and identity | [IDENTITY-EVIDENCE-FRAMEWORK.md](IDENTITY-EVIDENCE-FRAMEWORK.md) | Use for prior proposals; [EVIDENCE-REVIEW.md](EVIDENCE-REVIEW.md) describes R6 limitations |
 | Evidence acquisition and claim boundaries | [evidence/EVIDENCE-CHECKLIST.md](evidence/EVIDENCE-CHECKLIST.md) | [Research sources](evidence/RESEARCH-SOURCES.md); do not invent completed research |
 | Question candidate | [questions/EXPERIMENTAL-40.md](questions/EXPERIMENTAL-40.md) and [structured JSON](questions/experimental-40.json) | Same bank in author-readable and structured form; version and check together |
 | Specific next question/output fixes | [questions/NEXT-REVISION-PATCHES.md](questions/NEXT-REVISION-PATCHES.md) | [Final evaluation](../../runs/20260918T174625Z-7724d715c4d8/output/FINAL-REPORT.md) stays frozen |

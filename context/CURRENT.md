@@ -1,5 +1,11 @@
 # Current state and next work
 
+## Evidence framework V1 candidate
+
+Status: local implementation candidate on `codex/evidence-framework-v1`, not wired into the respondent UI and not a validated personality instrument. The maintained [evidence framework](EVIDENCE-FRAMEWORK.md) now defines the stable pipeline `Response → EvidenceEvent → Predicate → AuditedClaim → ProfileSnapshot → ProductProjection → ResultCard`. Questions and visual renderers are replaceable adapters; the immutable profile snapshot is canonical. The first module and owned tests live in `quiz64/src/evidence-framework.js` and `quiz64/tests/evidence-framework.test.mjs`.
+
+The framework borrows 16Personalities' stable-axis compression, not its opaque scoring or authority. Five product-only axes are implemented as reviewable defaults. Current V4 observations can be preserved but do not receive axis predicates until Jerry and the agent approve explicit question/answer mappings. No merge, deployment, backend mutation, psychometric validity, human usefulness, archetype validity or production approval is implied.
+
 ## Local V4 language candidate — Astra
 
 Status: local-only implementation based on `533c3da`, not a replacement for the historical approval record below. Respondent wording across the 52-item V4 bank, host, result and disclosures is revised in `fm/genii-language-astra`; see [implementation and validation](../quiz64/docs/ASTRA-IMPLEMENTATION.md) and the [pre-edit audit](../quiz64/docs/ASTRA-LANGUAGE-AUDIT.md). Evidence metadata and prediction mappings are pinned to the base commit. Sequential Council audit remains pending; no merge, push, deployment, production-readiness or human-validation claim is implied.
@@ -29,14 +35,17 @@ The prior [single-persona evaluation](../../runs/20260918T022609Z-a8f52a6beecf/o
 
 ## Next bounded work
 
-1. Review the v3 implementation test as a product candidate; do not conflate passing contract tests with validated user value or prediction lift.
-2. Run a fresh evaluation whose scorer reads machine-owned literal fields/receipts rather than allowing generated prose to restate selections freely.
-3. Conduct real respondent comprehension/usability sessions for the conditional route, evidence receipts, switch-modes thesis, teaching tone, and goal-aware continuation CTA.
-4. Decide whether to promote v3 into the approved app. Merge/deployment/publication remain separate explicit decisions.
+1. Review the five product axes, endpoint language and support gates in [EVIDENCE-FRAMEWORK.md](EVIDENCE-FRAMEWORK.md).
+2. Jerry and the agent design a versioned question/answer bank whose options compile into explicit predicates, exits and claim limits.
+3. Audit and map the V4 bank only where semantics genuinely match; never infer a mapping from prose tags or wording similarity.
+4. Wire the approved mappings through `ProfileSnapshot`, projection and result-card views while preserving held-out separation and source-unit deduplication.
+5. Run a fresh evaluation whose scorer reads machine-owned fields/receipts, then conduct real respondent comprehension and usefulness sessions.
+6. Keep merge, deployment, publication and production approval as separate explicit decisions.
 
 ## Preserve across every revision
 
-- True/False records feedback on the original result; it does not rewrite that result or predictions. Explicit answer edits are separate.
+- `ProfileSnapshot` is immutable canonical truth; archetypes, prose, bars and layouts are versioned derived renderings.
+- True/False records feedback on the original result; it does not rewrite that result or predictions. Explicit answer edits create a child snapshot.
 - Held-out answers never enter the profile used to predict them. Freeze before exposure, retain abstentions and matched baselines.
 - Written Other is unscored. Skip, no-example and system omission are distinct; unknown does not mean negative.
 - Preserve relationship target, event, source type and time window. Several tags from one answer are not independent corroboration.
