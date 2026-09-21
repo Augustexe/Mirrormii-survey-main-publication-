@@ -1,3 +1,20 @@
+# Active source map — 2026-09-21
+
+Use [/Users/jerryzhang/Workspace-Draft/projects/mirrormii-genie-survey/runs/20260921T072033Z-b5c7e4bdfdb4/scratch/worktree](/Users/jerryzhang/Workspace-Draft/projects/mirrormii-genie-survey/runs/20260921T072033Z-b5c7e4bdfdb4/scratch/worktree), branch `codex/final-survey-dossier`, base `2e65313`. The app in registered `project/` is not the new build. Do not retarget `approved-app` or replace historical baselines as cleanup.
+
+| Concern | Active file under `quiz64/src/` |
+|---|---|
+| Entry and complete respondent flow | `main.jsx`, `DossierApp.jsx`, reused `App.jsx` components, `dossier-adapter.css` (export dialog only) |
+| Versioned routed bank and voice variants | `question-bank-v2.js` |
+| Framework source of truth | `evidence-framework.js` (inherited) |
+| Session, freeze, persistence, predictions, correction | `dossier-session.js` |
+| Final evidence screen | `components/PersonalityDossier.jsx`, `DossierGameWorld.jsx`, `DossierStory.jsx`, `dossier-story.js`, scoped dossier styles |
+| Synthetic display fixtures | `dossier-preview.jsx`, `dossier-fixtures.js`; `/preview.html` |
+
+Run managed `system/bin/dev npm test --prefix quiz64` and `npm run build --prefix quiz64` from this worktree. Existing legacy tests remain as regression coverage. No production connection is configured by this task.
+
+## Historical source map below
+
 # Source map — select the right app before editing
 
 Verified locally 2026-09-18 after branch cleanup.

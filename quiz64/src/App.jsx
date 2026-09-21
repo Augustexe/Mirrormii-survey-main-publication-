@@ -520,7 +520,7 @@ export default function App() {
   );
 }
 
-function Header({
+export function Header({
   state,
   storageOK,
   onHome,
@@ -590,7 +590,7 @@ function Header({
   );
 }
 
-function Landing({ state, onBegin, onHow }) {
+export function Landing({ state, onBegin, onHow, journey }) {
   const hasProgress =
     state.started && Object.keys(state.answers || {}).length > 0;
   return (
@@ -602,15 +602,15 @@ function Landing({ state, onBegin, onHow }) {
     >
       <section className="landing-hero">
         <div className="hero-copy">
-          <span className="eyebrow">A conversation about what makes you, you.</span>
+          <span className="eyebrow">You have tells. Genii is taking notes.</span>
           <h1>
             Let’s get
             <br />
             <em>oddly specific.</em>
           </h1>
           <p className="hero-promise">
-            Everyday situations. Tricky choices. A few awkward moments.
-            Let’s see what your answers say about how you respond.
+            How you leave the house, handle a weird text, or turn a small plan into a whole production.
+            Give Genii a few real scenes. See which version of you turns up.
           </p>
           <div className="hero-actions">
             <button
@@ -622,7 +622,7 @@ function Landing({ state, onBegin, onHow }) {
               <ArrowRight size={19} />
             </button>
             {hasProgress && (
-              <span className="resume-count">Your place is saved here</span>
+              <span className="resume-count">Your answers are waiting in this browser</span>
             )}
           </div>
         </div>
@@ -650,7 +650,7 @@ function Landing({ state, onBegin, onHow }) {
           </span>
         </div>
       </section>
-      <ChapterJourney />
+      <ChapterJourney {...journey} />
       <section className="landing-foot">
         <button type="button" className="how-button" onClick={onHow}>
           <span className="how-mark">
@@ -659,7 +659,7 @@ function Landing({ state, onBegin, onHow }) {
           <span>
             <strong>How this stays thoughtful</strong>
             <small>
-              Your answers stay on this device. Notes are never scored.
+            Your answers stay on this device. Notes stay yours and are never scored.
             </small>
           </span>
           <ArrowRight size={16} />
@@ -673,38 +673,38 @@ function Landing({ state, onBegin, onHow }) {
     </motion.main>
   );
 }
-function ChapterJourney() {
+function ChapterJourney({ maxQuestions = 52, profileQuestions = 44, chapterCount = Survey.CHAPTERS.length } = {}) {
   return (
     <section className="chapter-journey" aria-label="Conversation details">
       <div className="journey-intro">
-        <strong>Bring the real version of you.</strong>
-        <small>Explore how your responses can change with the situation.</small>
+        <strong>Bring the oddly specific version of you.</strong>
+        <small>Different scenes can pull different answers out of the same person.</small>
       </div>
       <div className="journey-fact">
-        <b>52 max</b>
-        <span>Up to 44 questions about you, then 8 final checks. Some follow-ups depend on your answers.</span>
+        <b>{maxQuestions} max</b>
+        <span>Up to {profileQuestions} scenes about you, then 8 fresh checks. Some follow-ups unlock from your answers.</span>
       </div>
       <div className="journey-fact">
-        <b>{Survey.CHAPTERS.length}</b>
-        <span>short chapters</span>
+        <b>{chapterCount}</b>
+        <span>chapters. Take them at your pace.</span>
       </div>
       <div className="journey-fact">
         <b>Other or Skip</b>
-        <span>keeps the answer honest</span>
+        <span>No option fits? Say so.</span>
       </div>
       <div className="journey-fact">
         <b>Save</b>
-        <span>then resume whenever you like</span>
+        <span>then pick up whenever you like</span>
       </div>
     </section>
   );
 }
-function Interlude({ chapter, state, route, onContinue, onSave }) {
+export function Interlude({ chapter, state, route, onContinue, onSave, countOverride }) {
   const heading = useRef(null);
   useEffect(() => {
     heading.current?.focus({ preventScroll: true });
   }, [chapter.id]);
-  const count = Survey.chapterCount?.(state, chapter.id) || {};
+  const count = countOverride || Survey.chapterCount?.(state, chapter.id) || {};
   const dots =
     count.total || route.filter((q) => q.chapter === chapter.id).length;
   return (
@@ -721,12 +721,12 @@ function Interlude({ chapter, state, route, onContinue, onSave }) {
           mood={chapter.id % 2 ? "attentive" : "curious"}
           bubble={
             chapter.id === 9
-              ? "My guesses are saved before you answer."
+              ? "My guesses are filed. The next scenes get to answer back."
               : chapter.id === 4
-                ? "The person and the situation both matter."
+                ? "Same choice, different person: a whole new subplot."
                 : chapter.id === 5
-                  ? "Good advice can still be badly delivered."
-                  : "Let’s try a different situation."
+                  ? "Good advice can still arrive wearing the wrong shoes."
+                  : "New scene, same curious little detective."
           }
         />
       </div>
@@ -741,7 +741,7 @@ function Interlude({ chapter, state, route, onContinue, onSave }) {
         <p>{chapter.subtitle}</p>
         <div className="interlude-progress">
           <span>
-            <b>{count.resolved || 0}</b> questions completed in this chapter
+            <b>{count.resolved || 0}</b> scenes filed in this chapter
           </span>
           <div>
             {Array.from({ length: dots }, (_, i) => (
@@ -772,7 +772,7 @@ function Interlude({ chapter, state, route, onContinue, onSave }) {
     </motion.main>
   );
 }
-function QuizView({
+export function QuizView({
   q,
   chapter,
   state,
@@ -792,6 +792,7 @@ function QuizView({
   storageOK,
   error,
   onMap,
+  chapters,
 }) {
   const chapterQs = route.filter((item) => item.chapter === chapter?.id);
   const chapterResolved = resolved(chapterQs, state);
@@ -807,7 +808,7 @@ function QuizView({
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.22 }}
     >
-      <ChapterRibbon current={chapter?.id} onOpen={onMap} />
+      <ChapterRibbon current={chapter?.id} onOpen={onMap} chapters={chapters} />
       <div className="quiz-topline">
         <div>
           <span className="eyebrow">{chapter?.title || "Your route"}</span>
@@ -878,7 +879,7 @@ function QuizView({
     </motion.main>
   );
 }
-function Gateway({ state, trainingDone, onSeal, onSave, onReview, error }) {
+export function Gateway({ state, trainingDone, onSeal, onSave, onReview, error }) {
   const heading = useRef(null);
   useEffect(() => {
     heading.current?.focus({ preventScroll: true });
@@ -898,7 +899,7 @@ function Gateway({ state, trainingDone, onSeal, onSave, onReview, error }) {
         </span>
       </div>
       <div className="gateway-copy">
-        <span className="eyebrow">The first reading is ready</span>
+        <span className="eyebrow">A sealed hunch, then eight fresh scenes</span>
         <h1 ref={heading} tabIndex="-1">
           One last
           <br />
@@ -906,14 +907,14 @@ function Gateway({ state, trainingDone, onSeal, onSave, onReview, error }) {
         </h1>
         <p>
           {practice
-            ? "You have seen these checks before. This attempt is practice, with the same careful reading rules."
-            : "Genii will save its guesses before you see the final eight questions. Those answers will check the guesses, but will not change your portrait."}
+            ? "You’ve met this little proving ground before. This run is practice; the careful reading rules stay the same."
+            : "The portrait is drafted. Genii will file its guesses before you meet eight fresh scenes; those answers check the guesses without rewriting the portrait."}
         </p>
         <div className="freeze-note">
-          <b>What stays unchanged?</b>
-          <span>
-            Your earlier answers, the portrait based on them, and Genii’s guesses.
-            Genii may pass if there is not enough to go on. You cannot change a final-check answer after pressing Continue.
+            <b>The portrait stays put</b>
+            <span>
+            Next, Genii seals your portrait and its guesses before showing the final scenes.
+            It can pass when there is not enough to go on. Each final answer locks when you submit it.
           </span>
         </div>
         {error && (
@@ -928,7 +929,7 @@ function Gateway({ state, trainingDone, onSeal, onSave, onReview, error }) {
             onClick={onSeal}
             disabled={!trainingDone}
           >
-            Save guesses and continue <ArrowRight size={19} />
+            File guesses and meet the scenes <ArrowRight size={19} />
           </button>
           <button
             type="button"
@@ -946,7 +947,7 @@ function Gateway({ state, trainingDone, onSeal, onSave, onReview, error }) {
           </button>
         </div>
         <small className="boundary-note">
-          These checks compare a few choices. They do not prove that the portrait is accurate.
+          These checks compare a few choices. They are clues, not proof.
         </small>
       </div>
     </motion.main>

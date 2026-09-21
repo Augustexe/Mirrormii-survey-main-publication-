@@ -1,3 +1,11 @@
+# Latest implementation run
+
+## 20260921T072033Z-b5c7e4bdfdb4
+
+Full evidence-framework integration, routed V2 bank, three voices, local session runtime and final personality dossier. Based on `2e65313`; branch `codex/final-survey-dossier`. [Handoff](/Users/jerryzhang/Workspace-Draft/projects/mirrormii-genie-survey/runs/20260921T072033Z-b5c7e4bdfdb4/output/FINAL-HANDOFF.md), [run metadata](/Users/jerryzhang/Workspace-Draft/projects/mirrormii-genie-survey/runs/20260921T072033Z-b5c7e4bdfdb4/run.json), [receipt](/Users/jerryzhang/Workspace-Draft/projects/mirrormii-genie-survey/runs/20260921T072033Z-b5c7e4bdfdb4/receipt.json). No merge/push/publication. Receipt status must be read literally; this entry is not itself a completion receipt.
+
+## Earlier inventory
+
 # Every project run
 
 Inventory as of 2026-09-18. All 35 pre-existing run directories are included, plus this consolidation run. Metadata status is not approval or a current running-process check. Read CURRENT.md for present priorities; these are historical evidence.
@@ -544,3 +552,9 @@ Consolidate all run documents into maintained project context and agent routing
 
 
 Cleanup deliverable: [CLEANUP-REPORT.md](../../../runs/20260918T183120Z-c0d3445e10e4/output/CLEANUP-REPORT.md). Its receipt is generated at finalization.
+
+- `20260921T082434Z-bab08a2bcfea` — restore official pre-result visuals; expand final personality-game packet with 3D stage, interactive objects/facets/scenes and grounded editorial copy. 85 tests/build pass; local only. [Handoff](/Users/jerryzhang/Workspace-Draft/projects/mirrormii-genie-survey/runs/20260921T082434Z-bab08a2bcfea/output/FINAL-HANDOFF.md).
+
+- `20260921T090615Z-5961d04b0ec0` — approved-layout refinement: language/identity variation, reveal mechanics, share card, placeholder handoff; 89 tests/build pass; local only.
+
+- `20260921T092946Z-4bc2cb0594ca` — final full-demo pass, single prediction reveal, sharper language, review/recovery fixes; 94 tests/build pass; full-flow browser verification; user-authorized commit. Handoff: /Users/jerryzhang/Workspace-Draft/projects/mirrormii-genie-survey/runs/20260921T092946Z-4bc2cb0594ca/output/FINAL-DEMO-HANDOFF.md

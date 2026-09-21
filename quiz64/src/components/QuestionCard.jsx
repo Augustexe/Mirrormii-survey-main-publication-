@@ -160,13 +160,13 @@ export function QuestionCard({
             ) : (
               <Lightbulb size={15} aria-hidden="true" />
             )}
-            {q.test
+            {q.sourceLabel || (q.test
               ? "A final check"
               : q.chapter === 1 || q.chapter === 8
                 ? "Your preferences"
                 : q.meta?.evidence === "actual_event" || actual || q.id === "V4-030"
                   ? "From your life"
-                  : "Picture this"}
+                  : "Picture this")}
           </span>
           <h1 ref={heading} tabIndex="-1">
             {safeTitle(q, state)}
@@ -274,7 +274,7 @@ export function QuestionCard({
           <span>{interpolate(selectedReaction, state)}</span>
         </motion.div>
       )}
-      <details className="context-details">
+      {!q.setupPreference && <details className="context-details">
         <summary>
           <ChevronDown size={16} aria-hidden="true" /> Add context{" "}
           <span>Optional. Saved with your answer, not used in your result.</span>
@@ -288,7 +288,7 @@ export function QuestionCard({
           aria-label="Optional context note"
         />
         <small>{(note || "").length}/1200</small>
-      </details>
+      </details>}
       {qApplicable && actual && !readOnly && !(q.exits || []).some((exit) => exit.id === "no_recent_example") && (
         <button
           type="button"
@@ -308,7 +308,7 @@ export function QuestionCard({
           <ArrowLeft size={17} aria-hidden="true" /> Back
         </button>
         <div className="actions-right">
-          {!readOnly && !(q.exits || []).some((exit) => exit.id === "skip") && (
+          {!q.setupPreference && !readOnly && !(q.exits || []).some((exit) => exit.id === "skip") && (
             <button
               type="button"
               className="button button--quiet"

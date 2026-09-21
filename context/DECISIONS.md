@@ -1,3 +1,11 @@
+# Overnight final-survey build authorization — 2026-09-21
+
+Jerry explicitly authorized autonomous local finalization with Luna subagents, full evidence-framework and question-bank integration, multiple routes and voices, question-count adjustment, and a full final-screen redesign. Personality/game recognition leads; survey health features remain excluded. The audit-like visual reference is playful packaging, not permission for fabricated probabilities, diagnoses, fidelity judgments or health inference.
+
+Implementation uses contextual editions rather than asserting validated ICP segments. Exact answers and bounded claims feed the dossier; nickname rules are separate game metadata. Final checks never rescore the frozen profile. Feedback is append-only; explicit edits create child attempts. No external publication or business writes were requested.
+
+Earlier decisions follow for provenance. Current implementation status is in CURRENT.md.
+
 > Reconciled 2026-09-18 from the approved release documentation: [source checkpoint](../../runs/20260918T011159Z-16d23238fdf9/scratch/handoff/docs/DECISIONS.md). Implementation/team instructions below describe that historical task. Read [CURRENT.md](CURRENT.md) and [OPEN-QUESTIONS.md](OPEN-QUESTIONS.md) for later identity/ICP work and the experimental bank. Earlier canonical versions are preserved in the consolidation receipt.
 
 # Decisions and remaining choices
@@ -171,3 +179,9 @@ Jerry approved the living-world direction and requested richer question/text sur
 ## Colored card surfaces · 2026-09-17
 
 Jerry clarified that white/purple governs the main theme, while individual survey/result cards may use complementary colors. Replace flat near-white surfaces with visibly tinted glass, stronger edge separation and colored shadows. Domain colors identify sections (such as periwinkle sleep, apricot eating and mint movement), never health grades or response quality. Preserve layout, questions and all behavior. This supersedes any interpretation that every card must be white/lavender. Uiverse is a design reference, not a requirement to copy a component or introduce a new framework. Implemented for review on `codex/genii-prismatic-cards`; see `quiz64/docs/CARD-MATERIALS.md`.
+
+## 2026-09-21 — preserve approved game layout; refine content and interactions
+Jerry approved the dimensional evidence-screen layout and explicitly requested richer answer-dependent language, curiosity, sharing and game details. Keep pre-result visuals and existing result layout. App destination is a placeholder by explicit reply. Outcomes are deterministic display labels supported by profile evidence, with heldouts separate. Local-only refinement receipt: `20260921T090615Z-5961d04b0ec0`.
+
+## 2026-09-21 — final demo refinement and commit authorization
+Jerry requested an end-to-end final survey demo and explicitly said "commit after". Preserve approved visuals. Consolidate duplicate guess displays into one result reveal; keep scoring inspectable. Viewing completed answers must not create revisions; only actual edits do. Old wording-bound saves fail closed with export recovery. Current verification: 94 tests and build pass, real UI complete/save/review flows and mobile result checked. No push or publication is authorized.

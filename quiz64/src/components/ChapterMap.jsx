@@ -34,6 +34,7 @@ export function ChapterMap({
   route = [],
   onVisit,
   onHow,
+  chapters = Survey.CHAPTERS || [],
 }) {
   const dialog = useRef(null);
   const close = () => {
@@ -42,7 +43,6 @@ export function ChapterMap({
   };
   useDialogFocus(dialog, open);
   const training = route.filter((q) => !q.test);
-  const chapters = Survey.CHAPTERS || [];
   return (
     <dialog
       ref={dialog}
@@ -168,6 +168,7 @@ export function ReviewDialog({ open, onClose, state, route = [], onVisit }) {
           const value = state.answers?.[q.id];
           const status = statusFor(q, state);
           const readOnly = Boolean(q.test && value);
+          const picked = (Array.isArray(value) ? value : [value]).map(id => [...(q.options || []), ...(q.exits || [])].find(option => option.id === id)?.text).filter(Boolean).join("; ");
           return (
             <button
               type="button"
@@ -190,8 +191,7 @@ export function ReviewDialog({ open, onClose, state, route = [], onVisit }) {
                     : titleFor(q, state)}
                 </strong>
                 <small>
-                  {q.test ? "Final check. " : ""}
-                  {status}
+                  {picked || (q.test ? "Final check" : "Not answered yet")}
                 </small>
               </span>
               <span className={`review-status ${value ? "is-done" : ""}`}>
@@ -205,7 +205,7 @@ export function ReviewDialog({ open, onClose, state, route = [], onVisit }) {
   );
 }
 
-export function HowDialog({ open, onClose }) {
+export function HowDialog({ open, onClose, profileCount = 44 }) {
   const dialog = useRef(null);
   const close = () => {
     if (dialog.current?.open) dialog.current.close();
@@ -243,9 +243,9 @@ export function HowDialog({ open, onClose }) {
         </p>
         <div className="how-grid">
           <div>
-            <b>44 + 8</b>
+            <b>{profileCount} + 8</b>
             <span>
-              Up to 44 questions help build a first impression. Eight final
+              Up to {profileCount} questions help build a first impression. Eight final
               questions check guesses made from your earlier answers.
             </span>
           </div>

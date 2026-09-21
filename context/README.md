@@ -1,5 +1,10 @@
 # Genii project context — start here
 
+## Active implementation — 2026-09-21
+
+The full routed evidence survey and redesigned personality dossier are implemented locally. Start with [CURRENT.md](CURRENT.md) and [CODE-MAP.md](CODE-MAP.md). Earlier implementation-status paragraphs below are historical checkpoints, superseded by CURRENT.
+
+
 Maintained home for this project's decisions, evidence, questions, ICP and psychology. Updated 2026-09-21. This folder is Git-owned. All agents and humans use the same files.
 
 **Current work: review the first [playful-disclosure question bank](QUESTION-BANK-V1.md) against the stable [evidence framework](EVIDENCE-FRAMEWORK.md).** Questions are replaceable adapters; `ProfileSnapshot` is canonical; axes and result cards are derived and versioned. The framework and 23-item base bank are implemented locally but are not wired into the respondent result or validated with humans. The V4 candidate, 40-item experiment and approved R6 app remain distinct versions.

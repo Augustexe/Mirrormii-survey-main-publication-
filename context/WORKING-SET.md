@@ -1,5 +1,11 @@
 # Core files to edit and build on
 
+## Active integration
+
+The official pre-result visual system is locked to the existing App components/styles/assets. The final packet alone has the expanded game art direction. Latest correction run: `20260921T082434Z-bab08a2bcfea`.
+
+Use [CURRENT.md](CURRENT.md) and [CODE-MAP.md](CODE-MAP.md) for the routed V2 bank, runtime and final dossier. The earlier “no adapter exists yet” notes below describe pre-integration history. [EVIDENCE-FRAMEWORK.md](EVIDENCE-FRAMEWORK.md) remains the contract; [QUESTION-BANK-V1.md](QUESTION-BANK-V1.md) retains base-bank provenance.
+
 Edit these maintained files instead of starting another disconnected specification. A proposal remains a proposal until its status changes with evidence and authority.
 
 | Intent | Editable master | Related evidence |
@@ -20,3 +26,5 @@ Edit these maintained files instead of starting another disconnected specificati
 | Product and host contracts | [PRODUCT-SPEC.md](PRODUCT-SPEC.md), [PERSONALITY-HEALTH-SPEC.md](PERSONALITY-HEALTH-SPEC.md), [HOST-EXPERIENCE.md](HOST-EXPERIENCE.md) | Confirmed requirements preserved; implementation snapshots are dated |
 
 Historical supporting documents remain accessible: [founder brief](FOUNDER-BRIEF.md), [early research](RESEARCH.md), [older visual design](DESIGN.md), [data design](DATA-DESIGN.md), [30-question demo](ENGLISH-EVIDENCE-DEMO-30.md), [environment](ENVIRONMENT.md), [CLI access](CLI-ACCESS.md). Read them for their stated version and purpose; they do not override CURRENT.md or later explicit decisions.
+
+Latest full-demo verification: `20260921T092946Z-4bc2cb0594ca`; same active worktree. Preserve approved visual assets; continue from final-demo handoff and subsequent commit receipt.

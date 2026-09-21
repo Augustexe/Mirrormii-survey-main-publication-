@@ -1,3 +1,16 @@
+# Remaining validation after local integration — 2026-09-21
+
+The integration and redesign are explicitly authorized and implemented in the active worktree. Earlier questions below about whether to wire the framework are superseded. Remaining product evidence:
+
+- Human comprehension, burden, humor/voice preference and usefulness across the three contextual editions. These are not validated demographic ICPs.
+- Independent real-user prediction evaluation; synthetic correctness checks do not prove incremental prediction value.
+- Product-axis thresholds and mappings remain conservative implementation defaults, not calibrated scientific scales.
+- Broader sharing of claims/axes remains disabled. The voluntary keepsake contains a game nickname and invitation only.
+- Current backend, retention policy and app continuation need separate verified integration work. No health inference is displayed.
+- Founder review of this local build precedes publication; no deployment is implied.
+
+## Earlier question ledger (historical implementation-status statements)
+
 # Open decisions and known conflicts
 
 Updated 2026-09-21 after the evidence-framework Council and first implementation slice.

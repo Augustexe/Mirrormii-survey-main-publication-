@@ -886,6 +886,7 @@ export function createHeldoutEvaluation(snapshot, heldoutEvents, input) {
   invariant(typeof input.exposedAt === "string" && Date.parse(input.exposedAt) > Date.parse(snapshot.frozenAt), "Heldout exposure must occur after freeze");
   invariant(Array.isArray(heldoutEvents), "Heldout events required");
   invariant(new Set(heldoutEvents.map((event) => event.evidenceId)).size === heldoutEvents.length, "Duplicate heldout evidence IDs");
+  invariant(new Set(heldoutEvents.map((event) => event.itemId)).size === heldoutEvents.length, "Duplicate heldout item IDs");
   for (const event of heldoutEvents) {
     invariant(event?.schemaVersion === EVIDENCE_FRAMEWORK_VERSION, "Invalid heldout event");
     invariant(event.attemptId === snapshot.freeze.attemptId, "Heldout event belongs to another attempt");
